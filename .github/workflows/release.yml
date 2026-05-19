@@ -1,0 +1,60 @@
+name: Release
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: "Release version (e.g. v0.1.0). Leave blank to use the pushed tag."
+        required: false
+  push:
+    tags:
+      - "v*"
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    name: Build & Release
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Resolve version
+        id: vars
+        run: |
+          if [ -n "${{ github.event.inputs.version }}" ]; then
+            VERSION="${{ github.event.inputs.version }}"
+          else
+            VERSION="${GITHUB_REF_NAME}"
+          fi
+          echo "version=${VERSION}" >> "$GITHUB_OUTPUT"
+          echo "slug=bomedia-forms" >> "$GITHUB_OUTPUT"
+
+      - name: Build plugin zip
+        run: |
+          SLUG="${{ steps.vars.outputs.slug }}"
+          mkdir -p build/"${SLUG}"
+          rsync -av --delete \
+            --exclude ".git" \
+            --exclude ".github" \
+            --exclude "build" \
+            --exclude "*.zip" \
+            --exclude ".gitignore" \
+            ./ build/"${SLUG}"/
+          cd build
+          zip -r "${SLUG}.zip" "${SLUG}"
+          cd ..
+          ls -lh build/"${SLUG}.zip"
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ steps.vars.outputs.version }}
+          name: ${{ steps.vars.outputs.version }}
+          generate_release_notes: true
+          files: build/${{ steps.vars.outputs.slug }}.zip
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

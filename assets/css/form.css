@@ -1,0 +1,188 @@
+/**
+ * Bomedia Forms — frontend styles.
+ *
+ * All selectors are scoped under .bf-form so host themes are not affected.
+ * Admin tab styles (.bf-admin-*) are intentionally minimal.
+ */
+
+.bf-form {
+	max-width: 640px;
+	margin: 0 0 1.5rem;
+	font: inherit;
+}
+
+.bf-form__row {
+	margin-bottom: 1rem;
+}
+
+.bf-form__label {
+	display: block;
+	margin-bottom: 0.35rem;
+	font-weight: 600;
+	line-height: 1.3;
+}
+
+.bf-form__req {
+	color: #b3261e;
+}
+
+.bf-form__input {
+	display: block;
+	width: 100%;
+	box-sizing: border-box;
+	padding: 0.6rem 0.7rem;
+	font: inherit;
+	color: inherit;
+	background: #fff;
+	border: 1px solid #8a8a8a;
+	border-radius: 4px;
+}
+
+.bf-form__input:focus {
+	outline: 2px solid #1a73e8;
+	outline-offset: 1px;
+	border-color: #1a73e8;
+}
+
+.bf-form textarea.bf-form__input {
+	min-height: 8rem;
+	resize: vertical;
+}
+
+.bf-form__group {
+	border: 0;
+	margin: 0;
+	padding: 0;
+}
+
+.bf-form__group legend {
+	padding: 0;
+}
+
+.bf-form__choice {
+	display: block;
+	margin: 0.25rem 0;
+	font-weight: 400;
+}
+
+.bf-form__actions {
+	margin-top: 1.25rem;
+}
+
+.bf-form__submit {
+	display: inline-flex;
+	align-items: center;
+	gap: 0.5rem;
+	padding: 0.7rem 1.4rem;
+	font: inherit;
+	font-weight: 600;
+	color: #fff;
+	background: #1a73e8;
+	border: 0;
+	border-radius: 4px;
+	cursor: pointer;
+}
+
+.bf-form__submit:hover {
+	background: #155ab6;
+}
+
+.bf-form__submit[disabled] {
+	opacity: 0.65;
+	cursor: progress;
+}
+
+.bf-form__spinner {
+	display: none;
+	width: 1em;
+	height: 1em;
+	border: 2px solid rgba(255, 255, 255, 0.5);
+	border-top-color: #fff;
+	border-radius: 50%;
+	animation: bf-spin 0.7s linear infinite;
+}
+
+.bf-form.is-loading .bf-form__spinner {
+	display: inline-block;
+}
+
+@keyframes bf-spin {
+	to {
+		transform: rotate(360deg);
+	}
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.bf-form__spinner {
+		animation: none;
+	}
+}
+
+/* Honeypot — hidden from users and assistive tech, present for bots. */
+.bf-form__hp {
+	position: absolute !important;
+	left: -9999px !important;
+	width: 1px;
+	height: 1px;
+	overflow: hidden;
+}
+
+.bf-form__error {
+	display: block;
+	margin-top: 0.3rem;
+	color: #b3261e;
+	font-size: 0.875em;
+}
+
+.bf-form__row.has-error .bf-form__input {
+	border-color: #b3261e;
+}
+
+.bf-form__messages {
+	margin-bottom: 1rem;
+}
+
+.bf-form__messages:empty {
+	margin: 0;
+}
+
+.bf-form__messages.is-success {
+	padding: 0.85rem 1rem;
+	color: #0f5132;
+	background: #d1e7dd;
+	border-radius: 4px;
+}
+
+.bf-form__messages.is-error {
+	padding: 0.85rem 1rem;
+	color: #842029;
+	background: #f8d7da;
+	border-radius: 4px;
+}
+
+/* --- Admin tabbed editor --- */
+.bf-admin-tabs__nav {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 2px;
+	border-bottom: 1px solid #c3c4c7;
+	margin-bottom: 1rem;
+}
+
+.bf-admin-tabs__tab {
+	padding: 0.5rem 1rem;
+	background: #f0f0f1;
+	border: 1px solid #c3c4c7;
+	border-bottom: 0;
+	cursor: pointer;
+	font: inherit;
+}
+
+.bf-admin-tabs__tab.is-active {
+	background: #fff;
+	font-weight: 600;
+}
+
+.bf-admin-panel {
+	padding: 0.5rem 0;
+}
