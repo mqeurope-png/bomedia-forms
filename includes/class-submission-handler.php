@@ -616,12 +616,18 @@ class BF_Submission_Handler {
 			$system['first_name'] = false === $at ? $system['email'] : substr( $system['email'], 0, $at );
 		}
 
-		// Tags: configured defaults + automatic "lang:xx" + form slug.
+		// Tags: configured defaults + automatic language + form slug.
+		// AgileCRM rejects tags with characters outside [A-Za-z0-9_ ]
+		// (e.g. ":" or "-"), so the colon-form "lang:xx" used to crash the
+		// entire create_contact with HTTP 400. We emit "lang_xx" here and
+		// let BF_AgileCRM_Client::sanitize_tags() coerce the rest
+		// (admin-configured defaults, slugs with hyphens) into the
+		// allowed shape, dedupe, and skip empties.
 		$tags = (array) ( $agile['default_tags'] ?? array() );
 		if ( $lang ) {
-			$tags[] = 'lang:' . $lang;
+			$tags[] = 'lang_' . $lang;
 		}
-		$tags[] = $post->post_name ? $post->post_name : ( 'form-' . $post->ID );
+		$tags[] = $post->post_name ? $post->post_name : ( 'form_' . $post->ID );
 
 		return array(
 			'system' => $system,

@@ -39,6 +39,57 @@ class BF_AgileCRM_Client {
 	}
 
 	/**
+	 * Sanitise a tag to match AgileCRM's rules.
+	 *
+	 * AgileCRM rejects the whole create_contact request when ANY tag
+	 * "contains special characters other than underscore and space" or
+	 * does not start with a letter. So we coerce every incoming tag —
+	 * automatic or admin-configured — into the allowed shape:
+	 *
+	 *   - any char outside [A-Za-z0-9_ ] becomes "_"
+	 *   - accents are stripped first so "soporte técnico" -> "soporte tecnico"
+	 *   - leading/trailing whitespace trimmed
+	 *   - if it does not start with a letter, prefixed with "x_"
+	 *   - empty input (or fully-stripped) returns ''
+	 *
+	 * @param string $raw Raw tag.
+	 * @return string Sanitised tag, or '' to skip.
+	 */
+	public static function sanitize_tag( $raw ) {
+		$tag = is_scalar( $raw ) ? (string) $raw : '';
+		if ( '' === $tag ) {
+			return '';
+		}
+		$tag = remove_accents( $tag );
+		$tag = preg_replace( '/[^A-Za-z0-9_ ]/', '_', $tag );
+		$tag = trim( (string) $tag );
+		if ( '' === $tag ) {
+			return '';
+		}
+		if ( ! preg_match( '/^[A-Za-z]/', $tag ) ) {
+			$tag = 'x_' . $tag;
+		}
+		return $tag;
+	}
+
+	/**
+	 * Sanitise + dedupe a list of tags.
+	 *
+	 * @param array $tags Raw tags.
+	 * @return string[]
+	 */
+	public static function sanitize_tags( array $tags ) {
+		$out = array();
+		foreach ( $tags as $t ) {
+			$clean = self::sanitize_tag( $t );
+			if ( '' !== $clean ) {
+				$out[] = $clean;
+			}
+		}
+		return array_values( array_unique( $out ) );
+	}
+
+	/**
 	 * Build the API base URL for a subdomain.
 	 *
 	 * @param string $subdomain AgileCRM subdomain.
@@ -195,8 +246,10 @@ class BF_AgileCRM_Client {
 			);
 		}
 
+		$clean_tags = self::sanitize_tags( $tags );
+
 		$payload = array(
-			'tags'       => array_values( array_unique( array_filter( array_map( 'strval', $tags ) ) ) ),
+			'tags'       => $clean_tags,
 			'properties' => $properties,
 		);
 
@@ -213,12 +266,13 @@ class BF_AgileCRM_Client {
 		BF_Logger::log(
 			'agilecrm',
 			sprintf(
-				'create_contact form_id=%d endpoint=POST /contacts result=%s http=%d req_bytes=%d contact_id=%s%s',
+				'create_contact form_id=%d endpoint=POST /contacts result=%s http=%d req_bytes=%d contact_id=%s tags=%s%s',
 				(int) $form_id,
 				$res['ok'] ? 'ok' : 'fail',
 				$res['code'],
 				strlen( (string) $body ),
 				$contact_id ? $contact_id : '-',
+				self::log_quote( implode( '|', $clean_tags ) ),
 				$res['ok'] ? '' : ' response=' . self::log_quote( $res['body_excerpt'] )
 			)
 		);
