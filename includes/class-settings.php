@@ -97,8 +97,10 @@ class BF_Settings {
 			),
 			'antispam'      => array(
 				'honeypot'         => true,
-				'rate_limit_count' => 5,
-				'rate_limit_hours' => 1,
+				'rate_limit_count' => 5, // Max submissions per hour per IP.
+				'rate_limit_hours' => 1, // Window in hours.
+				'min_seconds'      => 2, // Faster than this after render = bot.
+				'blocked_words'    => '', // One per line; case-insensitive.
 			),
 		);
 	}

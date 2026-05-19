@@ -90,14 +90,29 @@ class BF_Submission_Handler {
 		if ( ! empty( $config['antispam']['honeypot'] ) ) {
 			$hp = isset( $_POST['bf_hp_website'] ) ? trim( wp_unslash( $_POST['bf_hp_website'] ) ) : '';
 			if ( '' !== $hp ) {
-				// Silently accept to avoid tipping off bots.
-				wp_send_json_success( array( 'message' => $this->success_message( $config ) ) );
+				// Silently accept (logged + stored as spam) to avoid
+				// tipping off bots.
+				$this->discard_as_spam( $post, $lang, 'honeypot', 0 );
 			}
+		}
+
+		// 2b. Time-based check (signed render timestamp).
+		$ts      = isset( $_POST['bf_ts'] ) ? (int) $_POST['bf_ts'] : 0;
+		$tsig    = isset( $_POST['bf_tsig'] ) ? sanitize_text_field( wp_unslash( $_POST['bf_tsig'] ) ) : '';
+		$elapsed = self::verify_timestamp( $ts, $tsig );
+
+		if ( 'expired' === $elapsed['state'] ) {
+			$this->fail( __( 'This form has expired. Please reload the page and try again.', 'bomedia-forms' ) );
+		}
+		$min_seconds = isset( $config['antispam']['min_seconds'] ) ? (int) $config['antispam']['min_seconds'] : 2;
+		if ( 'invalid' === $elapsed['state'] || $elapsed['seconds'] < max( 0, $min_seconds ) ) {
+			$this->discard_as_spam( $post, $lang, 'too_fast', $elapsed['seconds'] );
 		}
 
 		// 3. Rate limit.
 		if ( ! $this->check_rate_limit( $form_id, $config ) ) {
-			$this->fail( __( 'Too many submissions. Please try again later.', 'bomedia-forms' ) );
+			BF_Logger::log( 'spam', sprintf( 'form_id=%d ip_hash=%s reason=rate_limit', $form_id, self::ip_hash( $this->client_ip() ) ) );
+			wp_send_json_error( array( 'message' => __( 'Too many submissions. Please try again later.', 'bomedia-forms' ) ), 429 );
 		}
 
 		// 4. Captcha.
@@ -144,6 +159,40 @@ class BF_Submission_Handler {
 				),
 				422
 			);
+		}
+
+		// 5b. Blocked words (case-insensitive) — discard silently.
+		$blocked = array_filter(
+			array_map(
+				'trim',
+				preg_split( '/\r\n|\r|\n/', (string) ( $config['antispam']['blocked_words'] ?? '' ) )
+			)
+		);
+		if ( $blocked ) {
+			$haystack = strtolower( wp_json_encode( $data ) );
+			foreach ( $blocked as $word ) {
+				if ( '' !== $word && false !== strpos( $haystack, strtolower( $word ) ) ) {
+					$this->discard_as_spam( $post, $lang, 'blocked_word', $elapsed['seconds'] );
+				}
+			}
+		}
+
+		// 5c. All optional fields empty AND submitted fast (<5s) -> spam.
+		if ( $elapsed['seconds'] < 5 ) {
+			$optional_filled = false;
+			foreach ( (array) $config['fields'] as $f ) {
+				if ( empty( $f['name'] ) || ! empty( $f['required'] ) || 'hidden' === ( $f['type'] ?? '' ) ) {
+					continue;
+				}
+				$v = $data[ $f['name'] ] ?? '';
+				if ( '' !== ( is_array( $v ) ? implode( '', $v ) : (string) $v ) ) {
+					$optional_filled = true;
+					break;
+				}
+			}
+			if ( ! $optional_filled ) {
+				$this->discard_as_spam( $post, $lang, 'empty_fast', $elapsed['seconds'] );
+			}
 		}
 
 		// 6. AgileCRM — failure must never lose the lead.
@@ -216,7 +265,7 @@ class BF_Submission_Handler {
 			return true;
 		}
 
-		$key     = 'bf_rl_' . $form_id . '_' . md5( $this->client_ip() );
+		$key     = 'bf_rate_' . $form_id . '_' . self::ip_hash( $this->client_ip() );
 		$current = (int) get_transient( $key );
 
 		if ( $current >= $count ) {
@@ -225,6 +274,105 @@ class BF_Submission_Handler {
 
 		set_transient( $key, $current + 1, max( 1, $hours ) * HOUR_IN_SECONDS );
 		return true;
+	}
+
+	/**
+	 * Stable, salted IP hash for rate-limit / log correlation.
+	 *
+	 * @param string $ip Client IP.
+	 * @return string
+	 */
+	private static function ip_hash( $ip ) {
+		return md5( $ip . '|' . self::ts_secret() );
+	}
+
+	/**
+	 * Secret used for timestamp signing and IP hashing.
+	 *
+	 * @return string
+	 */
+	private static function ts_secret() {
+		if ( defined( 'AUTH_KEY' ) && AUTH_KEY ) {
+			return AUTH_KEY;
+		}
+		return wp_salt( 'auth' );
+	}
+
+	/**
+	 * Sign the current render time. Returns [ts, sig] for hidden fields.
+	 *
+	 * @return array
+	 */
+	public static function sign_timestamp() {
+		$ts = time();
+		return array(
+			'ts'  => $ts,
+			'sig' => hash_hmac( 'sha256', (string) $ts, self::ts_secret() ),
+		);
+	}
+
+	/**
+	 * Verify a signed render timestamp.
+	 *
+	 * @param int    $ts  Claimed render timestamp.
+	 * @param string $sig HMAC signature.
+	 * @return array { @type string $state ok|too_fast|expired|invalid; @type int $seconds }
+	 */
+	public static function verify_timestamp( $ts, $sig ) {
+		if ( $ts <= 0 || '' === $sig ) {
+			return array(
+				'state'   => 'invalid',
+				'seconds' => 0,
+			);
+		}
+		$expected = hash_hmac( 'sha256', (string) $ts, self::ts_secret() );
+		if ( ! hash_equals( $expected, (string) $sig ) ) {
+			return array(
+				'state'   => 'invalid',
+				'seconds' => 0,
+			);
+		}
+
+		$elapsed = time() - (int) $ts;
+		if ( $elapsed > DAY_IN_SECONDS ) {
+			return array(
+				'state'   => 'expired',
+				'seconds' => $elapsed,
+			);
+		}
+		return array(
+			'state'   => 'ok',
+			'seconds' => max( 0, $elapsed ),
+		);
+	}
+
+	/**
+	 * Silently discard a submission as spam: log it, store it with
+	 * status=spam for admin visibility, and return a success-looking
+	 * response so bots get no signal.
+	 *
+	 * @param WP_Post $post    Form post.
+	 * @param string  $lang    Language code.
+	 * @param string  $reason  Spam reason tag.
+	 * @param int     $seconds Elapsed seconds since render.
+	 * @return void Sends JSON and exits.
+	 */
+	private function discard_as_spam( WP_Post $post, $lang, $reason, $seconds ) {
+		BF_Logger::log(
+			'spam',
+			sprintf(
+				'form_id=%d ip_hash=%s reason=%s elapsed=%ds',
+				$post->ID,
+				self::ip_hash( $this->client_ip() ),
+				$reason,
+				(int) $seconds
+			)
+		);
+
+		$this->store_submission( $post->ID, $lang, array( '_spam_reason' => $reason ), null, 'spam' );
+
+		$config = BF_Settings::get_config( $post->ID );
+		wp_send_json_success( array( 'message' => $this->success_message( $config ) ) );
 	}
 
 	/**

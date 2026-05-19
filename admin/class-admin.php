@@ -389,8 +389,11 @@ class BF_Admin {
 		$this->panel_open( 'antispam' );
 		$as = $config['antispam'];
 		echo '<p><label><input type="checkbox" name="bf_antispam[honeypot]" value="1"' . checked( ! empty( $as['honeypot'] ), true, false ) . '> ' . esc_html__( 'Enable honeypot', 'bomedia-forms' ) . '</label></p>';
-		$this->text_row( 'bf_antispam[rate_limit_count]', __( 'Rate limit: max submissions', 'bomedia-forms' ), (string) $as['rate_limit_count'] );
-		$this->text_row( 'bf_antispam[rate_limit_hours]', __( 'Rate limit: per N hours', 'bomedia-forms' ), (string) $as['rate_limit_hours'] );
+		$this->text_row( 'bf_antispam[rate_limit_count]', __( 'Max submissions per hour per IP', 'bomedia-forms' ), (string) $as['rate_limit_count'] );
+		$this->text_row( 'bf_antispam[min_seconds]', __( 'Minimum seconds before submit (faster = bot)', 'bomedia-forms' ), (string) ( $as['min_seconds'] ?? 2 ) );
+		echo '<p><label>' . esc_html__( 'Blocked words (one per line, case-insensitive)', 'bomedia-forms' ) . '<br />';
+		echo '<textarea name="bf_antispam[blocked_words]" rows="5" class="large-text code">' . esc_textarea( $as['blocked_words'] ?? '' ) . '</textarea></label></p>';
+		echo '<p class="description">' . esc_html__( 'If any submitted field contains a blocked word the submission is silently discarded and logged.', 'bomedia-forms' ) . '</p>';
 		$this->panel_close();
 
 		echo '</div>';
@@ -520,7 +523,9 @@ class BF_Admin {
 				array(
 					'honeypot'         => ! empty( $in['honeypot'] ),
 					'rate_limit_count' => max( 0, (int) ( $in['rate_limit_count'] ?? 5 ) ),
-					'rate_limit_hours' => max( 1, (int) ( $in['rate_limit_hours'] ?? 1 ) ),
+					'rate_limit_hours' => 1,
+					'min_seconds'      => max( 0, (int) ( $in['min_seconds'] ?? 2 ) ),
+					'blocked_words'    => sanitize_textarea_field( $in['blocked_words'] ?? '' ),
 				)
 			);
 		}
