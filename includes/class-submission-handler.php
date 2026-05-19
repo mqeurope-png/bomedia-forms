@@ -406,8 +406,9 @@ class BF_Submission_Handler {
 
 		$secret = '' !== ( $cap['secret_key'] ?? '' ) ? BF_Encryption::decrypt( $cap['secret_key'] ) : '';
 		if ( '' === $secret ) {
-			// CONFIRM: secret unavailable -> captcha disabled (fail-open) so
-			// leads are not lost. Confirm this is the desired posture.
+			// Confirmed posture: secret unavailable (e.g. AUTH_KEY missing)
+			// -> captcha fail-open (disabled) so leads are not lost; a
+			// highly visible admin notice warns the operator.
 			BF_Logger::log( 'spam', sprintf( 'captcha provider=%s disabled (secret unavailable)', $provider ) );
 			return true;
 		}
@@ -455,7 +456,7 @@ class BF_Submission_Handler {
 
 		// reCAPTCHA v3 returns a score; require a conservative threshold.
 		if ( $success && 'recaptcha_v3' === $provider && isset( $result['score'] ) ) {
-			// CONFIRM: v3 score threshold 0.5 — tune per site if needed.
+			// Confirmed: reCAPTCHA v3 score threshold 0.5.
 			$success = (float) $result['score'] >= 0.5;
 		}
 
@@ -587,9 +588,8 @@ class BF_Submission_Handler {
 			);
 		}
 
-		// Tags: configured defaults + an automatic language tag.
-		// CONFIRM: per-language / per-trigger tag rules beyond "lang:xx"
-		// and the form slug — confirm desired taxonomy with Bart.
+		// Tags: configured defaults + automatic "lang:xx" + form slug.
+		// Confirmed taxonomy — no further per-trigger rules for now.
 		$tags = (array) ( $agile['default_tags'] ?? array() );
 		if ( $lang ) {
 			$tags[] = 'lang:' . $lang;

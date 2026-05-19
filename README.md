@@ -64,6 +64,26 @@ message, submit label and the email subject/body via
 Translate them in *Languages → String translations*. A single `bf_form`
 post is reused across languages — no post duplication needed.
 
+## Caching gotchas
+
+Each rendered form embeds a **signed, time-limited token** (anti-spam)
+and, when the Math captcha is used, a **server-generated challenge**.
+Both are produced at render time. If a full-page cache serves a stale
+copy of the page, every visitor receives the *same* baked-in token /
+challenge, which will look expired or fail verification.
+
+**You must exclude any page that contains a Bomedia form from full-page
+caching.** This applies to (non-exhaustive):
+
+- WP Rocket — *Advanced Rules → Never Cache URL(s)*
+- W3 Total Cache — *Page Cache → Never cache the following pages*
+- WP-Optimize — *Cache → Exclude URLs*
+- LiteSpeed Cache / WP Super Cache / hosting-level (Varnish, NGINX FastCGI) — add the form URLs to their exclusion lists
+
+The form editor shows a reminder notice about this. A future release
+will move the token to a JS-fetched value so cached pages keep working
+(`// TODO v1.x` in `includes/class-form-renderer.php`).
+
 ## Logs
 
 Written to `wp-content/uploads/bf-logs/` (web access denied):

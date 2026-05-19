@@ -181,10 +181,11 @@ class BF_Form_Renderer {
 			<input type="hidden" name="bf_lang" value="<?php echo esc_attr( $lang ); ?>" />
 			<input type="hidden" name="bf_nonce" value="<?php echo esc_attr( $nonce ); ?>" />
 			<?php
-			// CONFIRM: on full-page-cached pages this timestamp (and the
-			// math challenge) is baked at cache time, so a cached form may
-			// look "expired" / fail math. Exclude form pages from full-page
-			// cache, or revisit with a JS-fetched token in v1.x.
+			// Resolved: form pages must be excluded from full-page cache
+			// (documented in README "Caching gotchas"; editor shows a
+			// reminder notice).
+			// TODO v1.x: move this token to a JS-fetched value so cached
+			// pages keep working without manual cache exclusion.
 			$bf_ts = BF_Submission_Handler::sign_timestamp();
 			?>
 			<input type="hidden" name="bf_ts" value="<?php echo esc_attr( $bf_ts['ts'] ); ?>" />

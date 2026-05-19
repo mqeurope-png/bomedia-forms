@@ -163,8 +163,8 @@ class BF_Admin {
 		if ( ! current_user_can( 'manage_options' ) ) {
 			return;
 		}
-		echo '<div class="notice notice-warning"><p><strong>Bomedia Forms:</strong> ' .
-			esc_html__( 'AUTH_KEY is not defined in wp-config.php. Stored API keys and captcha secrets are not securely encrypted. Define AUTH_KEY to enable AES encryption.', 'bomedia-forms' ) .
+		echo '<div class="notice notice-error"><p><strong>Bomedia Forms:</strong> ' .
+			esc_html__( '⚠️ AUTH_KEY is not defined in wp-config.php. API keys are not encrypted and the captcha is disabled. Define AUTH_KEY before exposing the plugin in production.', 'bomedia-forms' ) .
 			'</p></div>';
 	}
 
@@ -725,6 +725,10 @@ class BF_Admin {
 	public function render_meta_box( $post ) {
 		$config = BF_Settings::get_config( $post->ID );
 		wp_nonce_field( 'bf_save_meta_' . $post->ID, 'bf_meta_nonce' );
+
+		echo '<div class="notice notice-info inline" style="margin:0 0 12px"><p>' .
+			esc_html__( 'If you use a caching plugin, exclude this page from the page cache so the form works correctly (the anti-spam token and Math captcha are generated per page load).', 'bomedia-forms' ) .
+			'</p></div>';
 
 		$tabs = array(
 			'fields'        => __( 'Fields', 'bomedia-forms' ),
