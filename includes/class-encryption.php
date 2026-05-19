@@ -33,6 +33,15 @@ class BF_Encryption {
 	}
 
 	/**
+	 * Whether a real AUTH_KEY is available for secure encryption.
+	 *
+	 * @return bool
+	 */
+	public static function auth_key_available() {
+		return defined( 'AUTH_KEY' ) && AUTH_KEY && 'put your unique phrase here' !== AUTH_KEY;
+	}
+
+	/**
 	 * Encrypt a plaintext string.
 	 *
 	 * Returns a base64 string of "iv:ciphertext". Empty input returns an

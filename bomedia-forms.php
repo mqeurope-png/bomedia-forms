@@ -3,7 +3,7 @@
  * Plugin Name:       Bomedia Forms
  * Plugin URI:        https://github.com/mqeurope-png/bomedia-forms
  * Description:       Generic forms plugin with native AgileCRM integration, used across Bomedia websites.
- * Version:           0.1.0
+ * Version:           0.7.1
  * Requires at least: 6.0
  * Requires PHP:      7.4
  * Author:            Bomedia
@@ -20,13 +20,14 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-define( 'BF_VERSION', '0.1.0' );
+define( 'BF_VERSION', '0.7.1' );
 define( 'BF_DB_VERSION', '1' );
 define( 'BF_PLUGIN_FILE', __FILE__ );
 define( 'BF_PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
 define( 'BF_PLUGIN_URL', plugin_dir_url( __FILE__ ) );
 define( 'BF_PLUGIN_BASENAME', plugin_basename( __FILE__ ) );
 
+require_once BF_PLUGIN_DIR . 'includes/class-logger.php';
 require_once BF_PLUGIN_DIR . 'includes/class-encryption.php';
 require_once BF_PLUGIN_DIR . 'includes/class-i18n.php';
 require_once BF_PLUGIN_DIR . 'includes/class-cpt.php';
@@ -131,6 +132,11 @@ final class Bomedia_Forms {
 			add_action( 'admin_enqueue_scripts', array( $this->admin, 'enqueue_assets' ) );
 			add_action( 'add_meta_boxes', array( $this->admin, 'register_meta_boxes' ) );
 			add_action( 'save_post_bf_form', array( $this->admin, 'save_meta' ), 10, 2 );
+			add_action( 'admin_notices', array( $this->admin, 'admin_notice_auth_key' ) );
+			add_action( 'wp_ajax_bf_agilecrm_test', array( $this->admin, 'ajax_test_agilecrm' ) );
+			add_action( 'wp_ajax_bf_submission_detail', array( $this->admin, 'ajax_submission_detail' ) );
+			add_action( 'wp_ajax_bf_delete_submissions', array( $this->admin, 'ajax_delete_submissions' ) );
+			add_action( 'admin_post_bf_export_csv', array( $this->admin, 'export_csv' ) );
 		}
 
 		// Daily cleanup cron.

@@ -4,7 +4,8 @@
  *
  * Outputs semantic, accessible (WCAG AA) HTML. The form works without
  * JavaScript; AJAX is a progressive enhancement layered on top by
- * assets/js/form.js. All CSS is scoped under `.bf-form`.
+ * assets/js/form.js. All CSS is scoped under `.bf-form`. Fields are laid
+ * out on a 6-column grid honouring each field's configured width.
  *
  * @package BomediaForms
  */
@@ -103,7 +104,8 @@ class BF_Form_Renderer {
 
 		$this->ensure_assets();
 
-		return $this->render( $post, $atts['lang'] );
+		$config = BF_Settings::get_config( $post->ID );
+		return $this->build( (int) $post->ID, $config['fields'], $config, $atts['lang'], false );
 	}
 
 	/**
@@ -115,22 +117,62 @@ class BF_Form_Renderer {
 	 */
 	public function render( WP_Post $post, $lang = '' ) {
 		$config = BF_Settings::get_config( $post->ID );
+		return $this->build( (int) $post->ID, $config['fields'], $config, $lang, false );
+	}
+
+	/**
+	 * Render a preview from an arbitrary (possibly unsaved) fields array.
+	 *
+	 * Used by the admin "Preview" modal so editors see their in-progress
+	 * configuration without saving. The preview form is inert.
+	 *
+	 * @param array  $fields Field definitions.
+	 * @param string $lang   Optional language code.
+	 * @return string
+	 */
+	public function render_preview( array $fields, $lang = '' ) {
+		$config           = BF_Settings::defaults();
+		$config['fields'] = $fields;
+		return $this->build( 0, $fields, $config, $lang, true );
+	}
+
+	/**
+	 * Build the form markup.
+	 *
+	 * @param int    $form_id    Form post ID (0 for preview).
+	 * @param array  $fields     Field definitions.
+	 * @param array  $config     Full form config.
+	 * @param string $lang       Optional forced language code.
+	 * @param bool   $is_preview Whether this is an inert admin preview.
+	 * @return string
+	 */
+	private function build( $form_id, array $fields, array $config, $lang, $is_preview ) {
 		$i18n   = Bomedia_Forms::instance()->i18n;
 		$lang   = $lang ? sanitize_text_field( $lang ) : $i18n->current_lang();
+		$dom_id = 'bf-form-' . ( $form_id ? $form_id : 'preview' );
+		$nonce  = wp_create_nonce( 'bf_submit_' . $form_id );
 
-		$form_id = (int) $post->ID;
-		$dom_id  = 'bf-form-' . $form_id;
-		$nonce   = wp_create_nonce( 'bf_submit_' . $form_id );
+		// Separate hidden inputs (no grid cell) from visible fields.
+		$hidden  = array();
+		$visible = array();
+		foreach ( $fields as $field ) {
+			if ( 'hidden' === ( $field['type'] ?? 'text' ) ) {
+				$hidden[] = $field;
+			} else {
+				$visible[] = $field;
+			}
+		}
 
 		ob_start();
 		?>
 		<form
-			class="bf-form"
+			class="bf-form<?php echo $is_preview ? ' bf-form--preview' : ''; ?>"
 			id="<?php echo esc_attr( $dom_id ); ?>"
 			method="post"
 			action="<?php echo esc_url( admin_url( 'admin-ajax.php' ) ); ?>"
 			novalidate
 			data-form-id="<?php echo esc_attr( $form_id ); ?>"
+			<?php echo $is_preview ? 'data-preview="1" onsubmit="return false;"' : ''; ?>
 		>
 			<div class="bf-form__messages" role="status" aria-live="polite"></div>
 
@@ -138,8 +180,17 @@ class BF_Form_Renderer {
 			<input type="hidden" name="bf_form_id" value="<?php echo esc_attr( $form_id ); ?>" />
 			<input type="hidden" name="bf_lang" value="<?php echo esc_attr( $lang ); ?>" />
 			<input type="hidden" name="bf_nonce" value="<?php echo esc_attr( $nonce ); ?>" />
+			<?php
+			// Resolved: form pages must be excluded from full-page cache
+			// (documented in README "Caching gotchas"; editor shows a
+			// reminder notice).
+			// TODO v1.x: move this token to a JS-fetched value so cached
+			// pages keep working without manual cache exclusion.
+			$bf_ts = BF_Submission_Handler::sign_timestamp();
+			?>
+			<input type="hidden" name="bf_ts" value="<?php echo esc_attr( $bf_ts['ts'] ); ?>" />
+			<input type="hidden" name="bf_tsig" value="<?php echo esc_attr( $bf_ts['sig'] ); ?>" />
 
-			<?php // Honeypot — visually hidden, must stay empty. ?>
 			<?php if ( ! empty( $config['antispam']['honeypot'] ) ) : ?>
 				<div class="bf-form__hp" aria-hidden="true">
 					<label for="<?php echo esc_attr( $dom_id ); ?>-website">
@@ -150,20 +201,130 @@ class BF_Form_Renderer {
 			<?php endif; ?>
 
 			<?php
-			foreach ( (array) $config['fields'] as $index => $field ) {
-				echo $this->render_field( $field, $dom_id, $index, $i18n ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+			foreach ( $hidden as $field ) {
+				echo $this->render_field( $field, $dom_id, 0, $i18n ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 			}
 			?>
 
+			<div class="bf-form__grid">
+				<?php
+				foreach ( $visible as $index => $field ) {
+					echo $this->render_field( $field, $dom_id, $index, $i18n ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+				}
+				?>
+			</div>
+
+			<?php echo $this->render_captcha( $config, $dom_id, $is_preview ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
+
 			<div class="bf-form__actions">
-				<button type="submit" class="bf-form__submit">
-					<span class="bf-form__submit-label"><?php esc_html_e( 'Send', 'bomedia-forms' ); ?></span>
+				<?php
+				$submit_label = $config['post_submit']['submit_label'] ?? __( 'Send', 'bomedia-forms' );
+				$submit_label = $i18n->translate( $submit_label, 'submit_label' );
+				?>
+				<button type="submit" class="bf-form__submit"<?php echo $is_preview ? ' disabled' : ''; ?>>
+					<span class="bf-form__submit-label"><?php echo esc_html( $submit_label ); ?></span>
 					<span class="bf-form__spinner" aria-hidden="true"></span>
 				</button>
 			</div>
 		</form>
 		<?php
 		return ob_get_clean();
+	}
+
+	/**
+	 * Render the captcha widget for the configured provider and enqueue
+	 * the provider script when needed.
+	 *
+	 * @param array  $config     Form config.
+	 * @param string $dom_id     Form DOM id prefix.
+	 * @param bool   $is_preview Whether this is an inert admin preview.
+	 * @return string
+	 */
+	private function render_captcha( array $config, $dom_id, $is_preview ) {
+		$cap      = $config['captcha'] ?? array();
+		$provider = $cap['provider'] ?? 'none';
+		$site_key = $cap['site_key'] ?? '';
+
+		if ( 'none' === $provider ) {
+			return '';
+		}
+
+		if ( 'math' === $provider ) {
+			$challenge = BF_Submission_Handler::new_math_challenge();
+			ob_start();
+			?>
+			<div class="bf-form__row bf-form__row--w-full bf-captcha bf-captcha--math">
+				<label class="bf-form__label" for="<?php echo esc_attr( $dom_id ); ?>-captcha">
+					<?php echo esc_html( $challenge['question'] ); ?>
+					<span class="bf-form__req" aria-hidden="true">*</span>
+				</label>
+				<input type="number" class="bf-form__input" id="<?php echo esc_attr( $dom_id ); ?>-captcha"
+					name="bf_captcha_answer" inputmode="numeric" autocomplete="off" required />
+				<input type="hidden" name="bf_captcha_token" value="<?php echo esc_attr( $challenge['token'] ); ?>" />
+			</div>
+			<?php
+			return ob_get_clean();
+		}
+
+		if ( '' === $site_key ) {
+			return '';
+		}
+
+		// External provider scripts (skipped in the inert admin preview).
+		if ( ! $is_preview ) {
+			switch ( $provider ) {
+				case 'recaptcha_v2':
+					wp_enqueue_script( 'bf-recaptcha', 'https://www.google.com/recaptcha/api.js', array(), null, true ); // phpcs:ignore WordPress.WP.EnqueuedResourceParameters
+					break;
+				case 'recaptcha_v3':
+					wp_enqueue_script( 'bf-recaptcha', 'https://www.google.com/recaptcha/api.js?render=' . rawurlencode( $site_key ), array(), null, true ); // phpcs:ignore WordPress.WP.EnqueuedResourceParameters
+					break;
+				case 'turnstile':
+					wp_enqueue_script( 'bf-turnstile', 'https://challenges.cloudflare.com/turnstile/v0/api.js', array(), null, true ); // phpcs:ignore WordPress.WP.EnqueuedResourceParameters
+					break;
+				case 'hcaptcha':
+					wp_enqueue_script( 'bf-hcaptcha', 'https://js.hcaptcha.com/1/api.js', array(), null, true ); // phpcs:ignore WordPress.WP.EnqueuedResourceParameters
+					break;
+			}
+		}
+
+		// TODO v1.x: switch v2/Turnstile/hCaptcha to explicit render() for
+		// finer control over multiple widgets on one page. Automatic render
+		// (class + data-sitekey) is used now as the conservative default.
+		ob_start();
+		echo '<div class="bf-form__row bf-form__row--w-full bf-captcha bf-captcha--' . esc_attr( $provider ) . '" data-provider="' . esc_attr( $provider ) . '" data-sitekey="' . esc_attr( $site_key ) . '">';
+		switch ( $provider ) {
+			case 'recaptcha_v2':
+				echo '<div class="g-recaptcha" data-sitekey="' . esc_attr( $site_key ) . '"></div>';
+				break;
+			case 'recaptcha_v3':
+				// Token injected by form.js on submit.
+				echo '<input type="hidden" name="g-recaptcha-response" value="" data-v3="1" data-action="submit" />';
+				break;
+			case 'turnstile':
+				echo '<div class="cf-turnstile" data-sitekey="' . esc_attr( $site_key ) . '"></div>';
+				break;
+			case 'hcaptcha':
+				echo '<div class="h-captcha" data-sitekey="' . esc_attr( $site_key ) . '"></div>';
+				break;
+		}
+		echo '</div>';
+		return ob_get_clean();
+	}
+
+	/**
+	 * Map a width keyword to its grid-span modifier class.
+	 *
+	 * @param string $width full|half|third.
+	 * @return string
+	 */
+	private function width_class( $width ) {
+		$map = array(
+			'full'  => 'bf-form__row--w-full',
+			'half'  => 'bf-form__row--w-half',
+			'third' => 'bf-form__row--w-third',
+		);
+		return isset( $map[ $width ] ) ? $map[ $width ] : $map['full'];
 	}
 
 	/**
@@ -183,6 +344,7 @@ class BF_Form_Renderer {
 		$required    = ! empty( $field['required'] );
 		$pattern     = isset( $field['pattern'] ) ? $field['pattern'] : '';
 		$default     = isset( $field['default'] ) ? $field['default'] : '';
+		$width       = isset( $field['width'] ) ? $field['width'] : 'full';
 		$options     = isset( $field['options'] ) && is_array( $field['options'] ) ? $field['options'] : array();
 
 		$field_id   = $dom_id . '-' . sanitize_html_class( $name );
@@ -199,7 +361,7 @@ class BF_Form_Renderer {
 		}
 
 		ob_start();
-		echo '<div class="bf-form__row bf-form__row--' . esc_attr( $type ) . '">';
+		echo '<div class="bf-form__row bf-form__row--' . esc_attr( $type ) . ' ' . esc_attr( $this->width_class( $width ) ) . '">';
 
 		if ( in_array( $type, array( 'text', 'email', 'tel', 'textarea', 'select', 'custom' ), true ) ) {
 			printf(

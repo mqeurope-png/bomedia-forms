@@ -1,0 +1,38 @@
+<wpml-config>
+	<!--
+		Bomedia Forms — WPML configuration.
+
+		The CPT bf_form is translatable: each language gets its own
+		translated post whose title and the *translatable* meta (field
+		labels/placeholders/options, email subject/body, success message,
+		submit label) are edited per language.
+
+		Technical configuration must stay identical across languages, so
+		those meta keys are COPIED to translations. The mixed meta keys
+		(_bf_fields, _bf_notifications, _bf_post_submit) are left for the
+		translator to edit per language (action="ignore"); field types,
+		widths and patterns should be kept identical when translating —
+		see README.md.
+	-->
+	<custom-types>
+		<custom-type translate="1">bf_form</custom-type>
+	</custom-types>
+
+	<custom-fields>
+		<!-- Pure technical config: identical in every language. -->
+		<custom-field action="copy">_bf_agilecrm</custom-field>
+		<custom-field action="copy">_bf_captcha</custom-field>
+		<custom-field action="copy">_bf_antispam</custom-field>
+		<custom-field action="copy">_bf_retention</custom-field>
+
+		<!--
+			Mixed (technical + translatable) serialized meta. Not copied so
+			each translation keeps its own labels/messages; keep the
+			technical sub-keys (type/width/pattern, mode/redirect,
+			recipient/reply_to) consistent when translating.
+		-->
+		<custom-field action="ignore">_bf_fields</custom-field>
+		<custom-field action="ignore">_bf_notifications</custom-field>
+		<custom-field action="ignore">_bf_post_submit</custom-field>
+	</custom-fields>
+</wpml-config>

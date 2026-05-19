@@ -45,6 +45,7 @@ class BF_Settings {
 					'required'    => true,
 					'pattern'     => '',
 					'default'     => '',
+					'width'       => 'full',
 					'options'     => array(),
 				),
 				array(
@@ -55,6 +56,7 @@ class BF_Settings {
 					'required'    => true,
 					'pattern'     => '',
 					'default'     => '',
+					'width'       => 'full',
 					'options'     => array(),
 				),
 				array(
@@ -65,6 +67,7 @@ class BF_Settings {
 					'required'    => false,
 					'pattern'     => '',
 					'default'     => '',
+					'width'       => 'full',
 					'options'     => array(),
 				),
 			),
@@ -82,18 +85,22 @@ class BF_Settings {
 			),
 			'notifications' => array(
 				'recipient' => get_option( 'admin_email' ),
-				'subject'   => __( 'New form submission', 'bomedia-forms' ),
+				'subject'   => '',
 				'body_html' => '',
+				'reply_to'  => '', // Blank = use the submitter's email when available.
 			),
 			'post_submit'   => array(
 				'mode'            => 'message', // message|redirect.
 				'success_message' => __( 'Thank you! Your message has been sent.', 'bomedia-forms' ),
 				'redirect_url'    => '',
+				'submit_label'    => __( 'Send', 'bomedia-forms' ),
 			),
 			'antispam'      => array(
 				'honeypot'         => true,
-				'rate_limit_count' => 5,
-				'rate_limit_hours' => 1,
+				'rate_limit_count' => 5, // Max submissions per hour per IP.
+				'rate_limit_hours' => 1, // Window in hours.
+				'min_seconds'      => 2, // Faster than this after render = bot.
+				'blocked_words'    => '', // One per line; case-insensitive.
 			),
 		);
 	}
