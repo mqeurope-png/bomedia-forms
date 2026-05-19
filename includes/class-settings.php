@@ -115,7 +115,7 @@ class BF_Settings {
 		$defaults = self::defaults();
 
 		$config = array(
-			'fields'        => self::meta( $form_id, self::META_FIELDS, $defaults['fields'] ),
+			'fields'        => self::fields_meta( $form_id, $defaults['fields'] ),
 			'agilecrm'      => self::meta( $form_id, self::META_AGILECRM, $defaults['agilecrm'] ),
 			'captcha'       => self::meta( $form_id, self::META_CAPTCHA, $defaults['captcha'] ),
 			'notifications' => self::meta( $form_id, self::META_NOTIFICATIONS, $defaults['notifications'] ),
@@ -127,7 +127,61 @@ class BF_Settings {
 	}
 
 	/**
-	 * Read a meta value with a typed default fallback.
+	 * Per-field default template (used to backfill missing keys without
+	 * ever appending extra fields).
+	 *
+	 * @return array
+	 */
+	private static function field_template() {
+		return array(
+			'type'        => 'text',
+			'name'        => '',
+			'label'       => '',
+			'placeholder' => '',
+			'required'    => false,
+			'pattern'     => '',
+			'default'     => '',
+			'width'       => 'full',
+			'options'     => array(),
+		);
+	}
+
+	/**
+	 * Read the fields list.
+	 *
+	 * IMPORTANT: the fields meta is a numeric LIST, not an associative
+	 * config. It must never be array_merge()'d with the default list (that
+	 * renumbers + concatenates and silently duplicates every field on each
+	 * load). When a saved value exists it is returned as-is, only
+	 * backfilling missing per-field keys; otherwise the defaults are used.
+	 *
+	 * @param int   $form_id Post ID.
+	 * @param array $default Default fields list.
+	 * @return array
+	 */
+	private static function fields_meta( $form_id, $default ) {
+		$value = get_post_meta( $form_id, self::META_FIELDS, true );
+
+		if ( ! is_array( $value ) || empty( $value ) ) {
+			return $default;
+		}
+
+		$tpl = self::field_template();
+		$out = array();
+		foreach ( $value as $field ) {
+			if ( is_array( $field ) ) {
+				$out[] = array_merge( $tpl, $field );
+			}
+		}
+
+		return $out ? $out : $default;
+	}
+
+	/**
+	 * Read an associative config meta value with a typed default fallback.
+	 *
+	 * Only used for associative config blocks (agilecrm, captcha, …) where
+	 * filling missing keys from defaults is the desired behaviour.
 	 *
 	 * @param int    $form_id Post ID.
 	 * @param string $key     Meta key.

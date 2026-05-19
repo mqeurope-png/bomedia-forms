@@ -363,7 +363,35 @@
 		}
 	}
 
+	/* ---- Tab switching ---- */
+
+	function wireTabs() {
+		var wrap = document.querySelector('.bf-admin-tabs');
+		if (!wrap) {
+			return;
+		}
+		var tabs = wrap.querySelectorAll('.bf-admin-tabs__tab');
+		var panels = wrap.querySelectorAll('.bf-admin-panel');
+
+		tabs.forEach(function (btn) {
+			btn.addEventListener('click', function () {
+				var target = btn.getAttribute('data-tab');
+				tabs.forEach(function (t) {
+					t.classList.remove('is-active');
+				});
+				panels.forEach(function (p) {
+					p.style.display = p.getAttribute('data-panel') === target ? 'block' : 'none';
+				});
+				btn.classList.add('is-active');
+			});
+		});
+	}
+
 	function init() {
+		// Tabs live in the same meta box but must work even if the fields
+		// editor bails out for any reason — wire them first.
+		wireTabs();
+
 		var editor = document.getElementById('bf-fields-editor');
 		if (!editor) {
 			return;
