@@ -4,8 +4,12 @@ on:
   workflow_dispatch:
     inputs:
       version:
-        description: "Release version (e.g. v0.1.0). Leave blank to use the pushed tag."
+        description: "Release version, e.g. v0.7.2"
+        required: true
+      ref:
+        description: "Branch/tag/SHA to build from (default: main)"
         required: false
+        default: "main"
   push:
     tags:
       - "v*"
@@ -19,8 +23,21 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      - name: Resolve build ref
+        id: ref
+        run: |
+          if [ "${{ github.event_name }}" = "push" ]; then
+            # Tag push: build exactly the pushed tag.
+            echo "ref=${GITHUB_REF_NAME}" >> "$GITHUB_OUTPUT"
+          else
+            echo "ref=${{ github.event.inputs.ref }}" >> "$GITHUB_OUTPUT"
+          fi
+
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          ref: ${{ steps.ref.outputs.ref }}
+          fetch-depth: 0
 
       - name: Resolve version
         id: vars
@@ -32,6 +49,22 @@ jobs:
           fi
           echo "version=${VERSION}" >> "$GITHUB_OUTPUT"
           echo "slug=bomedia-forms" >> "$GITHUB_OUTPUT"
+
+      - name: Verify plugin header matches release version
+        run: |
+          VERSION="${{ steps.vars.outputs.version }}"
+          # Strip a leading "v" so v0.7.2 matches the "0.7.2" plugin header.
+          EXPECTED="${VERSION#v}"
+          HEADER=$(grep -E '^\s*\*\s*Version:' bomedia-forms.php | head -1 | sed -E 's/.*Version:[[:space:]]*//' | tr -d '[:space:]')
+          CONST=$(grep -E "define\(\s*'BF_VERSION'" bomedia-forms.php | head -1 | sed -E "s/.*'BF_VERSION',\s*'([^']+)'.*/\1/")
+          echo "Requested:  ${EXPECTED}"
+          echo "Header:     ${HEADER}"
+          echo "BF_VERSION: ${CONST}"
+          echo "Build SHA:  $(git rev-parse HEAD)"
+          if [ "${HEADER}" != "${EXPECTED}" ] || [ "${CONST}" != "${EXPECTED}" ]; then
+            echo "::error::Plugin version (${HEADER}/${CONST}) does not match release ${EXPECTED}. Refusing to publish a mislabelled artifact — check you built the right ref."
+            exit 1
+          fi
 
       - name: Build plugin zip
         run: |
@@ -53,6 +86,7 @@ jobs:
         uses: softprops/action-gh-release@v2
         with:
           tag_name: ${{ steps.vars.outputs.version }}
+          target_commitish: ${{ steps.ref.outputs.ref }}
           name: ${{ steps.vars.outputs.version }}
           generate_release_notes: true
           files: build/${{ steps.vars.outputs.slug }}.zip
