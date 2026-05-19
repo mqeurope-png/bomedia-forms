@@ -100,9 +100,10 @@ class BF_Submission_Handler {
 			$this->fail( __( 'Too many submissions. Please try again later.', 'bomedia-forms' ) );
 		}
 
-		// 4. Captcha (STUB — verification lands in a later release).
-		if ( ! $this->verify_captcha( $config ) ) {
-			$this->fail( __( 'Captcha verification failed.', 'bomedia-forms' ) );
+		// 4. Captcha.
+		$captcha_passed = $this->verify_captcha( $config );
+		if ( ! $captcha_passed ) {
+			wp_send_json_error( array( 'message' => __( 'Captcha verification failed.', 'bomedia-forms' ) ), 403 );
 		}
 
 		// 5. Required-field validation.
@@ -145,14 +146,16 @@ class BF_Submission_Handler {
 			);
 		}
 
-		// 6. AgileCRM (STUB — only fires when configured).
-		$contact_id = $this->maybe_push_agilecrm( $config, $data );
+		// 6. AgileCRM — failure must never lose the lead.
+		$agile      = $this->push_agilecrm( $post, $config, $data, $lang );
+		$contact_id = $agile['contact_id'];
+		$status     = $agile['status'];
 
-		// 7. Notification email.
-		$this->send_notification( $post, $config, $data, $lang );
+		// 7. Notification email (always, even on AgileCRM failure).
+		$this->send_notification( $post, $config, $data, $lang, $captcha_passed );
 
 		// 8. Persist.
-		$this->store_submission( $form_id, $lang, $data, $contact_id );
+		$this->store_submission( $form_id, $lang, $data, $contact_id, $status );
 
 		// 9. Response.
 		if ( 'redirect' === ( $config['post_submit']['mode'] ?? 'message' ) && ! empty( $config['post_submit']['redirect_url'] ) ) {
@@ -244,39 +247,139 @@ class BF_Submission_Handler {
 	}
 
 	/**
-	 * Push a contact to AgileCRM when the form has credentials.
+	 * Push a contact to AgileCRM. On any failure the lead is still kept
+	 * (status flagged) so it is never lost.
 	 *
-	 * @param array $config Form config.
-	 * @param array $data   Submitted data.
-	 * @return int|null AgileCRM contact id, if created.
+	 * @param WP_Post $post   Form post.
+	 * @param array   $config Form config.
+	 * @param array   $data   Submitted data.
+	 * @param string  $lang   Language code.
+	 * @return array { @type int|null $contact_id; @type string $status }
 	 */
-	private function maybe_push_agilecrm( array $config, array $data ) {
+	private function push_agilecrm( WP_Post $post, array $config, array $data, $lang ) {
 		$agile = $config['agilecrm'] ?? array();
-		if ( empty( $agile['subdomain'] ) || empty( $agile['api_key'] ) ) {
-			return null;
-		}
 
-		$client = new BF_AgileCRM_Client(
-			$agile['subdomain'],
-			$agile['account_email'] ?? '',
-			BF_Encryption::decrypt( $agile['api_key'] )
-		);
-
-		if ( ! $client->is_configured() ) {
-			return null;
-		}
-
-		// Minimal property mapping — full mapping arrives in a later release.
-		$properties = array();
-		foreach ( $data as $name => $value ) {
-			$properties[] = array(
-				'name'  => $name,
-				'value' => is_array( $value ) ? implode( ', ', $value ) : $value,
+		// Not configured: a normal, successful submission.
+		if ( empty( $agile['subdomain'] ) || empty( $agile['api_key'] ) || empty( $agile['account_email'] ) ) {
+			return array(
+				'contact_id' => null,
+				'status'     => 'sent',
 			);
 		}
 
-		$result = $client->create_contact( $properties, (array) ( $agile['default_tags'] ?? array() ) );
-		return $result['success'] ? $result['contact_id'] : null;
+		$api_key = BF_Encryption::decrypt( $agile['api_key'] );
+		if ( '' === $api_key ) {
+			BF_Logger::log( 'agilecrm', sprintf( 'form_id=%d result=fail error="api key could not be decrypted (AUTH_KEY?)"', $post->ID ) );
+			return array(
+				'contact_id' => null,
+				'status'     => 'agilecrm_failed',
+			);
+		}
+
+		$contact_data = $this->build_contact_data( $config, $data, $post, $lang );
+
+		$result = BF_AgileCRM_Client::create_contact(
+			$agile['subdomain'],
+			$agile['account_email'],
+			$api_key,
+			$contact_data,
+			$post->ID
+		);
+
+		if ( $result['success'] ) {
+			return array(
+				'contact_id' => $result['contact_id'],
+				'status'     => 'sent',
+			);
+		}
+
+		return array(
+			'contact_id' => null,
+			'status'     => 'agilecrm_failed',
+		);
+	}
+
+	/**
+	 * Build the AgileCRM contact payload from the field mapping.
+	 *
+	 * name/email/phone are auto-detected from field types; everything else
+	 * goes to custom properties using the configured (or default) mapping.
+	 *
+	 * @param array   $config Form config.
+	 * @param array   $data   Submitted data.
+	 * @param WP_Post $post   Form post.
+	 * @param string  $lang   Language code.
+	 * @return array
+	 */
+	private function build_contact_data( array $config, array $data, WP_Post $post, $lang ) {
+		$agile   = $config['agilecrm'] ?? array();
+		$mapping = is_array( $agile['field_mapping'] ?? null ) ? $agile['field_mapping'] : array();
+
+		$name  = '';
+		$email = '';
+		$phone = '';
+		$props = array();
+
+		foreach ( (array) $config['fields'] as $field ) {
+			$key  = $field['name'] ?? '';
+			$type = $field['type'] ?? 'text';
+			if ( '' === $key || ! isset( $data[ $key ] ) ) {
+				continue;
+			}
+			$value = is_array( $data[ $key ] ) ? implode( ', ', $data[ $key ] ) : $data[ $key ];
+			if ( '' === (string) $value ) {
+				continue;
+			}
+
+			if ( 'email' === $type && '' === $email ) {
+				$email = $value;
+				continue;
+			}
+			if ( 'tel' === $type && '' === $phone ) {
+				$phone = $value;
+				continue;
+			}
+			if ( '' === $name && ( 'name' === $key || false !== strpos( strtolower( (string) ( $field['label'] ?? '' ) ), 'name' ) ) ) {
+				$name = $value;
+				continue;
+			}
+
+			$prop_name = ! empty( $mapping[ $key ] ) ? $mapping[ $key ] : self::default_property_name( $field );
+			$props[]   = array(
+				'name'  => $prop_name,
+				'value' => $value,
+			);
+		}
+
+		// Tags: configured defaults + an automatic language tag.
+		// CONFIRM: per-language / per-trigger tag rules beyond "lang:xx"
+		// and the form slug — confirm desired taxonomy with Bart.
+		$tags = (array) ( $agile['default_tags'] ?? array() );
+		if ( $lang ) {
+			$tags[] = 'lang:' . $lang;
+		}
+		$tags[] = $post->post_name ? $post->post_name : ( 'form-' . $post->ID );
+
+		return array(
+			'name'       => $name,
+			'email'      => $email,
+			'phone'      => $phone,
+			'tags'       => $tags,
+			'properties' => $props,
+		);
+	}
+
+	/**
+	 * Default AgileCRM property name for a field (snake_case of its label).
+	 *
+	 * @param array $field Field definition.
+	 * @return string
+	 */
+	public static function default_property_name( array $field ) {
+		$base = ! empty( $field['label'] ) ? $field['label'] : ( $field['name'] ?? '' );
+		$base = remove_accents( (string) $base );
+		$base = strtolower( preg_replace( '/[^a-zA-Z0-9]+/', '_', $base ) );
+		return trim( $base, '_' );
 	}
 
 	/**
@@ -284,11 +387,12 @@ class BF_Submission_Handler {
 	 *
 	 * @param WP_Post $post   Form post.
 	 * @param array   $config Form config.
-	 * @param array   $data   Submitted data.
-	 * @param string  $lang   Language code.
+	 * @param array   $data           Submitted data.
+	 * @param string  $lang           Language code.
+	 * @param bool    $captcha_passed Whether captcha verification passed.
 	 * @return void
 	 */
-	private function send_notification( WP_Post $post, array $config, array $data, $lang ) {
+	private function send_notification( WP_Post $post, array $config, array $data, $lang, $captcha_passed = true ) {
 		$notif     = $config['notifications'] ?? array();
 		$recipient = ! empty( $notif['recipient'] ) ? $notif['recipient'] : get_option( 'admin_email' );
 		$subject   = ! empty( $notif['subject'] ) ? $notif['subject'] : __( 'New form submission', 'bomedia-forms' );
@@ -317,9 +421,10 @@ class BF_Submission_Handler {
 	 * @param string   $lang       Language code.
 	 * @param array    $data       Submitted data.
 	 * @param int|null $contact_id AgileCRM contact id.
-	 * @return void
+	 * @param string   $status     Submission status (sent|agilecrm_failed|spam).
+	 * @return int Inserted row id.
 	 */
-	private function store_submission( $form_id, $lang, array $data, $contact_id ) {
+	private function store_submission( $form_id, $lang, array $data, $contact_id, $status = 'sent' ) {
 		global $wpdb;
 
 		$wpdb->insert( // phpcs:ignore WordPress.DB.DirectDatabaseQuery
@@ -332,10 +437,12 @@ class BF_Submission_Handler {
 				'user_agent'          => substr( isset( $_SERVER['HTTP_USER_AGENT'] ) ? sanitize_text_field( wp_unslash( $_SERVER['HTTP_USER_AGENT'] ) ) : '', 0, 255 ),
 				'created_at'          => current_time( 'mysql' ),
 				'agilecrm_contact_id' => $contact_id ? (int) $contact_id : null,
-				'status'              => 'received',
+				'status'              => $status,
 			),
 			array( '%d', '%s', '%s', '%s', '%s', '%s', '%d', '%s' )
 		);
+
+		return (int) $wpdb->insert_id;
 	}
 
 	/**

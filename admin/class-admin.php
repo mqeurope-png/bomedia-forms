@@ -101,6 +101,7 @@ class BF_Admin {
 				array(
 					'ajaxUrl'      => admin_url( 'admin-ajax.php' ),
 					'previewNonce' => wp_create_nonce( 'bf_get_form' ),
+					'testNonce'    => wp_create_nonce( 'bf_agilecrm_test' ),
 					'fieldTypes'   => self::field_type_labels(),
 					'widths'       => array(
 						'full'  => __( 'Full width', 'bomedia-forms' ),
@@ -119,6 +120,55 @@ class BF_Admin {
 				)
 			);
 		}
+	}
+
+	/**
+	 * Admin notice when AUTH_KEY is missing (encryption is weakened).
+	 *
+	 * @return void
+	 */
+	public function admin_notice_auth_key() {
+		if ( BF_Encryption::auth_key_available() ) {
+			return;
+		}
+		if ( ! current_user_can( 'manage_options' ) ) {
+			return;
+		}
+		echo '<div class="notice notice-warning"><p><strong>Bomedia Forms:</strong> ' .
+			esc_html__( 'AUTH_KEY is not defined in wp-config.php. Stored API keys and captcha secrets are not securely encrypted. Define AUTH_KEY to enable AES encryption.', 'bomedia-forms' ) .
+			'</p></div>';
+	}
+
+	/**
+	 * AJAX: test AgileCRM credentials without saving the form.
+	 *
+	 * @return void
+	 */
+	public function ajax_test_agilecrm() {
+		if ( ! current_user_can( 'edit_posts' ) ) {
+			wp_send_json_error( array( 'message' => __( 'Forbidden.', 'bomedia-forms' ) ), 403 );
+		}
+		check_ajax_referer( 'bf_agilecrm_test', 'nonce' );
+
+		$subdomain = isset( $_POST['subdomain'] ) ? sanitize_text_field( wp_unslash( $_POST['subdomain'] ) ) : '';
+		$email     = isset( $_POST['account_email'] ) ? sanitize_email( wp_unslash( $_POST['account_email'] ) ) : '';
+		$api_key   = isset( $_POST['api_key'] ) ? sanitize_text_field( wp_unslash( $_POST['api_key'] ) ) : '';
+		$form_id   = isset( $_POST['form_id'] ) ? (int) $_POST['form_id'] : 0;
+
+		// Blank key in the form means "use the stored, encrypted one".
+		if ( '' === $api_key && $form_id ) {
+			$stored = get_post_meta( $form_id, BF_Settings::META_AGILECRM, true );
+			if ( is_array( $stored ) && ! empty( $stored['api_key'] ) ) {
+				$api_key = BF_Encryption::decrypt( $stored['api_key'] );
+			}
+		}
+
+		$result = BF_AgileCRM_Client::test_connection( $subdomain, $email, $api_key );
+
+		if ( $result['success'] ) {
+			wp_send_json_success( array( 'message' => $result['message'] ) );
+		}
+		wp_send_json_error( array( 'message' => $result['message'] ) );
 	}
 
 	/**
@@ -258,11 +308,38 @@ class BF_Admin {
 		$this->panel_open( 'agilecrm' );
 		$agile   = $config['agilecrm'];
 		$has_key = ! empty( $agile['api_key'] );
-		$this->text_row( 'bf_agilecrm[subdomain]', __( 'Subdomain', 'bomedia-forms' ), $agile['subdomain'] );
+		if ( ! BF_Encryption::auth_key_available() ) {
+			echo '<div class="notice notice-error inline"><p>' . esc_html__( 'AUTH_KEY is not defined in wp-config.php. API keys cannot be securely encrypted until it is set.', 'bomedia-forms' ) . '</p></div>';
+		}
+		$this->text_row( 'bf_agilecrm[subdomain]', __( 'Subdomain (e.g. boprint24)', 'bomedia-forms' ), $agile['subdomain'] );
 		$this->text_row( 'bf_agilecrm[account_email]', __( 'Account email', 'bomedia-forms' ), $agile['account_email'] );
 		echo '<p><label>' . esc_html__( 'API key', 'bomedia-forms' ) . '<br />';
-		echo '<input type="password" class="regular-text" name="bf_agilecrm[api_key]" autocomplete="new-password" placeholder="' . ( $has_key ? esc_attr__( '•••••• (stored, leave blank to keep)', 'bomedia-forms' ) : '' ) . '" /></label></p>';
+		echo '<input type="password" class="regular-text" id="bf-agile-key" name="bf_agilecrm[api_key]" autocomplete="new-password" placeholder="' . ( $has_key ? esc_attr__( '•••••• (stored, leave blank to keep)', 'bomedia-forms' ) : '' ) . '" /></label></p>';
 		$this->text_row( 'bf_agilecrm[default_tags]', __( 'Default tags (comma separated)', 'bomedia-forms' ), implode( ', ', (array) $agile['default_tags'] ) );
+
+		echo '<p><button type="button" class="button" id="bf-agile-test" data-form-id="' . esc_attr( (string) $post->ID ) . '">' . esc_html__( 'Test connection', 'bomedia-forms' ) . '</button> <span id="bf-agile-test-result" class="bf-test-result" role="status" aria-live="polite"></span></p>';
+
+		echo '<h4>' . esc_html__( 'Field mapping', 'bomedia-forms' ) . '</h4>';
+		echo '<p class="description">' . esc_html__( 'Map each form field to an AgileCRM property. Defaults to a snake_case of the field label. Email/phone/name fields are auto-detected.', 'bomedia-forms' ) . '</p>';
+		echo '<table class="widefat striped bf-map-table"><thead><tr><th>' . esc_html__( 'Form field', 'bomedia-forms' ) . '</th><th>' . esc_html__( 'AgileCRM property', 'bomedia-forms' ) . '</th></tr></thead><tbody>';
+		$mapping = is_array( $agile['field_mapping'] ?? null ) ? $agile['field_mapping'] : array();
+		foreach ( (array) $config['fields'] as $field ) {
+			$key = $field['name'] ?? '';
+			if ( '' === $key || 'hidden' === ( $field['type'] ?? '' ) ) {
+				continue;
+			}
+			$default = BF_Submission_Handler::default_property_name( $field );
+			$current = isset( $mapping[ $key ] ) ? $mapping[ $key ] : $default;
+			printf(
+				'<tr><td><code>%s</code><br /><span class="description">%s</span></td><td><input type="text" class="regular-text" name="bf_agilecrm[field_mapping][%s]" value="%s" placeholder="%s" /></td></tr>',
+				esc_html( $key ),
+				esc_html( $field['label'] ?? '' ),
+				esc_attr( $key ),
+				esc_attr( $current ),
+				esc_attr( $default )
+			);
+		}
+		echo '</tbody></table>';
 		$this->panel_close();
 
 		// Captcha tab.
@@ -349,11 +426,21 @@ class BF_Admin {
 			$existing = get_post_meta( $post_id, BF_Settings::META_AGILECRM, true );
 			$existing = is_array( $existing ) ? $existing : array();
 
+			$map = array();
+			if ( isset( $in['field_mapping'] ) && is_array( $in['field_mapping'] ) ) {
+				foreach ( $in['field_mapping'] as $fkey => $prop ) {
+					$prop = sanitize_text_field( $prop );
+					if ( '' !== $prop ) {
+						$map[ sanitize_key( $fkey ) ] = $prop;
+					}
+				}
+			}
+
 			$agile = array(
 				'subdomain'     => sanitize_text_field( $in['subdomain'] ?? '' ),
 				'account_email' => sanitize_email( $in['account_email'] ?? '' ),
-				'default_tags'  => array_filter( array_map( 'trim', explode( ',', $in['default_tags'] ?? '' ) ) ),
-				'field_mapping' => $existing['field_mapping'] ?? array(),
+				'default_tags'  => array_values( array_filter( array_map( 'trim', explode( ',', $in['default_tags'] ?? '' ) ) ) ),
+				'field_mapping' => $map,
 				'api_key'       => $existing['api_key'] ?? '',
 			);
 			if ( ! empty( $in['api_key'] ) ) {

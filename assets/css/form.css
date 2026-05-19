@@ -364,6 +364,32 @@
 	}
 }
 
+.bf-test-result {
+	margin-left: 0.5rem;
+	font-weight: 600;
+}
+
+.bf-test-result.is-ok {
+	color: #0f5132;
+}
+
+.bf-test-result.is-err {
+	color: #b3261e;
+}
+
+.bf-test-result.is-pending {
+	color: #50575e;
+}
+
+.bf-map-table {
+	margin-top: 0.5rem;
+	max-width: 720px;
+}
+
+.bf-map-table td {
+	vertical-align: top;
+}
+
 /* --- Preview modal --- */
 .bf-preview-modal {
 	position: fixed;

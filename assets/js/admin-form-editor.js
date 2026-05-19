@@ -307,6 +307,54 @@
 			});
 	}
 
+	/* ---- AgileCRM test connection ---- */
+
+	function wireAgileTest() {
+		var btn = document.getElementById('bf-agile-test');
+		if (!btn) {
+			return;
+		}
+		var out = document.getElementById('bf-agile-test-result');
+		btn.addEventListener('click', function () {
+			var get = function (n) {
+				var el = document.querySelector('[name="bf_agilecrm[' + n + ']"]');
+				return el ? el.value : '';
+			};
+			out.textContent = T.loading || 'Testing…';
+			out.className = 'bf-test-result is-pending';
+			btn.disabled = true;
+
+			var body = new FormData();
+			body.append('action', 'bf_agilecrm_test');
+			body.append('nonce', CFG.testNonce || '');
+			body.append('form_id', btn.getAttribute('data-form-id') || 0);
+			body.append('subdomain', get('subdomain'));
+			body.append('account_email', get('account_email'));
+			body.append('api_key', get('api_key'));
+
+			fetch(CFG.ajaxUrl, { method: 'POST', credentials: 'same-origin', body: body })
+				.then(function (r) {
+					return r.json();
+				})
+				.then(function (res) {
+					btn.disabled = false;
+					var msg = res && res.data && res.data.message ? res.data.message : '';
+					if (res && res.success) {
+						out.textContent = '✓ ' + msg;
+						out.className = 'bf-test-result is-ok';
+					} else {
+						out.textContent = '✗ ' + (msg || 'Error');
+						out.className = 'bf-test-result is-err';
+					}
+				})
+				.catch(function () {
+					btn.disabled = false;
+					out.textContent = '✗ ' + (T.prevErr || 'Error');
+					out.className = 'bf-test-result is-err';
+				});
+		});
+	}
+
 	function closePreview() {
 		var modal = document.getElementById('bf-preview-modal');
 		if (modal) {
@@ -348,6 +396,7 @@
 		});
 
 		document.getElementById('bf-preview-btn').addEventListener('click', openPreview);
+		wireAgileTest();
 
 		var modal = document.getElementById('bf-preview-modal');
 		if (modal) {
