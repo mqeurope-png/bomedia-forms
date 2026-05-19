@@ -390,6 +390,78 @@
 	vertical-align: top;
 }
 
+/* --- Submissions admin --- */
+.bf-stats {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 1rem;
+	margin: 1rem 0;
+}
+
+.bf-stat {
+	background: #fff;
+	border: 1px solid #c3c4c7;
+	border-radius: 6px;
+	padding: 1rem 1.25rem;
+	min-width: 130px;
+}
+
+.bf-stat--wide {
+	min-width: 220px;
+}
+
+.bf-stat__n {
+	display: block;
+	font-size: 1.8rem;
+	font-weight: 700;
+	line-height: 1;
+}
+
+.bf-stat__l {
+	display: block;
+	margin-top: 0.35rem;
+	color: #50575e;
+	font-size: 0.85rem;
+}
+
+.bf-stat__top {
+	display: block;
+	margin-top: 0.35rem;
+	font-size: 0.85rem;
+}
+
+.bf-sub-filters {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 0.4rem;
+	align-items: center;
+	margin: 1rem 0;
+}
+
+.bf-badge {
+	display: inline-block;
+	padding: 0.1rem 0.5rem;
+	border-radius: 10px;
+	font-size: 0.75rem;
+	background: #f0f0f1;
+	color: #50575e;
+}
+
+.bf-badge--sent {
+	background: #d1e7dd;
+	color: #0f5132;
+}
+
+.bf-badge--agilecrm_failed {
+	background: #fff3cd;
+	color: #664d03;
+}
+
+.bf-badge--spam {
+	background: #f8d7da;
+	color: #842029;
+}
+
 /* --- Preview modal --- */
 .bf-preview-modal {
 	position: fixed;

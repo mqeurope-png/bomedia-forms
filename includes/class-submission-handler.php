@@ -830,18 +830,51 @@ echo esc_html( sprintf( __( 'Sent from %s', 'bomedia-forms' ), $site_url ) );
 	public function cleanup_old_submissions() {
 		global $wpdb;
 
-		$days = (int) apply_filters( 'bf_retention_days', (int) get_option( 'bf_retention_days', 30 ) );
-		if ( $days <= 0 ) {
-			return;
+		$table        = self::table_name();
+		$global_days  = (int) apply_filters( 'bf_retention_days', (int) get_option( 'bf_retention_days', 30 ) );
+
+		// Per-form overrides ( _bf_retention > 0 ).
+		$overrides = $wpdb->get_results( // phpcs:ignore WordPress.DB.DirectDatabaseQuery
+			"SELECT post_id, meta_value FROM {$wpdb->postmeta} WHERE meta_key = '_bf_retention' AND meta_value+0 > 0",
+			ARRAY_A
+		);
+
+		$override_ids = array();
+		foreach ( (array) $overrides as $o ) {
+			$fid  = (int) $o['post_id'];
+			$days = (int) $o['meta_value'];
+			if ( $fid <= 0 || $days <= 0 ) {
+				continue;
+			}
+			$override_ids[] = $fid;
+			$wpdb->query( // phpcs:ignore WordPress.DB.DirectDatabaseQuery, WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+				$wpdb->prepare(
+					"DELETE FROM {$table} WHERE form_id = %d AND created_at < %s",
+					$fid,
+					gmdate( 'Y-m-d H:i:s', time() - $days * DAY_IN_SECONDS )
+				)
+			);
 		}
 
-		$table = self::table_name();
-		$wpdb->query( // phpcs:ignore WordPress.DB.DirectDatabaseQuery, WordPress.DB.PreparedSQL.InterpolatedNotPrepared
-			$wpdb->prepare(
-				"DELETE FROM {$table} WHERE created_at < %s",
-				gmdate( 'Y-m-d H:i:s', time() - $days * DAY_IN_SECONDS )
-			)
-		);
+		// Global retention for everything else (0 = keep forever).
+		if ( $global_days <= 0 ) {
+			return;
+		}
+		$cutoff = gmdate( 'Y-m-d H:i:s', time() - $global_days * DAY_IN_SECONDS );
+
+		if ( $override_ids ) {
+			$ph = implode( ',', array_fill( 0, count( $override_ids ), '%d' ) );
+			$wpdb->query( // phpcs:ignore WordPress.DB.DirectDatabaseQuery, WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+				$wpdb->prepare(
+					"DELETE FROM {$table} WHERE created_at < %s AND form_id NOT IN ({$ph})",
+					array_merge( array( $cutoff ), $override_ids )
+				)
+			);
+		} else {
+			$wpdb->query( // phpcs:ignore WordPress.DB.DirectDatabaseQuery, WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+				$wpdb->prepare( "DELETE FROM {$table} WHERE created_at < %s", $cutoff )
+			);
+		}
 	}
 
 	/**
