@@ -3,7 +3,7 @@
  * Plugin Name:       Bomedia Forms
  * Plugin URI:        https://github.com/mqeurope-png/bomedia-forms
  * Description:       Generic forms plugin with native AgileCRM integration, used across Bomedia websites.
- * Version:           0.7.3
+ * Version:           0.7.4
  * Requires at least: 6.0
  * Requires PHP:      7.4
  * Author:            Bomedia
@@ -20,7 +20,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-define( 'BF_VERSION', '0.7.3' );
+define( 'BF_VERSION', '0.7.4' );
 define( 'BF_DB_VERSION', '1' );
 define( 'BF_PLUGIN_FILE', __FILE__ );
 define( 'BF_PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
