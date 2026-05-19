@@ -45,6 +45,7 @@ class BF_Settings {
 					'required'    => true,
 					'pattern'     => '',
 					'default'     => '',
+					'width'       => 'full',
 					'options'     => array(),
 				),
 				array(
@@ -55,6 +56,7 @@ class BF_Settings {
 					'required'    => true,
 					'pattern'     => '',
 					'default'     => '',
+					'width'       => 'full',
 					'options'     => array(),
 				),
 				array(
@@ -65,6 +67,7 @@ class BF_Settings {
 					'required'    => false,
 					'pattern'     => '',
 					'default'     => '',
+					'width'       => 'full',
 					'options'     => array(),
 				),
 			),

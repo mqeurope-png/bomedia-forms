@@ -4,7 +4,8 @@
  *
  * Outputs semantic, accessible (WCAG AA) HTML. The form works without
  * JavaScript; AJAX is a progressive enhancement layered on top by
- * assets/js/form.js. All CSS is scoped under `.bf-form`.
+ * assets/js/form.js. All CSS is scoped under `.bf-form`. Fields are laid
+ * out on a 6-column grid honouring each field's configured width.
  *
  * @package BomediaForms
  */
@@ -103,7 +104,8 @@ class BF_Form_Renderer {
 
 		$this->ensure_assets();
 
-		return $this->render( $post, $atts['lang'] );
+		$config = BF_Settings::get_config( $post->ID );
+		return $this->build( (int) $post->ID, $config['fields'], $config, $atts['lang'], false );
 	}
 
 	/**
@@ -115,22 +117,62 @@ class BF_Form_Renderer {
 	 */
 	public function render( WP_Post $post, $lang = '' ) {
 		$config = BF_Settings::get_config( $post->ID );
+		return $this->build( (int) $post->ID, $config['fields'], $config, $lang, false );
+	}
+
+	/**
+	 * Render a preview from an arbitrary (possibly unsaved) fields array.
+	 *
+	 * Used by the admin "Preview" modal so editors see their in-progress
+	 * configuration without saving. The preview form is inert.
+	 *
+	 * @param array  $fields Field definitions.
+	 * @param string $lang   Optional language code.
+	 * @return string
+	 */
+	public function render_preview( array $fields, $lang = '' ) {
+		$config           = BF_Settings::defaults();
+		$config['fields'] = $fields;
+		return $this->build( 0, $fields, $config, $lang, true );
+	}
+
+	/**
+	 * Build the form markup.
+	 *
+	 * @param int    $form_id    Form post ID (0 for preview).
+	 * @param array  $fields     Field definitions.
+	 * @param array  $config     Full form config.
+	 * @param string $lang       Optional forced language code.
+	 * @param bool   $is_preview Whether this is an inert admin preview.
+	 * @return string
+	 */
+	private function build( $form_id, array $fields, array $config, $lang, $is_preview ) {
 		$i18n   = Bomedia_Forms::instance()->i18n;
 		$lang   = $lang ? sanitize_text_field( $lang ) : $i18n->current_lang();
+		$dom_id = 'bf-form-' . ( $form_id ? $form_id : 'preview' );
+		$nonce  = wp_create_nonce( 'bf_submit_' . $form_id );
 
-		$form_id = (int) $post->ID;
-		$dom_id  = 'bf-form-' . $form_id;
-		$nonce   = wp_create_nonce( 'bf_submit_' . $form_id );
+		// Separate hidden inputs (no grid cell) from visible fields.
+		$hidden  = array();
+		$visible = array();
+		foreach ( $fields as $field ) {
+			if ( 'hidden' === ( $field['type'] ?? 'text' ) ) {
+				$hidden[] = $field;
+			} else {
+				$visible[] = $field;
+			}
+		}
 
 		ob_start();
 		?>
 		<form
-			class="bf-form"
+			class="bf-form<?php echo $is_preview ? ' bf-form--preview' : ''; ?>"
 			id="<?php echo esc_attr( $dom_id ); ?>"
 			method="post"
 			action="<?php echo esc_url( admin_url( 'admin-ajax.php' ) ); ?>"
 			novalidate
 			data-form-id="<?php echo esc_attr( $form_id ); ?>"
+			<?php echo $is_preview ? 'data-preview="1" onsubmit="return false;"' : ''; ?>
 		>
 			<div class="bf-form__messages" role="status" aria-live="polite"></div>
 
@@ -139,7 +181,6 @@ class BF_Form_Renderer {
 			<input type="hidden" name="bf_lang" value="<?php echo esc_attr( $lang ); ?>" />
 			<input type="hidden" name="bf_nonce" value="<?php echo esc_attr( $nonce ); ?>" />
 
-			<?php // Honeypot — visually hidden, must stay empty. ?>
 			<?php if ( ! empty( $config['antispam']['honeypot'] ) ) : ?>
 				<div class="bf-form__hp" aria-hidden="true">
 					<label for="<?php echo esc_attr( $dom_id ); ?>-website">
@@ -150,13 +191,21 @@ class BF_Form_Renderer {
 			<?php endif; ?>
 
 			<?php
-			foreach ( (array) $config['fields'] as $index => $field ) {
-				echo $this->render_field( $field, $dom_id, $index, $i18n ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+			foreach ( $hidden as $field ) {
+				echo $this->render_field( $field, $dom_id, 0, $i18n ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 			}
 			?>
 
+			<div class="bf-form__grid">
+				<?php
+				foreach ( $visible as $index => $field ) {
+					echo $this->render_field( $field, $dom_id, $index, $i18n ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+				}
+				?>
+			</div>
+
 			<div class="bf-form__actions">
-				<button type="submit" class="bf-form__submit">
+				<button type="submit" class="bf-form__submit"<?php echo $is_preview ? ' disabled' : ''; ?>>
 					<span class="bf-form__submit-label"><?php esc_html_e( 'Send', 'bomedia-forms' ); ?></span>
 					<span class="bf-form__spinner" aria-hidden="true"></span>
 				</button>
@@ -164,6 +213,21 @@ class BF_Form_Renderer {
 		</form>
 		<?php
 		return ob_get_clean();
+	}
+
+	/**
+	 * Map a width keyword to its grid-span modifier class.
+	 *
+	 * @param string $width full|half|third.
+	 * @return string
+	 */
+	private function width_class( $width ) {
+		$map = array(
+			'full'  => 'bf-form__row--w-full',
+			'half'  => 'bf-form__row--w-half',
+			'third' => 'bf-form__row--w-third',
+		);
+		return isset( $map[ $width ] ) ? $map[ $width ] : $map['full'];
 	}
 
 	/**
@@ -183,6 +247,7 @@ class BF_Form_Renderer {
 		$required    = ! empty( $field['required'] );
 		$pattern     = isset( $field['pattern'] ) ? $field['pattern'] : '';
 		$default     = isset( $field['default'] ) ? $field['default'] : '';
+		$width       = isset( $field['width'] ) ? $field['width'] : 'full';
 		$options     = isset( $field['options'] ) && is_array( $field['options'] ) ? $field['options'] : array();
 
 		$field_id   = $dom_id . '-' . sanitize_html_class( $name );
@@ -199,7 +264,7 @@ class BF_Form_Renderer {
 		}
 
 		ob_start();
-		echo '<div class="bf-form__row bf-form__row--' . esc_attr( $type ) . '">';
+		echo '<div class="bf-form__row bf-form__row--' . esc_attr( $type ) . ' ' . esc_attr( $this->width_class( $width ) ) . '">';
 
 		if ( in_array( $type, array( 'text', 'email', 'tel', 'textarea', 'select', 'custom' ), true ) ) {
 			printf(

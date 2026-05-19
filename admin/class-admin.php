@@ -85,6 +85,59 @@ class BF_Admin {
 			array(),
 			BF_VERSION
 		);
+
+		if ( $is_cpt ) {
+			wp_enqueue_script(
+				'bomedia-forms-admin',
+				BF_PLUGIN_URL . 'assets/js/admin-form-editor.js',
+				array(),
+				BF_VERSION,
+				true
+			);
+
+			wp_localize_script(
+				'bomedia-forms-admin',
+				'BomediaFormsAdmin',
+				array(
+					'ajaxUrl'      => admin_url( 'admin-ajax.php' ),
+					'previewNonce' => wp_create_nonce( 'bf_get_form' ),
+					'fieldTypes'   => self::field_type_labels(),
+					'widths'       => array(
+						'full'  => __( 'Full width', 'bomedia-forms' ),
+						'half'  => __( 'Half', 'bomedia-forms' ),
+						'third' => __( 'Third', 'bomedia-forms' ),
+					),
+					'i18n'         => array(
+						'untitled'  => __( 'Untitled field', 'bomedia-forms' ),
+						'dupKeys'   => __( 'Duplicate field keys are not allowed. Please make every field key unique.', 'bomedia-forms' ),
+						'confirmRm' => __( 'Remove this field?', 'bomedia-forms' ),
+						'previewer' => __( 'Form preview', 'bomedia-forms' ),
+						'loading'   => __( 'Loading preview…', 'bomedia-forms' ),
+						'prevErr'   => __( 'Could not load preview.', 'bomedia-forms' ),
+						'close'     => __( 'Close', 'bomedia-forms' ),
+					),
+				)
+			);
+		}
+	}
+
+	/**
+	 * Selectable field type labels.
+	 *
+	 * @return array
+	 */
+	private static function field_type_labels() {
+		return array(
+			'text'     => __( 'Text', 'bomedia-forms' ),
+			'email'    => __( 'Email', 'bomedia-forms' ),
+			'tel'      => __( 'Phone', 'bomedia-forms' ),
+			'textarea' => __( 'Textarea', 'bomedia-forms' ),
+			'select'   => __( 'Select', 'bomedia-forms' ),
+			'checkbox' => __( 'Checkbox', 'bomedia-forms' ),
+			'radio'    => __( 'Radio', 'bomedia-forms' ),
+			'hidden'   => __( 'Hidden', 'bomedia-forms' ),
+			'custom'   => __( 'Custom', 'bomedia-forms' ),
+		);
 	}
 
 	/**
@@ -198,9 +251,7 @@ class BF_Admin {
 
 		// Fields tab.
 		$this->panel_open( 'fields', true );
-		echo '<p class="description">' . esc_html__( 'Basic field editing. Drag-and-drop ordering arrives in a later release.', 'bomedia-forms' ) . '</p>';
-		echo '<textarea name="bf_fields_json" rows="12" class="large-text code" spellcheck="false">' . esc_textarea( wp_json_encode( $config['fields'], JSON_PRETTY_PRINT ) ) . '</textarea>';
-		echo '<p class="description">' . esc_html__( 'JSON array of field definitions (type, name, label, placeholder, required, pattern, default, options).', 'bomedia-forms' ) . '</p>';
+		$this->render_fields_editor( $config['fields'] );
 		$this->panel_close();
 
 		// AgileCRM tab.
@@ -288,7 +339,7 @@ class BF_Admin {
 		if ( isset( $_POST['bf_fields_json'] ) ) {
 			$decoded = json_decode( wp_unslash( $_POST['bf_fields_json'] ), true );
 			if ( is_array( $decoded ) ) {
-				update_post_meta( $post_id, BF_Settings::META_FIELDS, $this->sanitize_fields( $decoded ) );
+				update_post_meta( $post_id, BF_Settings::META_FIELDS, self::sanitize_fields( $decoded ) );
 			}
 		}
 
@@ -374,28 +425,126 @@ class BF_Admin {
 	/**
 	 * Sanitize a decoded fields array.
 	 *
+	 * Enforces unique field keys (auto-suffixing collisions) and a known
+	 * width keyword. Options accept either ["v|Label", ...] strings or
+	 * [{value,label}, ...] and are normalised to {value,label}.
+	 *
 	 * @param array $fields Raw fields.
 	 * @return array
 	 */
-	private function sanitize_fields( array $fields ) {
+	public static function sanitize_fields( array $fields ) {
 		$allowed = array( 'text', 'email', 'tel', 'textarea', 'select', 'checkbox', 'radio', 'hidden', 'custom' );
+		$widths  = array( 'full', 'half', 'third' );
 		$clean   = array();
+		$seen    = array();
+		$auto    = 0;
+
 		foreach ( $fields as $f ) {
 			if ( ! is_array( $f ) ) {
 				continue;
 			}
+
+			$key = sanitize_key( $f['name'] ?? '' );
+			if ( '' === $key ) {
+				$key = 'field_' . ( ++$auto );
+			}
+			while ( isset( $seen[ $key ] ) ) {
+				$key = preg_replace( '/_\d+$/', '', $key ) . '_' . ( ++$auto );
+			}
+			$seen[ $key ] = true;
+
 			$clean[] = array(
 				'type'        => in_array( ( $f['type'] ?? 'text' ), $allowed, true ) ? $f['type'] : 'text',
-				'name'        => sanitize_key( $f['name'] ?? '' ),
+				'name'        => $key,
 				'label'       => sanitize_text_field( $f['label'] ?? '' ),
 				'placeholder' => sanitize_text_field( $f['placeholder'] ?? '' ),
 				'required'    => ! empty( $f['required'] ),
 				'pattern'     => isset( $f['pattern'] ) ? (string) $f['pattern'] : '',
 				'default'     => sanitize_text_field( $f['default'] ?? '' ),
-				'options'     => isset( $f['options'] ) && is_array( $f['options'] ) ? $f['options'] : array(),
+				'width'       => in_array( ( $f['width'] ?? 'full' ), $widths, true ) ? $f['width'] : 'full',
+				'options'     => self::sanitize_options( $f['options'] ?? array() ),
 			);
 		}
 		return $clean;
+	}
+
+	/**
+	 * Normalise field options to a list of {value,label} pairs.
+	 *
+	 * @param mixed $options Raw options (array of strings or pairs).
+	 * @return array
+	 */
+	private static function sanitize_options( $options ) {
+		if ( ! is_array( $options ) ) {
+			return array();
+		}
+		$out = array();
+		foreach ( $options as $opt ) {
+			if ( is_array( $opt ) ) {
+				$val = sanitize_text_field( $opt['value'] ?? '' );
+				$lbl = sanitize_text_field( $opt['label'] ?? $val );
+			} else {
+				$parts = explode( '|', (string) $opt, 2 );
+				$val   = sanitize_text_field( trim( $parts[0] ) );
+				$lbl   = sanitize_text_field( trim( isset( $parts[1] ) ? $parts[1] : $parts[0] ) );
+			}
+			if ( '' === $val && '' === $lbl ) {
+				continue;
+			}
+			$out[] = array(
+				'value' => $val,
+				'label' => $lbl,
+			);
+		}
+		return $out;
+	}
+
+	/**
+	 * Render the drag-and-drop fields editor shell.
+	 *
+	 * Rows are built client-side from the JSON payload below and serialised
+	 * back into the hidden #bf_fields_json input on save.
+	 *
+	 * @param array $fields Current field definitions.
+	 * @return void
+	 */
+	private function render_fields_editor( array $fields ) {
+		?>
+		<div id="bf-fields-editor" class="bf-fields-editor">
+			<div class="bf-fields-editor__toolbar">
+				<button type="button" class="button" id="bf-preview-btn">
+					<span class="dashicons dashicons-visibility" aria-hidden="true"></span>
+					<?php esc_html_e( 'Preview', 'bomedia-forms' ); ?>
+				</button>
+				<span class="bf-fields-editor__add">
+					<select id="bf-add-type" aria-label="<?php esc_attr_e( 'New field type', 'bomedia-forms' ); ?>">
+						<?php foreach ( self::field_type_labels() as $val => $label ) : ?>
+							<option value="<?php echo esc_attr( $val ); ?>"><?php echo esc_html( $label ); ?></option>
+						<?php endforeach; ?>
+					</select>
+					<button type="button" class="button button-primary" id="bf-add-field">
+						<?php esc_html_e( '+ Add field', 'bomedia-forms' ); ?>
+					</button>
+				</span>
+			</div>
+
+			<div id="bf-fields-list" class="bf-fields-list" aria-live="polite"></div>
+			<p class="bf-fields-empty description"><?php esc_html_e( 'No fields yet. Use “+ Add field” to start.', 'bomedia-forms' ); ?></p>
+
+			<input type="hidden" name="bf_fields_json" id="bf_fields_json" />
+			<script type="application/json" id="bf-fields-data">
+				<?php echo wp_json_encode( array_values( $fields ) ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
+			</script>
+		</div>
+
+		<div id="bf-preview-modal" class="bf-preview-modal" hidden>
+			<div class="bf-preview-modal__overlay" data-close="1"></div>
+			<div class="bf-preview-modal__dialog" role="dialog" aria-modal="true" aria-label="<?php esc_attr_e( 'Form preview', 'bomedia-forms' ); ?>">
+				<button type="button" class="bf-preview-modal__close" data-close="1" aria-label="<?php esc_attr_e( 'Close', 'bomedia-forms' ); ?>">&times;</button>
+				<div class="bf-preview-modal__body"></div>
+			</div>
+		</div>
+		<?php
 	}
 
 	/**

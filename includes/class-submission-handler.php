@@ -177,7 +177,18 @@ class BF_Submission_Handler {
 		}
 		check_ajax_referer( 'bf_get_form', 'nonce' );
 
-		$form_id = isset( $_GET['form_id'] ) ? (int) $_GET['form_id'] : 0;
+		// Preview from unsaved editor state when fields are posted.
+		if ( isset( $_POST['bf_preview_fields'] ) ) {
+			$decoded = json_decode( wp_unslash( $_POST['bf_preview_fields'] ), true );
+			if ( ! is_array( $decoded ) ) {
+				wp_send_json_error( array( 'message' => 'invalid fields' ), 400 );
+			}
+			$fields = BF_Admin::sanitize_fields( $decoded );
+			$html   = Bomedia_Forms::instance()->renderer->render_preview( $fields );
+			wp_send_json_success( array( 'html' => $html ) );
+		}
+
+		$form_id = isset( $_REQUEST['form_id'] ) ? (int) $_REQUEST['form_id'] : 0;
 		$post    = $form_id ? get_post( $form_id ) : null;
 
 		if ( ! $post || BF_CPT::POST_TYPE !== $post->post_type ) {
