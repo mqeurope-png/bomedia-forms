@@ -230,20 +230,108 @@ class BF_Submission_Handler {
 	/**
 	 * Verify the configured captcha provider.
 	 *
-	 * STUB: returns true unless a provider is set, in which case provider
-	 * verification will be implemented in a later release. For now, when a
-	 * provider is configured we accept (do not block submissions).
+	 * If the secret key cannot be decrypted (e.g. AUTH_KEY missing) the
+	 * captcha is treated as disabled rather than blocking every lead — the
+	 * AUTH_KEY admin notice already warns the operator.
 	 *
 	 * @param array $config Form config.
 	 * @return bool
 	 */
 	private function verify_captcha( array $config ) {
-		$provider = $config['captcha']['provider'] ?? 'none';
+		$cap      = $config['captcha'] ?? array();
+		$provider = $cap['provider'] ?? 'none';
+
 		if ( 'none' === $provider ) {
 			return true;
 		}
-		// TODO: per-provider verification (reCAPTCHA v2/v3, Turnstile, hCaptcha, Math).
-		return true;
+
+		if ( 'math' === $provider ) {
+			$token  = isset( $_POST['bf_captcha_token'] ) ? sanitize_text_field( wp_unslash( $_POST['bf_captcha_token'] ) ) : '';
+			$answer = isset( $_POST['bf_captcha_answer'] ) ? (int) wp_unslash( $_POST['bf_captcha_answer'] ) : null;
+			if ( '' === $token ) {
+				return false;
+			}
+			$expected = get_transient( 'bf_math_' . $token );
+			delete_transient( 'bf_math_' . $token );
+			return null !== $expected && (int) $expected === $answer;
+		}
+
+		$secret = '' !== ( $cap['secret_key'] ?? '' ) ? BF_Encryption::decrypt( $cap['secret_key'] ) : '';
+		if ( '' === $secret ) {
+			// CONFIRM: secret unavailable -> captcha disabled (fail-open) so
+			// leads are not lost. Confirm this is the desired posture.
+			BF_Logger::log( 'spam', sprintf( 'captcha provider=%s disabled (secret unavailable)', $provider ) );
+			return true;
+		}
+
+		$field_map = array(
+			'recaptcha_v2' => 'g-recaptcha-response',
+			'recaptcha_v3' => 'g-recaptcha-response',
+			'turnstile'    => 'cf-turnstile-response',
+			'hcaptcha'     => 'h-captcha-response',
+		);
+		$endpoints = array(
+			'recaptcha_v2' => 'https://www.google.com/recaptcha/api/siteverify',
+			'recaptcha_v3' => 'https://www.google.com/recaptcha/api/siteverify',
+			'turnstile'    => 'https://challenges.cloudflare.com/turnstile/v0/siteverify',
+			'hcaptcha'     => 'https://hcaptcha.com/siteverify',
+		);
+		if ( ! isset( $field_map[ $provider ] ) ) {
+			return false;
+		}
+
+		$response_token = isset( $_POST[ $field_map[ $provider ] ] ) ? sanitize_text_field( wp_unslash( $_POST[ $field_map[ $provider ] ] ) ) : '';
+		if ( '' === $response_token ) {
+			return false;
+		}
+
+		$verify = wp_remote_post(
+			$endpoints[ $provider ],
+			array(
+				'timeout' => 10,
+				'body'    => array(
+					'secret'   => $secret,
+					'response' => $response_token,
+					'remoteip' => $this->client_ip(),
+				),
+			)
+		);
+
+		if ( is_wp_error( $verify ) ) {
+			BF_Logger::log( 'spam', sprintf( 'captcha provider=%s verify_error="%s"', $provider, $verify->get_error_message() ) );
+			return false;
+		}
+
+		$result  = json_decode( wp_remote_retrieve_body( $verify ), true );
+		$success = ! empty( $result['success'] );
+
+		// reCAPTCHA v3 returns a score; require a conservative threshold.
+		if ( $success && 'recaptcha_v3' === $provider && isset( $result['score'] ) ) {
+			// CONFIRM: v3 score threshold 0.5 — tune per site if needed.
+			$success = (float) $result['score'] >= 0.5;
+		}
+
+		if ( ! $success ) {
+			BF_Logger::log( 'spam', sprintf( 'captcha provider=%s failed', $provider ) );
+		}
+
+		return $success;
+	}
+
+	/**
+	 * Generate and persist a math captcha challenge.
+	 *
+	 * @return array { @type string $token; @type string $question }
+	 */
+	public static function new_math_challenge() {
+		$a     = wp_rand( 1, 9 );
+		$b     = wp_rand( 1, 9 );
+		$token = wp_generate_password( 16, false );
+		set_transient( 'bf_math_' . $token, $a + $b, HOUR_IN_SECONDS );
+		return array(
+			'token'    => $token,
+			'question' => sprintf( '%d + %d = ?', $a, $b ),
+		);
 	}
 
 	/**
@@ -393,25 +481,166 @@ class BF_Submission_Handler {
 	 * @return void
 	 */
 	private function send_notification( WP_Post $post, array $config, array $data, $lang, $captcha_passed = true ) {
-		$notif     = $config['notifications'] ?? array();
-		$recipient = ! empty( $notif['recipient'] ) ? $notif['recipient'] : get_option( 'admin_email' );
-		$subject   = ! empty( $notif['subject'] ) ? $notif['subject'] : __( 'New form submission', 'bomedia-forms' );
+		$notif = $config['notifications'] ?? array();
+		$i18n  = Bomedia_Forms::instance()->i18n;
+
+		// Recipients: configured (comma-separated, multiple) or admin_email.
+		$recipients = array();
+		foreach ( explode( ',', (string) ( $notif['recipient'] ?? '' ) ) as $r ) {
+			$r = sanitize_email( trim( $r ) );
+			if ( $r && is_email( $r ) ) {
+				$recipients[] = $r;
+			}
+		}
+		if ( ! $recipients ) {
+			$recipients[] = get_option( 'admin_email' );
+		}
+
+		$form_name = $post->post_title;
+
+		// Variable map shared by subject and body.
+		$vars = array(
+			'{form_name}'      => $form_name,
+			'{date}'           => date_i18n( get_option( 'date_format' ) . ' ' . get_option( 'time_format' ) ),
+			'{captcha_passed}' => $captcha_passed ? __( 'yes', 'bomedia-forms' ) : __( 'no', 'bomedia-forms' ),
+		);
+		foreach ( $data as $key => $value ) {
+			$vars[ '{field_' . $key . '}' ] = is_array( $value ) ? implode( ', ', $value ) : (string) $value;
+		}
+
+		// Subject: configured (with variables) or a sensible default.
+		$subject = ! empty( $notif['subject'] )
+			? $i18n->translate( $notif['subject'] )
+			/* translators: %s: form name. */
+			: sprintf( __( 'New submission from %s', 'bomedia-forms' ), $form_name );
+		$subject = strtr( $subject, $vars );
+
+		// Body: configured (with variables) or an auto field list.
+		if ( ! empty( $notif['body_html'] ) ) {
+			$content = strtr( wp_kses_post( $i18n->translate( $notif['body_html'] ) ), $vars );
+			$content = str_replace( '{{fields}}', $this->fields_table( $config, $data ), $content );
+		} else {
+			$content = '<p>' . esc_html( $form_name ) . '</p>' . $this->fields_table( $config, $data );
+		}
+
+		$body = $this->email_wrapper( $content );
+
+		// Reply-To: configured, else the submitter's email when present.
+		$reply_to = sanitize_email( (string) ( $notif['reply_to'] ?? '' ) );
+		if ( '' === $reply_to ) {
+			$reply_to = $this->detect_submitter_email( $config, $data );
+		}
+
+		$headers = array( 'Content-Type: text/html; charset=UTF-8' );
+		if ( $reply_to && is_email( $reply_to ) ) {
+			$headers[] = 'Reply-To: ' . $reply_to;
+		}
+
+		$sent = wp_mail( $recipients, $subject, $body, $headers );
+
+		BF_Logger::log(
+			'email',
+			sprintf(
+				'form_id=%d to=%s result=%s',
+				$post->ID,
+				implode( ';', $recipients ),
+				$sent ? 'sent' : 'failed'
+			)
+		);
+	}
+
+	/**
+	 * Build a simple HTML table of submitted fields (labels + values).
+	 *
+	 * @param array $config Form config.
+	 * @param array $data   Submitted data.
+	 * @return string
+	 */
+	private function fields_table( array $config, array $data ) {
+		$labels = array();
+		foreach ( (array) $config['fields'] as $f ) {
+			if ( ! empty( $f['name'] ) ) {
+				$labels[ $f['name'] ] = $f['label'] ?? $f['name'];
+			}
+		}
 
 		$rows = '';
 		foreach ( $data as $name => $value ) {
-			$rows .= '<tr><th align="left">' . esc_html( $name ) . '</th><td>' . esc_html( is_array( $value ) ? implode( ', ', $value ) : $value ) . '</td></tr>';
+			$label = isset( $labels[ $name ] ) ? $labels[ $name ] : $name;
+			$rows .= '<tr><th align="left" style="padding:6px 10px;border-bottom:1px solid #eee;vertical-align:top">' .
+				esc_html( $label ) .
+				'</th><td style="padding:6px 10px;border-bottom:1px solid #eee">' .
+				esc_html( is_array( $value ) ? implode( ', ', $value ) : (string) $value ) .
+				'</td></tr>';
 		}
 
-		$body = ! empty( $notif['body_html'] )
-			? str_replace( '{{fields}}', '<table>' . $rows . '</table>', wp_kses_post( $notif['body_html'] ) )
-			: '<p>' . esc_html( $post->post_title ) . '</p><table>' . $rows . '</table>';
+		return '<table cellpadding="0" cellspacing="0" style="width:100%;border-collapse:collapse;font-size:14px">' . $rows . '</table>';
+	}
 
-		wp_mail(
-			$recipient,
-			$subject,
-			$body,
-			array( 'Content-Type: text/html; charset=UTF-8' )
-		);
+	/**
+	 * Wrap content in a responsive, table-based HTML email shell with the
+	 * site logo header and a "sent from {site_url}" footer.
+	 *
+	 * @param string $content Inner HTML.
+	 * @return string
+	 */
+	private function email_wrapper( $content ) {
+		$site_name = get_bloginfo( 'name' );
+		$site_url  = home_url( '/' );
+
+		$logo = '';
+		if ( function_exists( 'has_custom_logo' ) && has_custom_logo() ) {
+			$logo_id  = get_theme_mod( 'custom_logo' );
+			$logo_src = $logo_id ? wp_get_attachment_image_url( $logo_id, 'medium' ) : '';
+			if ( $logo_src ) {
+				$logo = '<img src="' . esc_url( $logo_src ) . '" alt="' . esc_attr( $site_name ) . '" style="max-height:48px;height:auto" />';
+			}
+		}
+		if ( '' === $logo ) {
+			$logo = '<strong style="font-size:18px">' . esc_html( $site_name ) . '</strong>';
+		}
+
+		ob_start();
+		?>
+<!DOCTYPE html>
+<html><head><meta charset="utf-8" /><meta name="viewport" content="width=device-width,initial-scale=1" /></head>
+<body style="margin:0;padding:0;background:#f4f4f5">
+<table cellpadding="0" cellspacing="0" role="presentation" style="width:100%;background:#f4f4f5">
+<tr><td align="center" style="padding:24px 12px">
+<table cellpadding="0" cellspacing="0" role="presentation" style="width:100%;max-width:600px;background:#ffffff;border-radius:6px;overflow:hidden;font-family:Arial,Helvetica,sans-serif;color:#1d2327">
+<tr><td style="padding:20px 24px;border-bottom:1px solid #ededed"><?php echo $logo; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?></td></tr>
+<tr><td style="padding:24px"><?php echo $content; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?></td></tr>
+<tr><td style="padding:16px 24px;border-top:1px solid #ededed;font-family:Arial,Helvetica,sans-serif;font-size:12px;color:#787c82">
+<?php
+/* translators: %s: site URL. */
+echo esc_html( sprintf( __( 'Sent from %s', 'bomedia-forms' ), $site_url ) );
+?>
+</td></tr>
+</table>
+</td></tr>
+</table>
+</body></html>
+		<?php
+		return ob_get_clean();
+	}
+
+	/**
+	 * Find the submitter's email from the first email-type field.
+	 *
+	 * @param array $config Form config.
+	 * @param array $data   Submitted data.
+	 * @return string
+	 */
+	private function detect_submitter_email( array $config, array $data ) {
+		foreach ( (array) $config['fields'] as $f ) {
+			if ( 'email' === ( $f['type'] ?? '' ) && ! empty( $f['name'] ) && ! empty( $data[ $f['name'] ] ) ) {
+				$candidate = is_array( $data[ $f['name'] ] ) ? reset( $data[ $f['name'] ] ) : $data[ $f['name'] ];
+				if ( is_email( $candidate ) ) {
+					return $candidate;
+				}
+			}
+		}
+		return '';
 	}
 
 	/**

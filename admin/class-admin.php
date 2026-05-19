@@ -365,10 +365,14 @@ class BF_Admin {
 		// Notifications tab.
 		$this->panel_open( 'notifications' );
 		$notif = $config['notifications'];
-		$this->text_row( 'bf_notifications[recipient]', __( 'Recipient email', 'bomedia-forms' ), $notif['recipient'] );
+		$this->text_row( 'bf_notifications[recipient]', __( 'Recipient email (comma-separated for multiple)', 'bomedia-forms' ), $notif['recipient'] );
 		$this->text_row( 'bf_notifications[subject]', __( 'Subject', 'bomedia-forms' ), $notif['subject'] );
-		echo '<p><label>' . esc_html__( 'Body HTML (use {{fields}} for the data table)', 'bomedia-forms' ) . '<br />';
-		echo '<textarea name="bf_notifications[body_html]" rows="6" class="large-text code">' . esc_textarea( $notif['body_html'] ) . '</textarea></label></p>';
+		// TODO v1.x: optionally swap this textarea for wp_editor (TinyMCE
+		// init inside a hidden tab panel needs extra handling).
+		echo '<p><label>' . esc_html__( 'Body (HTML allowed; {{fields}} inserts the data table)', 'bomedia-forms' ) . '<br />';
+		echo '<textarea name="bf_notifications[body_html]" rows="8" class="large-text code">' . esc_textarea( $notif['body_html'] ) . '</textarea></label></p>';
+		$this->text_row( 'bf_notifications[reply_to]', __( 'Reply-To (blank = submitter’s email)', 'bomedia-forms' ), $notif['reply_to'] ?? '' );
+		echo '<p class="description">' . esc_html__( 'Variables: {form_name}, {date}, {captcha_passed}, and {field_KEY} for any field (e.g. {field_email}). Leave subject/body blank for sensible defaults.', 'bomedia-forms' ) . '</p>';
 		$this->panel_close();
 
 		// Post-submit tab.
@@ -473,9 +477,20 @@ class BF_Admin {
 				$post_id,
 				BF_Settings::META_NOTIFICATIONS,
 				array(
-					'recipient' => sanitize_email( $in['recipient'] ?? '' ),
+					'recipient' => implode(
+						', ',
+						array_filter(
+							array_map(
+								static function ( $e ) {
+									return sanitize_email( trim( $e ) );
+								},
+								explode( ',', (string) ( $in['recipient'] ?? '' ) )
+							)
+						)
+					),
 					'subject'   => sanitize_text_field( $in['subject'] ?? '' ),
 					'body_html' => wp_kses_post( $in['body_html'] ?? '' ),
+					'reply_to'  => sanitize_email( $in['reply_to'] ?? '' ),
 				)
 			);
 		}

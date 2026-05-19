@@ -107,6 +107,30 @@
 		setMessage(form, '', null);
 		setLoading(form, true);
 
+		// reCAPTCHA v3: fetch a fresh token before submitting.
+		var v3 = form.querySelector('input[data-v3="1"]');
+		if (v3 && window.grecaptcha && typeof grecaptcha.execute === 'function') {
+			var box = form.querySelector('.bf-captcha[data-provider="recaptcha_v3"]');
+			var siteKey = box ? box.getAttribute('data-sitekey') : '';
+			grecaptcha.ready(function () {
+				grecaptcha
+					.execute(siteKey, { action: v3.getAttribute('data-action') || 'submit' })
+					.then(function (token) {
+						v3.value = token;
+						sendForm(form);
+					})
+					.catch(function () {
+						setLoading(form, false);
+						setMessage(form, 'Captcha error. Please try again.', 'error');
+					});
+			});
+			return;
+		}
+
+		sendForm(form);
+	}
+
+	function sendForm(form) {
 		var endpoint = cfg.ajaxUrl || form.getAttribute('action');
 
 		fetch(endpoint, {

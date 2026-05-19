@@ -85,8 +85,9 @@ class BF_Settings {
 			),
 			'notifications' => array(
 				'recipient' => get_option( 'admin_email' ),
-				'subject'   => __( 'New form submission', 'bomedia-forms' ),
+				'subject'   => '',
 				'body_html' => '',
+				'reply_to'  => '', // Blank = use the submitter's email when available.
 			),
 			'post_submit'   => array(
 				'mode'            => 'message', // message|redirect.

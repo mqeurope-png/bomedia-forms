@@ -204,6 +204,8 @@ class BF_Form_Renderer {
 				?>
 			</div>
 
+			<?php echo $this->render_captcha( $config, $dom_id, $is_preview ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
+
 			<div class="bf-form__actions">
 				<button type="submit" class="bf-form__submit"<?php echo $is_preview ? ' disabled' : ''; ?>>
 					<span class="bf-form__submit-label"><?php esc_html_e( 'Send', 'bomedia-forms' ); ?></span>
@@ -212,6 +214,87 @@ class BF_Form_Renderer {
 			</div>
 		</form>
 		<?php
+		return ob_get_clean();
+	}
+
+	/**
+	 * Render the captcha widget for the configured provider and enqueue
+	 * the provider script when needed.
+	 *
+	 * @param array  $config     Form config.
+	 * @param string $dom_id     Form DOM id prefix.
+	 * @param bool   $is_preview Whether this is an inert admin preview.
+	 * @return string
+	 */
+	private function render_captcha( array $config, $dom_id, $is_preview ) {
+		$cap      = $config['captcha'] ?? array();
+		$provider = $cap['provider'] ?? 'none';
+		$site_key = $cap['site_key'] ?? '';
+
+		if ( 'none' === $provider ) {
+			return '';
+		}
+
+		if ( 'math' === $provider ) {
+			$challenge = BF_Submission_Handler::new_math_challenge();
+			ob_start();
+			?>
+			<div class="bf-form__row bf-form__row--w-full bf-captcha bf-captcha--math">
+				<label class="bf-form__label" for="<?php echo esc_attr( $dom_id ); ?>-captcha">
+					<?php echo esc_html( $challenge['question'] ); ?>
+					<span class="bf-form__req" aria-hidden="true">*</span>
+				</label>
+				<input type="number" class="bf-form__input" id="<?php echo esc_attr( $dom_id ); ?>-captcha"
+					name="bf_captcha_answer" inputmode="numeric" autocomplete="off" required />
+				<input type="hidden" name="bf_captcha_token" value="<?php echo esc_attr( $challenge['token'] ); ?>" />
+			</div>
+			<?php
+			return ob_get_clean();
+		}
+
+		if ( '' === $site_key ) {
+			return '';
+		}
+
+		// External provider scripts (skipped in the inert admin preview).
+		if ( ! $is_preview ) {
+			switch ( $provider ) {
+				case 'recaptcha_v2':
+					wp_enqueue_script( 'bf-recaptcha', 'https://www.google.com/recaptcha/api.js', array(), null, true ); // phpcs:ignore WordPress.WP.EnqueuedResourceParameters
+					break;
+				case 'recaptcha_v3':
+					wp_enqueue_script( 'bf-recaptcha', 'https://www.google.com/recaptcha/api.js?render=' . rawurlencode( $site_key ), array(), null, true ); // phpcs:ignore WordPress.WP.EnqueuedResourceParameters
+					break;
+				case 'turnstile':
+					wp_enqueue_script( 'bf-turnstile', 'https://challenges.cloudflare.com/turnstile/v0/api.js', array(), null, true ); // phpcs:ignore WordPress.WP.EnqueuedResourceParameters
+					break;
+				case 'hcaptcha':
+					wp_enqueue_script( 'bf-hcaptcha', 'https://js.hcaptcha.com/1/api.js', array(), null, true ); // phpcs:ignore WordPress.WP.EnqueuedResourceParameters
+					break;
+			}
+		}
+
+		// TODO v1.x: switch v2/Turnstile/hCaptcha to explicit render() for
+		// finer control over multiple widgets on one page. Automatic render
+		// (class + data-sitekey) is used now as the conservative default.
+		ob_start();
+		echo '<div class="bf-form__row bf-form__row--w-full bf-captcha bf-captcha--' . esc_attr( $provider ) . '" data-provider="' . esc_attr( $provider ) . '" data-sitekey="' . esc_attr( $site_key ) . '">';
+		switch ( $provider ) {
+			case 'recaptcha_v2':
+				echo '<div class="g-recaptcha" data-sitekey="' . esc_attr( $site_key ) . '"></div>';
+				break;
+			case 'recaptcha_v3':
+				// Token injected by form.js on submit.
+				echo '<input type="hidden" name="g-recaptcha-response" value="" data-v3="1" data-action="submit" />';
+				break;
+			case 'turnstile':
+				echo '<div class="cf-turnstile" data-sitekey="' . esc_attr( $site_key ) . '"></div>';
+				break;
+			case 'hcaptcha':
+				echo '<div class="h-captcha" data-sitekey="' . esc_attr( $site_key ) . '"></div>';
+				break;
+		}
+		echo '</div>';
 		return ob_get_clean();
 	}
 
