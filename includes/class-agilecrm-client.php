@@ -241,7 +241,13 @@ class BF_AgileCRM_Client {
 	}
 
 	/**
-	 * Verify credentials by hitting the contacts count endpoint.
+	 * Verify credentials with a minimal authenticated read.
+	 *
+	 * Probes `GET /dev/api/contacts?page_size=1`: a documented, cheap
+	 * endpoint that returns 200 with a (possibly empty) JSON array when
+	 * the Basic-auth credentials are valid. The previous probe targeted
+	 * `/contacts/count`, which the AgileCRM router interprets as
+	 * `/contacts/{contact-id}` and rejects with HTTP 400.
 	 *
 	 * @param string $subdomain AgileCRM subdomain.
 	 * @param string $email     Account email.
@@ -258,7 +264,7 @@ class BF_AgileCRM_Client {
 
 		$res = self::request(
 			'GET',
-			self::base_url( $subdomain ) . '/contacts/count',
+			self::base_url( $subdomain ) . '/contacts?page_size=1',
 			self::headers( $email, $api_key )
 		);
 
