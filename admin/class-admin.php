@@ -852,9 +852,10 @@ class BF_Admin {
 		$this->panel_close();
 
 		echo '</div>';
-
-		// Minimal inline tab switcher (no build step).
-		echo '<script>(function(){var w=document.currentScript.closest(".bf-admin-tabs");if(!w)return;w.querySelectorAll(".bf-admin-tabs__tab").forEach(function(b){b.addEventListener("click",function(){w.querySelectorAll(".bf-admin-tabs__tab").forEach(function(x){x.classList.remove("is-active")});w.querySelectorAll(".bf-admin-panel").forEach(function(p){p.style.display="none"});b.classList.add("is-active");var t=w.querySelector(\'.bf-admin-panel[data-panel="\'+b.dataset.tab+\'"]\');if(t)t.style.display="block"})})})();</script>';
+		// Tab switching is wired in assets/js/admin-form-editor.js
+		// (the previous inline script ran after the wrapper closed, so
+		// document.currentScript.closest('.bf-admin-tabs') was null and no
+		// handlers ever attached).
 	}
 
 	/**
