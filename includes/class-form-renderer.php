@@ -207,8 +207,12 @@ class BF_Form_Renderer {
 			<?php echo $this->render_captcha( $config, $dom_id, $is_preview ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
 
 			<div class="bf-form__actions">
+				<?php
+				$submit_label = $config['post_submit']['submit_label'] ?? __( 'Send', 'bomedia-forms' );
+				$submit_label = $i18n->translate( $submit_label, 'submit_label' );
+				?>
 				<button type="submit" class="bf-form__submit"<?php echo $is_preview ? ' disabled' : ''; ?>>
-					<span class="bf-form__submit-label"><?php esc_html_e( 'Send', 'bomedia-forms' ); ?></span>
+					<span class="bf-form__submit-label"><?php echo esc_html( $submit_label ); ?></span>
 					<span class="bf-form__spinner" aria-hidden="true"></span>
 				</button>
 			</div>

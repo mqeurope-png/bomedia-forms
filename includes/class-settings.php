@@ -93,6 +93,7 @@ class BF_Settings {
 				'mode'            => 'message', // message|redirect.
 				'success_message' => __( 'Thank you! Your message has been sent.', 'bomedia-forms' ),
 				'redirect_url'    => '',
+				'submit_label'    => __( 'Send', 'bomedia-forms' ),
 			),
 			'antispam'      => array(
 				'honeypot'         => true,

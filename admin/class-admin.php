@@ -382,6 +382,7 @@ class BF_Admin {
 		echo '<label><input type="radio" name="bf_post_submit[mode]" value="redirect"' . checked( $ps['mode'], 'redirect', false ) . '> ' . esc_html__( 'Redirect', 'bomedia-forms' ) . '</label></p>';
 		$this->text_row( 'bf_post_submit[success_message]', __( 'Success message', 'bomedia-forms' ), $ps['success_message'] );
 		$this->text_row( 'bf_post_submit[redirect_url]', __( 'Redirect URL', 'bomedia-forms' ), $ps['redirect_url'] );
+		$this->text_row( 'bf_post_submit[submit_label]', __( 'Submit button text', 'bomedia-forms' ), $ps['submit_label'] ?? __( 'Send', 'bomedia-forms' ) );
 		$this->panel_close();
 
 		// Anti-spam tab.
@@ -505,6 +506,7 @@ class BF_Admin {
 					'mode'            => 'redirect' === ( $in['mode'] ?? '' ) ? 'redirect' : 'message',
 					'success_message' => sanitize_text_field( $in['success_message'] ?? '' ),
 					'redirect_url'    => esc_url_raw( $in['redirect_url'] ?? '' ),
+					'submit_label'    => sanitize_text_field( $in['submit_label'] ?? __( 'Send', 'bomedia-forms' ) ),
 				)
 			);
 		}

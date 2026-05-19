@@ -114,21 +114,43 @@ class BF_I18n {
 
 		foreach ( $forms as $form_id ) {
 			$fields = get_post_meta( $form_id, '_bf_fields', true );
-			if ( ! is_array( $fields ) ) {
-				continue;
-			}
-			foreach ( $fields as $field ) {
-				if ( ! empty( $field['label'] ) ) {
-					pll_register_string( 'bf_label_' . $form_id, $field['label'], self::STRING_GROUP );
-				}
-				if ( ! empty( $field['placeholder'] ) ) {
-					pll_register_string( 'bf_ph_' . $form_id, $field['placeholder'], self::STRING_GROUP );
+			if ( is_array( $fields ) ) {
+				foreach ( $fields as $field ) {
+					if ( ! empty( $field['label'] ) ) {
+						pll_register_string( 'bf_label_' . $form_id, $field['label'], self::STRING_GROUP );
+					}
+					if ( ! empty( $field['placeholder'] ) ) {
+						pll_register_string( 'bf_ph_' . $form_id, $field['placeholder'], self::STRING_GROUP );
+					}
+					if ( ! empty( $field['options'] ) && is_array( $field['options'] ) ) {
+						foreach ( $field['options'] as $opt ) {
+							$opt_label = is_array( $opt ) ? ( $opt['label'] ?? '' ) : $opt;
+							if ( '' !== (string) $opt_label ) {
+								pll_register_string( 'bf_opt_' . $form_id, $opt_label, self::STRING_GROUP );
+							}
+						}
+					}
 				}
 			}
 
-			$success = get_post_meta( $form_id, '_bf_success_message', true );
-			if ( $success ) {
-				pll_register_string( 'bf_success_' . $form_id, $success, self::STRING_GROUP );
+			$post_submit = get_post_meta( $form_id, '_bf_post_submit', true );
+			if ( is_array( $post_submit ) ) {
+				if ( ! empty( $post_submit['success_message'] ) ) {
+					pll_register_string( 'bf_success_' . $form_id, $post_submit['success_message'], self::STRING_GROUP );
+				}
+				if ( ! empty( $post_submit['submit_label'] ) ) {
+					pll_register_string( 'bf_submit_' . $form_id, $post_submit['submit_label'], self::STRING_GROUP );
+				}
+			}
+
+			$notif = get_post_meta( $form_id, '_bf_notifications', true );
+			if ( is_array( $notif ) ) {
+				if ( ! empty( $notif['subject'] ) ) {
+					pll_register_string( 'bf_subject_' . $form_id, $notif['subject'], self::STRING_GROUP, false );
+				}
+				if ( ! empty( $notif['body_html'] ) ) {
+					pll_register_string( 'bf_body_' . $form_id, $notif['body_html'], self::STRING_GROUP, true );
+				}
 			}
 		}
 	}
