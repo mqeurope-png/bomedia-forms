@@ -537,10 +537,24 @@ class BF_Submission_Handler {
 	}
 
 	/**
-	 * Build the AgileCRM contact payload from the field mapping.
+	 * Build the AgileCRM contact payload from the submitted data.
 	 *
-	 * name/email/phone are auto-detected from field types; everything else
-	 * goes to custom properties using the configured (or default) mapping.
+	 * Produces the shape consumed by BF_AgileCRM_Client::create_contact():
+	 *   { system: assoc<system_property,string>, custom: [{name,value}], tags: [] }
+	 *
+	 * Field-to-property resolution (in order):
+	 *   1. Admin-configured mapping (`field_mapping[key] = property_name`).
+	 *      If the configured name is a known AgileCRM SYSTEM property
+	 *      (first_name, last_name, email, phone, company, website, …) the
+	 *      value is placed under `system`; otherwise under `custom`.
+	 *   2. Field type: `email` → system.email, `tel` → system.phone.
+	 *   3. Normalized field key looked up in a small ES/EN keyword map
+	 *      (name/nombre/fullname → first_name, telefono → phone, etc.).
+	 *   4. Anything else → CUSTOM with name = snake_case(label).
+	 *
+	 * Post-processing: if first_name has whitespace and last_name is empty
+	 * the name is split; if first_name is still empty but email is present,
+	 * the email local-part is used so AgileCRM does not 400 on "no name".
 	 *
 	 * @param array   $config Form config.
 	 * @param array   $data   Submitted data.
@@ -551,45 +565,58 @@ class BF_Submission_Handler {
 	private function build_contact_data( array $config, array $data, WP_Post $post, $lang ) {
 		$agile   = $config['agilecrm'] ?? array();
 		$mapping = is_array( $agile['field_mapping'] ?? null ) ? $agile['field_mapping'] : array();
+		$system_props = BF_AgileCRM_Client::system_properties();
 
-		$name  = '';
-		$email = '';
-		$phone = '';
-		$props = array();
+		$system = array();
+		$custom = array();
 
 		foreach ( (array) $config['fields'] as $field ) {
-			$key  = $field['name'] ?? '';
-			$type = $field['type'] ?? 'text';
+			$key = isset( $field['name'] ) ? (string) $field['name'] : '';
 			if ( '' === $key || ! isset( $data[ $key ] ) ) {
 				continue;
 			}
-			$value = is_array( $data[ $key ] ) ? implode( ', ', $data[ $key ] ) : $data[ $key ];
-			if ( '' === (string) $value ) {
+			$value = is_array( $data[ $key ] ) ? implode( ', ', $data[ $key ] ) : (string) $data[ $key ];
+			$value = trim( $value );
+			if ( '' === $value ) {
 				continue;
 			}
 
-			if ( 'email' === $type && '' === $email ) {
-				$email = $value;
-				continue;
-			}
-			if ( 'tel' === $type && '' === $phone ) {
-				$phone = $value;
-				continue;
-			}
-			if ( '' === $name && ( 'name' === $key || false !== strpos( strtolower( (string) ( $field['label'] ?? '' ) ), 'name' ) ) ) {
-				$name = $value;
+			$target = self::resolve_property_target( $field, $mapping, $system_props );
+			if ( null === $target ) {
 				continue;
 			}
 
-			$prop_name = ! empty( $mapping[ $key ] ) ? $mapping[ $key ] : self::default_property_name( $field );
-			$props[]   = array(
-				'name'  => $prop_name,
-				'value' => $value,
-			);
+			if ( 'SYSTEM' === $target['type'] ) {
+				$prop = $target['name'];
+				if ( empty( $system[ $prop ] ) ) {
+					$system[ $prop ] = $value;
+				}
+			} else {
+				$custom[] = array(
+					'name'  => $target['name'],
+					'value' => $value,
+				);
+			}
+		}
+
+		// If a single "name" field was supplied (no separate last_name) and
+		// it contains whitespace, split it so AgileCRM gets both fields.
+		if ( ! empty( $system['first_name'] ) && empty( $system['last_name'] ) && preg_match( '/\s/', $system['first_name'] ) ) {
+			$parts                 = preg_split( '/\s+/', $system['first_name'], 2 );
+			$system['first_name']  = $parts[0];
+			$system['last_name']   = $parts[1];
+		}
+
+		// AgileCRM requires at least one of first_name / last_name / email.
+		// Form-level validation usually guarantees an email; if first_name
+		// is still blank, fall back to the email local-part so the contact
+		// has a human-readable name in the CRM.
+		if ( empty( $system['first_name'] ) && empty( $system['last_name'] ) && ! empty( $system['email'] ) ) {
+			$at                   = strpos( $system['email'], '@' );
+			$system['first_name'] = false === $at ? $system['email'] : substr( $system['email'], 0, $at );
 		}
 
 		// Tags: configured defaults + automatic "lang:xx" + form slug.
-		// Confirmed taxonomy — no further per-trigger rules for now.
 		$tags = (array) ( $agile['default_tags'] ?? array() );
 		if ( $lang ) {
 			$tags[] = 'lang:' . $lang;
@@ -597,12 +624,107 @@ class BF_Submission_Handler {
 		$tags[] = $post->post_name ? $post->post_name : ( 'form-' . $post->ID );
 
 		return array(
-			'name'       => $name,
-			'email'      => $email,
-			'phone'      => $phone,
-			'tags'       => $tags,
-			'properties' => $props,
+			'system' => $system,
+			'custom' => $custom,
+			'tags'   => $tags,
 		);
+	}
+
+	/**
+	 * Decide where a submitted field's value should land in AgileCRM.
+	 *
+	 * @param array $field        Field definition.
+	 * @param array $mapping      Admin field-mapping config.
+	 * @param array $system_props Known system property names.
+	 * @return array|null { @type string $type SYSTEM|CUSTOM; @type string $name } or null to skip.
+	 */
+	private static function resolve_property_target( array $field, array $mapping, array $system_props ) {
+		$key  = isset( $field['name'] ) ? (string) $field['name'] : '';
+		$type = isset( $field['type'] ) ? (string) $field['type'] : 'text';
+
+		// 1) Explicit admin mapping wins.
+		if ( ! empty( $mapping[ $key ] ) ) {
+			$prop = strtolower( trim( $mapping[ $key ] ) );
+			if ( in_array( $prop, $system_props, true ) ) {
+				return array(
+					'type' => 'SYSTEM',
+					'name' => $prop,
+				);
+			}
+			return array(
+				'type' => 'CUSTOM',
+				'name' => $mapping[ $key ],
+			);
+		}
+
+		// 2) Field type hints.
+		if ( 'email' === $type ) {
+			return array(
+				'type' => 'SYSTEM',
+				'name' => 'email',
+			);
+		}
+		if ( 'tel' === $type ) {
+			return array(
+				'type' => 'SYSTEM',
+				'name' => 'phone',
+			);
+		}
+
+		// 3) Normalized-key heuristics (ES + EN keyword variants).
+		$normalized = self::normalize_key( $key );
+		$alias      = self::system_property_alias( $normalized );
+		if ( null !== $alias ) {
+			return array(
+				'type' => 'SYSTEM',
+				'name' => $alias,
+			);
+		}
+
+		// 4) Fallback to CUSTOM with a snake_case-of-label property name.
+		return array(
+			'type' => 'CUSTOM',
+			'name' => self::default_property_name( $field ),
+		);
+	}
+
+	/**
+	 * Normalise a key for keyword matching: ASCII-fold, lowercase, collapse
+	 * separators to underscore.
+	 *
+	 * @param string $key Raw key.
+	 * @return string
+	 */
+	private static function normalize_key( $key ) {
+		$key = remove_accents( (string) $key );
+		$key = strtolower( $key );
+		$key = preg_replace( '/[^a-z0-9]+/', '_', $key );
+		return trim( (string) $key, '_' );
+	}
+
+	/**
+	 * Map a normalized key to an AgileCRM SYSTEM property, if recognised.
+	 *
+	 * @param string $key Normalized key.
+	 * @return string|null
+	 */
+	private static function system_property_alias( $key ) {
+		$map = array(
+			'first_name'  => array( 'first_name', 'firstname', 'name', 'nombre', 'fullname', 'full_name', 'nombre_completo' ),
+			'last_name'   => array( 'last_name', 'lastname', 'apellido', 'apellidos', 'surname', 'family_name' ),
+			'email'       => array( 'email', 'e_mail', 'correo', 'correo_electronico', 'mail' ),
+			'phone'       => array( 'phone', 'telephone', 'tel', 'tlf', 'telefono', 'movil', 'mobile', 'celular', 'whatsapp' ),
+			'company'     => array( 'company', 'empresa', 'organizacion', 'organization', 'compania' ),
+			'website'     => array( 'website', 'web', 'url', 'sitio_web', 'pagina_web' ),
+			'address'     => array( 'address', 'direccion', 'domicilio' ),
+			'title'       => array( 'title', 'puesto', 'cargo', 'job_title' ),
+		);
+		foreach ( $map as $prop => $aliases ) {
+			if ( in_array( $key, $aliases, true ) ) {
+				return $prop;
+			}
+		}
+		return null;
 	}
 
 	/**

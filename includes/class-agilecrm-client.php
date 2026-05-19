@@ -3,8 +3,14 @@
  * AgileCRM REST API client.
  *
  * Stateless: every call takes the form's decrypted credentials. 30s
- * timeout, one automatic retry on a 5xx response. Only metadata (form id,
- * HTTP code, contact id) is logged — never the contact body, for privacy.
+ * timeout, one automatic retry on 5xx / transport error.
+ *
+ * Privacy: the request body (contact data) is NEVER logged. The response
+ * body is logged on failure — truncated and stripped of newlines — because
+ * AgileCRM returns the reason in plain text or JSON there and it is
+ * essential for diagnosing 4xx errors. Field/property names are server-
+ * side so they are safe to log; the response should not contain submitter
+ * PII for create_contact failures.
  *
  * @package BomediaForms
  *
@@ -20,7 +26,17 @@ if ( ! defined( 'ABSPATH' ) ) {
  */
 class BF_AgileCRM_Client {
 
-	const TIMEOUT = 30;
+	const TIMEOUT          = 30;
+	const LOG_BODY_LIMIT   = 500;
+
+	/**
+	 * AgileCRM SYSTEM property names (anything else must be CUSTOM).
+	 *
+	 * @return string[]
+	 */
+	public static function system_properties() {
+		return array( 'first_name', 'last_name', 'email', 'phone', 'company', 'website', 'address', 'title' );
+	}
 
 	/**
 	 * Build the API base URL for a subdomain.
@@ -55,10 +71,11 @@ class BF_AgileCRM_Client {
 	 * @param array  $headers Headers.
 	 * @param string $body    Raw body (optional).
 	 * @return array {
-	 *     @type bool   $ok    Whether a 2xx was received.
-	 *     @type int    $code  HTTP status code (0 on transport error).
-	 *     @type array  $json  Decoded JSON body (may be empty).
-	 *     @type string $error Error message when not ok.
+	 *     @type bool   $ok           Whether a 2xx was received.
+	 *     @type int    $code         HTTP status code (0 on transport error).
+	 *     @type array  $json         Decoded JSON body (may be empty).
+	 *     @type string $body_excerpt First N chars of raw response body, single-line.
+	 *     @type string $error        Error message when not ok.
 	 * }
 	 */
 	private static function request( $method, $url, array $headers, $body = null ) {
@@ -78,19 +95,23 @@ class BF_AgileCRM_Client {
 
 			if ( is_wp_error( $response ) ) {
 				$result = array(
-					'ok'    => false,
-					'code'  => 0,
-					'json'  => array(),
-					'error' => $response->get_error_message(),
+					'ok'           => false,
+					'code'         => 0,
+					'json'         => array(),
+					'body_excerpt' => '',
+					'error'        => $response->get_error_message(),
 				);
 			} else {
-				$code = (int) wp_remote_retrieve_response_code( $response );
-				$json = json_decode( wp_remote_retrieve_body( $response ), true );
-				$result = array(
-					'ok'    => $code >= 200 && $code < 300,
-					'code'  => $code,
-					'json'  => is_array( $json ) ? $json : array(),
-					'error' => $code >= 200 && $code < 300 ? '' : 'HTTP ' . $code,
+				$code        = (int) wp_remote_retrieve_response_code( $response );
+				$raw_body    = (string) wp_remote_retrieve_body( $response );
+				$json        = json_decode( $raw_body, true );
+				$body_single = trim( preg_replace( '/\s+/', ' ', $raw_body ) );
+				$result      = array(
+					'ok'           => $code >= 200 && $code < 300,
+					'code'         => $code,
+					'json'         => is_array( $json ) ? $json : array(),
+					'body_excerpt' => substr( $body_single, 0, self::LOG_BODY_LIMIT ),
+					'error'        => $code >= 200 && $code < 300 ? '' : 'HTTP ' . $code,
 				);
 			}
 
@@ -107,11 +128,10 @@ class BF_AgileCRM_Client {
 	 * @param string $email        Account email.
 	 * @param string $api_key      Decrypted REST API key.
 	 * @param array  $contact_data {
-	 *     @type string $name       Full name.
-	 *     @type string $email      Contact email.
-	 *     @type string $phone      Contact phone.
-	 *     @type array  $tags       Tag list.
-	 *     @type array  $properties Extra AgileCRM properties [{name,value}].
+	 *     @type array $system Map of system field => value
+	 *                         (first_name, last_name, email, phone, …).
+	 *     @type array $custom List of {name, value} for custom properties.
+	 *     @type array $tags   Tag list.
 	 * }
 	 * @param int    $form_id      Form id, for log correlation.
 	 * @return array { @type bool $success; @type int|null $contact_id; @type string $message }
@@ -125,60 +145,67 @@ class BF_AgileCRM_Client {
 			);
 		}
 
+		$system = isset( $contact_data['system'] ) && is_array( $contact_data['system'] ) ? $contact_data['system'] : array();
+		$custom = isset( $contact_data['custom'] ) && is_array( $contact_data['custom'] ) ? $contact_data['custom'] : array();
+		$tags   = isset( $contact_data['tags'] )   && is_array( $contact_data['tags'] )   ? $contact_data['tags']   : array();
+
+		// AgileCRM rejects contacts with neither a name nor an email.
+		if ( '' === trim( (string) ( $system['first_name'] ?? '' ) )
+			&& '' === trim( (string) ( $system['last_name'] ?? '' ) )
+			&& '' === trim( (string) ( $system['email'] ?? '' ) ) ) {
+			BF_Logger::log( 'agilecrm', sprintf( 'create_contact form_id=%d result=fail http=0 error="no first_name/last_name/email"', (int) $form_id ) );
+			return array(
+				'success'    => false,
+				'contact_id' => null,
+				'message'    => 'no first_name/last_name/email',
+			);
+		}
+
 		$properties = array();
 
-		if ( ! empty( $contact_data['name'] ) ) {
-			$parts = preg_split( '/\s+/', trim( $contact_data['name'] ), 2 );
-			$properties[] = array(
-				'type'  => 'SYSTEM',
-				'name'  => 'first_name',
-				'value' => $parts[0],
-			);
-			if ( ! empty( $parts[1] ) ) {
-				$properties[] = array(
-					'type'  => 'SYSTEM',
-					'name'  => 'last_name',
-					'value' => $parts[1],
-				);
+		foreach ( self::system_properties() as $name ) {
+			$value = isset( $system[ $name ] ) ? trim( (string) $system[ $name ] ) : '';
+			if ( '' === $value ) {
+				continue;
 			}
-		}
-		if ( ! empty( $contact_data['email'] ) ) {
-			$properties[] = array(
-				'type'    => 'SYSTEM',
-				'name'    => 'email',
-				'value'   => $contact_data['email'],
-				'subtype' => 'work',
+			$entry = array(
+				'type'  => 'SYSTEM',
+				'name'  => $name,
+				'value' => $value,
 			);
+			if ( 'email' === $name || 'phone' === $name ) {
+				$entry['subtype'] = 'work';
+			}
+			$properties[] = $entry;
 		}
-		if ( ! empty( $contact_data['phone'] ) ) {
-			$properties[] = array(
-				'type'    => 'SYSTEM',
-				'name'    => 'phone',
-				'value'   => $contact_data['phone'],
-				'subtype' => 'work',
-			);
-		}
-		foreach ( (array) ( $contact_data['properties'] ?? array() ) as $prop ) {
-			if ( empty( $prop['name'] ) || '' === (string) ( $prop['value'] ?? '' ) ) {
+
+		foreach ( $custom as $prop ) {
+			if ( ! is_array( $prop ) || empty( $prop['name'] ) ) {
+				continue;
+			}
+			$value = is_array( $prop['value'] ?? null ) ? implode( ', ', $prop['value'] ) : (string) ( $prop['value'] ?? '' );
+			$value = trim( $value );
+			if ( '' === $value ) {
 				continue;
 			}
 			$properties[] = array(
 				'type'  => 'CUSTOM',
 				'name'  => (string) $prop['name'],
-				'value' => is_array( $prop['value'] ) ? implode( ', ', $prop['value'] ) : (string) $prop['value'],
+				'value' => $value,
 			);
 		}
 
 		$payload = array(
-			'tags'       => array_values( array_unique( array_filter( array_map( 'strval', (array) ( $contact_data['tags'] ?? array() ) ) ) ) ),
+			'tags'       => array_values( array_unique( array_filter( array_map( 'strval', $tags ) ) ) ),
 			'properties' => $properties,
 		);
 
-		$res = self::request(
+		$body = wp_json_encode( $payload );
+		$res  = self::request(
 			'POST',
 			self::base_url( $subdomain ) . '/contacts',
 			self::headers( $email, $api_key ),
-			wp_json_encode( $payload )
+			$body
 		);
 
 		$contact_id = isset( $res['json']['id'] ) ? (int) $res['json']['id'] : null;
@@ -186,24 +213,28 @@ class BF_AgileCRM_Client {
 		BF_Logger::log(
 			'agilecrm',
 			sprintf(
-				'create_contact form_id=%d result=%s http=%d contact_id=%s%s',
+				'create_contact form_id=%d endpoint=POST /contacts result=%s http=%d req_bytes=%d contact_id=%s%s',
 				(int) $form_id,
 				$res['ok'] ? 'ok' : 'fail',
 				$res['code'],
+				strlen( (string) $body ),
 				$contact_id ? $contact_id : '-',
-				$res['ok'] ? '' : ' error="' . $res['error'] . '"'
+				$res['ok'] ? '' : ' response=' . self::log_quote( $res['body_excerpt'] )
 			)
 		);
 
 		return array(
 			'success'    => $res['ok'] && $contact_id,
 			'contact_id' => $contact_id,
-			'message'    => $res['ok'] ? 'ok' : ( $res['error'] ? $res['error'] : 'AgileCRM error' ),
+			'message'    => $res['ok'] ? 'ok' : ( $res['body_excerpt'] ? $res['body_excerpt'] : ( $res['error'] ?: 'AgileCRM error' ) ),
 		);
 	}
 
 	/**
 	 * Attach a note to a contact.
+	 *
+	 * Endpoint and payload verified against the AgileCRM REST docs:
+	 *   POST /dev/api/notes   { subject, description, contact_ids:[id] }
 	 *
 	 * @param string $subdomain  AgileCRM subdomain.
 	 * @param string $email      Account email.
@@ -225,16 +256,25 @@ class BF_AgileCRM_Client {
 			'contact_ids' => array( (string) (int) $contact_id ),
 		);
 
-		$res = self::request(
+		$req_body = wp_json_encode( $payload );
+		$res      = self::request(
 			'POST',
 			self::base_url( $subdomain ) . '/notes',
 			self::headers( $email, $api_key ),
-			wp_json_encode( $payload )
+			$req_body
 		);
 
 		BF_Logger::log(
 			'agilecrm',
-			sprintf( 'add_note form_id=%d contact_id=%d result=%s http=%d', (int) $form_id, (int) $contact_id, $res['ok'] ? 'ok' : 'fail', $res['code'] )
+			sprintf(
+				'add_note form_id=%d contact_id=%d endpoint=POST /notes result=%s http=%d req_bytes=%d%s',
+				(int) $form_id,
+				(int) $contact_id,
+				$res['ok'] ? 'ok' : 'fail',
+				$res['code'],
+				strlen( (string) $req_body ),
+				$res['ok'] ? '' : ' response=' . self::log_quote( $res['body_excerpt'] )
+			)
 		);
 
 		return $res['ok'];
@@ -268,7 +308,16 @@ class BF_AgileCRM_Client {
 			self::headers( $email, $api_key )
 		);
 
-		BF_Logger::log( 'agilecrm', sprintf( 'test_connection subdomain=%s result=%s http=%d', $subdomain, $res['ok'] ? 'ok' : 'fail', $res['code'] ) );
+		BF_Logger::log(
+			'agilecrm',
+			sprintf(
+				'test_connection subdomain=%s endpoint=GET /contacts?page_size=1 result=%s http=%d%s',
+				$subdomain,
+				$res['ok'] ? 'ok' : 'fail',
+				$res['code'],
+				$res['ok'] ? '' : ' response=' . self::log_quote( $res['body_excerpt'] )
+			)
+		);
 
 		if ( $res['ok'] ) {
 			return array(
@@ -290,5 +339,16 @@ class BF_AgileCRM_Client {
 				? __( 'Could not reach AgileCRM (network error).', 'bomedia-forms' )
 				: sprintf( /* translators: %d: HTTP status code. */ __( 'AgileCRM returned HTTP %d.', 'bomedia-forms' ), $res['code'] ),
 		);
+	}
+
+	/**
+	 * Quote an arbitrary string for the log file in a way that survives
+	 * grep and never injects newlines.
+	 *
+	 * @param string $s Response excerpt.
+	 * @return string
+	 */
+	private static function log_quote( $s ) {
+		return '"' . str_replace( array( "\r", "\n", '"' ), array( ' ', ' ', "'" ), (string) $s ) . '"';
 	}
 }
