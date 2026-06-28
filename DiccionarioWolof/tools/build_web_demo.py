@@ -159,19 +159,28 @@ function populateVoices(){
   if(!window.speechSynthesis) return;
   voices = speechSynthesis.getVoices();
   voiceSel.innerHTML="";
-  // Ordenar: francés primero, luego español, italiano y el resto.
-  const rank = v => v.lang.startsWith("fr")?0 : v.lang.startsWith("es")?1 :
-                    v.lang.startsWith("it")?2 : 3;
-  voices.map((v,i)=>({v,i})).sort((a,b)=>rank(a.v)-rank(b.v))
-    .forEach(({v,i})=>{
-      const o=document.createElement("option");
-      o.value=i; o.textContent=v.name+"  ("+v.lang+")";
-      voiceSel.appendChild(o);
-    });
-  // Selección por defecto: voz francesa; si no hay, española.
-  let def = voices.findIndex(v=>v.lang.startsWith("fr"));
-  if(def<0) def = voices.findIndex(v=>v.lang.startsWith("es"));
-  if(def>=0) voiceSel.value=def;
+  // Como máximo 2 voces por idioma (francés, español, inglés).
+  const langs=["fr","es","en"];
+  const picked=[];
+  langs.forEach(lang=>{
+    const seen=new Set();
+    for(const o of voices.map((v,i)=>({v,i}))){
+      if(!(o.v.lang && o.v.lang.toLowerCase().startsWith(lang))) continue;
+      if(seen.has(o.v.name)) continue;   // evita duplicados
+      seen.add(o.v.name); picked.push(o);
+      if(seen.size>=2) break;            // máximo 2 por idioma
+    }
+  });
+  picked.forEach(o=>{
+    const opt=document.createElement("option");
+    opt.value=o.i; opt.textContent=o.v.name+"  ("+o.v.lang+")";
+    voiceSel.appendChild(opt);
+  });
+  // Selección por defecto: voz francesa; si no, española; si no, la primera.
+  const def = picked.find(o=>o.v.lang.toLowerCase().startsWith("fr"))
+           || picked.find(o=>o.v.lang.toLowerCase().startsWith("es"))
+           || picked[0];
+  if(def) voiceSel.value=def.i;
 }
 if(window.speechSynthesis){
   populateVoices();

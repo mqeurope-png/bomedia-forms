@@ -216,7 +216,13 @@ def aproximar_pron_fr(wo: str) -> str:
 
 
 def fonetica_voz(pron: str) -> str:
-    """Transcripción silabeada de la pronunciación, lista para el TTS."""
+    """Transcripción de la pronunciación lista para el TTS.
+
+    NO se silabea con guiones: los motores TTS (sobre todo el español) leen los
+    guiones como letras sueltas y deletrean ("ye-re-yef" -> "i griega, ere…").
+    Se lee la palabra entera (la lentitud se consigue bajando la velocidad) y
+    solo se aplica la epéntesis de los grupos prenasales ("nga" -> "nega").
+    """
     if not pron:
         return ""
     palabras = []
@@ -227,8 +233,10 @@ def fonetica_voz(pron: str) -> str:
             continue
         pre = token[:len(token) - len(token.lstrip(_SIGNOS))]
         post = token[len(token.rstrip(_SIGNOS)):]
-        palabras.append(pre + "-".join(_silabear(_epentesis(nucleo))) + post)
-    return " ".join(palabras)
+        palabras.append(pre + _epentesis(nucleo) + post)
+    # Sustituye guiones/barras (de palabras compuestas) por espacios: si no, el
+    # TTS también los deletrea ("ñaar-fukki" -> "ñaar fukki").
+    return " ".join(palabras).replace("-", " ").replace("/", " ")
 
 
 # ---------------------------------------------------------------------------

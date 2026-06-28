@@ -395,7 +395,7 @@ private fun VoicePicker(speaker: SpeakerState) {
                 onClick = {
                     speaker.select(voice)
                     val muestra = if (voice.locale.language.startsWith("fr"))
-                        "dje-re-djef" else "ye-re-yef"
+                        "djeredjef" else "yereyef"
                     speaker.speakWolofRaw(muestra)
                     expanded = false
                 },

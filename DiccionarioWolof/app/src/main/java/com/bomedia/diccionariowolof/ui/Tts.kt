@@ -45,18 +45,26 @@ class SpeakerState {
             engine.voices
                 ?.filter { !it.isNetworkConnectionRequired && !it.features.orEmpty()
                     .contains(TextToSpeech.Engine.KEY_FEATURE_NOT_INSTALLED) }
-                ?.sortedBy { it.locale.displayName }
-                ?: emptyList()
+                ?: emptyList<Voice>()
         }.getOrDefault(emptyList())
-        voices = available
 
-        spanishVoice = available.firstOrNull { it.locale.language == "es" }
+        // Nos quedamos con un máximo de 2 voces por idioma (francés, español e
+        // inglés) para no abrumar: suelen ser una masculina y una femenina.
+        voices = LANGS.flatMap { lang ->
+            available.filter { it.locale.language == lang }
+                .distinctBy { it.name }
+                .sortedBy { it.name }
+                .take(2)
+        }
+
+        spanishVoice = voices.firstOrNull { it.locale.language == "es" }
+            ?: available.firstOrNull { it.locale.language == "es" }
 
         // Voz wolof por defecto: FRANCESA (cooficial en Senegal); si no hay,
-        // española y, en último caso, la de por defecto del motor.
-        val preferida = available.firstOrNull { it.locale.language == "fr" }
+        // española y, en último caso, la primera disponible.
+        val preferida = voices.firstOrNull { it.locale.language == "fr" }
             ?: spanishVoice
-            ?: available.firstOrNull()
+            ?: voices.firstOrNull()
         preferida?.let { applyVoice(it) } ?: run { engine.language = Locale.FRENCH }
         ready = true
     }
@@ -125,6 +133,9 @@ class SpeakerState {
     companion object {
         private const val RATE_WOLOF = 0.78f    // lento: articula las sílabas
         private const val RATE_SPANISH = 0.95f  // español casi natural
+
+        // Idiomas ofrecidos en el selector de voz (en este orden).
+        private val LANGS = listOf("fr", "es", "en")
     }
 }
 
