@@ -73,6 +73,106 @@ def aproximar_pronunciacion(wo: str) -> str:
 
 
 # ---------------------------------------------------------------------------
+# Transcripción fonética para la VOZ (silabeada)
+# ---------------------------------------------------------------------------
+# El motor de voz (TTS) lee mejor —más despacio y claro— una versión silabeada
+# de la pronunciación: "Jërëjëf" -> pron "Yereyef" -> voz "ye-re-yef".
+# Aquí silabeamos la pronunciación con reglas estándar del español.
+
+_VOCALES = "aeiouáéíóúü"
+_FUERTES = "aeoáéó"
+_DEBIL_TONICA = "íú"
+_INSEPARABLES = {
+    "bl", "cl", "fl", "gl", "pl", "br", "cr", "dr", "fr", "gr", "pr", "tr",
+}
+# Dígrafos/grupos que cuentan como UNA consonante (se "protegen" con marcadores).
+_MARCADORES = {"\x01": "gu", "\x02": "qu", "\x03": "ch", "\x04": "ll", "\x05": "rr"}
+
+
+def _silabear(palabra: str) -> list:
+    """Divide en sílabas una palabra (en grafía española de pronunciación)."""
+    s = palabra.lower()
+    # Proteger dígrafos como una sola consonante (longitud 1 cada marcador).
+    s = re.sub(r"gu(?=[eiéí])", "\x01", s)   # gu = /g/ (gui, gue)
+    s = re.sub(r"qu", "\x02", s)             # qu = /k/
+    s = s.replace("ch", "\x03").replace("ll", "\x04").replace("rr", "\x05")
+
+    def es_vocal(c: str) -> bool:
+        return c in _VOCALES
+
+    letras = list(s)
+
+    # 1) Núcleos vocálicos (agrupando diptongos, separando hiatos).
+    nucleos = []
+    i = 0
+    while i < len(letras):
+        if es_vocal(letras[i]):
+            j = i
+            while j + 1 < len(letras) and es_vocal(letras[j + 1]):
+                a, b = letras[j], letras[j + 1]
+                if a in _FUERTES and b in _FUERTES:
+                    break  # hiato: dos vocales fuertes
+                if a in _DEBIL_TONICA or b in _DEBIL_TONICA:
+                    break  # hiato: vocal débil tónica
+                j += 1
+            nucleos.append((i, j))
+            i = j + 1
+        else:
+            i += 1
+
+    if not nucleos:
+        return [palabra]
+
+    # 2) Repartir las consonantes entre núcleos contiguos.
+    silabas = []
+    inicio = 0
+    for idx, (_, fin_n) in enumerate(nucleos):
+        if idx == len(nucleos) - 1:
+            corte = len(letras)
+        else:
+            sig_ini = nucleos[idx + 1][0]
+            cons = letras[fin_n + 1:sig_ini]
+            n = len(cons)
+            if n <= 1:
+                corte = fin_n + 1                      # 0/1 cons -> con la sig.
+            elif n == 2:
+                par = cons[0] + cons[1]
+                corte = fin_n + 1 if par in _INSEPARABLES else fin_n + 2
+            else:
+                par = cons[-2] + cons[-1]
+                corte = sig_ini - 2 if par in _INSEPARABLES else sig_ini - 1
+        silabas.append("".join(letras[inicio:corte]))
+        inicio = corte
+
+    # Restaurar los dígrafos protegidos.
+    out = []
+    for sil in silabas:
+        for marca, orig in _MARCADORES.items():
+            sil = sil.replace(marca, orig)
+        out.append(sil)
+    return out
+
+
+_SIGNOS = "¿?¡!.,…:;«»\"'()"
+
+
+def fonetica_voz(pron: str) -> str:
+    """Transcripción silabeada de la pronunciación, lista para el TTS."""
+    if not pron:
+        return ""
+    palabras = []
+    for token in pron.split(" "):
+        nucleo = token.strip(_SIGNOS)
+        if not nucleo:
+            palabras.append(token)
+            continue
+        pre = token[:len(token) - len(token.lstrip(_SIGNOS))]
+        post = token[len(token.rstrip(_SIGNOS)):]
+        palabras.append(pre + "-".join(_silabear(nucleo)) + post)
+    return " ".join(palabras)
+
+
+# ---------------------------------------------------------------------------
 # Datos: (categoría, español, wolof). wolof == "" -> no disponible.
 # ---------------------------------------------------------------------------
 
@@ -557,11 +657,13 @@ def construir_entradas():
         if es in vistos:
             continue
         vistos.add(es)
+        pron = aproximar_pronunciacion(wo)
         entradas.append({
             "cat": cat,
             "es": es,
             "wo": wo,
-            "pron": aproximar_pronunciacion(wo),
+            "pron": pron,
+            "fon": fonetica_voz(pron),  # silabeado para el TTS
         })
     return entradas
 

@@ -18,10 +18,13 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Divider
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -47,6 +50,8 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.bomedia.diccionariowolof.data.Entry
 import com.bomedia.diccionariowolof.ui.DictionaryViewModel
+import com.bomedia.diccionariowolof.ui.SpeakerState
+import com.bomedia.diccionariowolof.ui.label
 import com.bomedia.diccionariowolof.ui.rememberSpeaker
 import com.bomedia.diccionariowolof.ui.theme.DiccionarioWolofTheme
 
@@ -73,9 +78,9 @@ class MainActivity : ComponentActivity() {
 @Composable
 fun DictionaryApp(viewModel: DictionaryViewModel = viewModel()) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
-    val speak = rememberSpeaker()
+    // Motor de voz compartido por toda la app (conserva la voz elegida).
+    val speaker = rememberSpeaker()
 
-    // Entrada seleccionada: si es null se ve la lista; si no, su ficha.
     var selected by remember { mutableStateOf<Entry?>(null) }
 
     val current = selected
@@ -84,16 +89,16 @@ fun DictionaryApp(viewModel: DictionaryViewModel = viewModel()) {
             query = uiState.query,
             results = uiState.results,
             voiceHeard = uiState.voiceHeard,
+            speaker = speaker,
             onQueryChange = viewModel::onQueryChange,
             onVoiceResult = viewModel::onVoiceResult,
             onEntryClick = { selected = it },
-            onSpeak = speak,
         )
     } else {
         EntryDetailScreen(
             entry = current,
+            speaker = speaker,
             onBack = { selected = null },
-            onSpeak = speak,
         )
     }
 }
@@ -108,10 +113,10 @@ fun SearchScreen(
     query: String,
     results: List<Entry>,
     voiceHeard: String?,
+    speaker: SpeakerState,
     onQueryChange: (String) -> Unit,
     onVoiceResult: (String) -> Unit,
     onEntryClick: (Entry) -> Unit,
-    onSpeak: (String) -> Unit,
 ) {
     val context = androidx.compose.ui.platform.LocalContext.current
 
@@ -135,12 +140,8 @@ fun SearchScreen(
                 RecognizerIntent.EXTRA_LANGUAGE_MODEL,
                 RecognizerIntent.LANGUAGE_MODEL_FREE_FORM,
             )
-            // Idioma base del reconocedor (español, el más cercano a nuestra
-            // grafía de pronunciación). El usuario habla wolof y se transcribe
-            // de forma aproximada.
             putExtra(RecognizerIntent.EXTRA_LANGUAGE, "es-ES")
             putExtra(RecognizerIntent.EXTRA_PROMPT, context.getString(R.string.voice_prompt))
-            // Pista para intentar el reconocimiento OFFLINE (Android 6+).
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                 putExtra(RecognizerIntent.EXTRA_PREFER_OFFLINE, true)
             }
@@ -153,11 +154,15 @@ fun SearchScreen(
     }
 
     Scaffold(
-        topBar = { TopAppBar(title = { Text(stringResource(R.string.app_name)) }) }
+        topBar = {
+            TopAppBar(
+                title = { Text(stringResource(R.string.app_name)) },
+                actions = { VoicePicker(speaker) },
+            )
+        }
     ) { innerPadding ->
         Column(modifier = Modifier.padding(innerPadding)) {
 
-            // Barra de búsqueda con botón de micrófono integrado.
             OutlinedTextField(
                 value = query,
                 onValueChange = onQueryChange,
@@ -176,7 +181,6 @@ fun SearchScreen(
                 },
             )
 
-            // Aviso cuando los resultados provienen del micrófono.
             if (voiceHeard != null) {
                 Text(
                     text = stringResource(R.string.voice_heard, voiceHeard),
@@ -200,7 +204,7 @@ fun SearchScreen(
                         EntryRow(
                             entry = entry,
                             onClick = { onEntryClick(entry) },
-                            onSpeak = onSpeak,
+                            onSpeak = { speaker.speak(entry.speakable) },
                         )
                         Divider()
                     }
@@ -210,9 +214,44 @@ fun SearchScreen(
     }
 }
 
+/**
+ * Botón con menú desplegable para elegir la voz del TTS (idioma/acento y, según
+ * el dispositivo, voz masculina o femenina). Si no hay voces, no se muestra.
+ */
+@Composable
+private fun VoicePicker(speaker: SpeakerState) {
+    if (speaker.voices.isEmpty()) return
+    var expanded by remember { mutableStateOf(false) }
+
+    IconButton(onClick = { expanded = true }) {
+        Icon(
+            painter = painterResource(R.drawable.ic_voice),
+            contentDescription = stringResource(R.string.choose_voice),
+        )
+    }
+    DropdownMenu(
+        expanded = expanded,
+        onDismissRequest = { expanded = false },
+        modifier = Modifier.heightIn(max = 360.dp),
+    ) {
+        speaker.voices.forEach { voice ->
+            val isSel = voice == speaker.selected
+            DropdownMenuItem(
+                text = { Text((if (isSel) "✓ " else "") + voice.label()) },
+                onClick = {
+                    speaker.select(voice)
+                    // Pequeña muestra al elegir la voz.
+                    speaker.speak("Jë-rë-jëf")
+                    expanded = false
+                },
+            )
+        }
+    }
+}
+
 /** Una fila de la lista: español, wolof y botón para escucharla. */
 @Composable
-private fun EntryRow(entry: Entry, onClick: () -> Unit, onSpeak: (String) -> Unit) {
+private fun EntryRow(entry: Entry, onClick: () -> Unit, onSpeak: () -> Unit) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -235,10 +274,8 @@ private fun EntryRow(entry: Entry, onClick: () -> Unit, onSpeak: (String) -> Uni
                 overflow = TextOverflow.Ellipsis,
             )
         }
-        // Botón "escuchar" (lee la pronunciación con la voz española).
-        val toSpeak = entry.pron.ifEmpty { entry.wo }
-        if (toSpeak.isNotEmpty()) {
-            IconButton(onClick = { onSpeak(toSpeak) }) {
+        if (entry.speakable.isNotEmpty()) {
+            IconButton(onClick = onSpeak) {
                 Icon(
                     painter = painterResource(R.drawable.ic_volume),
                     contentDescription = stringResource(R.string.listen),
@@ -253,7 +290,7 @@ private fun EntryRow(entry: Entry, onClick: () -> Unit, onSpeak: (String) -> Uni
  */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun EntryDetailScreen(entry: Entry, onBack: () -> Unit, onSpeak: (String) -> Unit) {
+fun EntryDetailScreen(entry: Entry, speaker: SpeakerState, onBack: () -> Unit) {
     Scaffold(
         topBar = {
             TopAppBar(
@@ -267,9 +304,9 @@ fun EntryDetailScreen(entry: Entry, onBack: () -> Unit, onSpeak: (String) -> Uni
                     }
                 },
                 actions = {
-                    val toSpeak = entry.pron.ifEmpty { entry.wo }
-                    if (toSpeak.isNotEmpty()) {
-                        IconButton(onClick = { onSpeak(toSpeak) }) {
+                    VoicePicker(speaker)
+                    if (entry.speakable.isNotEmpty()) {
+                        IconButton(onClick = { speaker.speak(entry.speakable) }) {
                             Icon(
                                 painter = painterResource(R.drawable.ic_volume),
                                 contentDescription = stringResource(R.string.listen),

@@ -3,14 +3,14 @@
 Construye una DEMO WEB de un solo archivo (demo/index.html) a partir de
 app/src/main/assets/diccionario.json.
 
-La demo replica la lógica de la app Android (búsqueda bidireccional sin
-acentos/mayúsculas y con coincidencias parciales, fichas, "escuchar" por voz y
-búsqueda por micrófono con coincidencia fonética) para poder probar el contenido
-y la experiencia ANTES de compilar el APK. Basta con abrir el archivo en
-cualquier navegador (en el móvil se recomienda Chrome para voz/micrófono).
+La demo replica la lógica de la app Android (búsqueda bidireccional, fichas,
+"escuchar" con voz seleccionable y búsqueda por micrófono con coincidencia
+fonética) para probar el contenido ANTES de compilar el APK. El diccionario se
+incrusta en el HTML, así que funciona offline (con doble clic, sin servidor).
 
-El diccionario se incrusta dentro del HTML, así que el archivo funciona offline
-(con doble clic, sin servidor).
+Nota: el reconocimiento por micrófono del navegador (Web Speech API) solo
+funciona desde https:// o http://localhost (no desde file://) y en Chrome usa
+Internet. La versión Android usa el reconocedor del propio móvil.
 """
 
 import json
@@ -29,12 +29,16 @@ PLANTILLA = r"""<!DOCTYPE html>
   header { background:var(--primary); color:#fff; padding:14px 16px; font-size:20px;
            position:sticky; top:0; z-index:10; }
   header small { display:block; font-size:12px; opacity:.85; font-weight:normal; }
-  .searchbar { display:flex; gap:8px; padding:12px 16px; position:sticky; top:56px;
-               background:#fff; border-bottom:1px solid #eee; z-index:9; }
+  .searchbar { display:flex; gap:8px; padding:12px 16px 4px; position:sticky; top:56px;
+               background:#fff; z-index:9; }
   #q { flex:1; padding:10px 12px; font-size:16px; border:1px solid #ccc; border-radius:8px; }
   button.icon { border:1px solid var(--primary); background:#fff; color:var(--primary);
                 border-radius:8px; padding:0 12px; font-size:18px; cursor:pointer; }
   button.icon:active { background:#e0f2f1; }
+  .controls { display:flex; gap:10px; align-items:center; flex-wrap:wrap;
+              padding:0 16px 10px; border-bottom:1px solid #eee; position:sticky;
+              top:104px; background:#fff; z-index:9; font-size:13px; color:#555; }
+  .controls select { padding:6px 8px; border:1px solid #ccc; border-radius:6px; max-width:60vw; }
   .banner { background:#f2f2f2; padding:8px 16px; font-size:13px; }
   ul { list-style:none; margin:0; padding:0; }
   li { display:flex; align-items:center; gap:8px; padding:12px 16px;
@@ -42,11 +46,9 @@ PLANTILLA = r"""<!DOCTYPE html>
   li:hover { background:#fafafa; }
   .es { font-size:16px; }
   .wo { font-size:14px; color:var(--primary); }
-  .cat { font-size:11px; color:#888; }
   .grow { flex:1; min-width:0; }
   .spk { border:none; background:transparent; font-size:20px; cursor:pointer; color:#555; }
   .empty { padding:24px 16px; color:#888; }
-  /* Ficha */
   #detail { position:fixed; inset:0; background:#fff; display:none; flex-direction:column; z-index:20; }
   #detail.open { display:flex; }
   #detail .bar { background:var(--primary); color:#fff; padding:14px 16px; display:flex;
@@ -66,14 +68,19 @@ PLANTILLA = r"""<!DOCTYPE html>
   <input id="q" type="text" placeholder="Buscar en español o wolof…" autocomplete="off">
   <button class="icon" id="mic" title="Buscar por voz">🎤</button>
 </div>
+<div class="controls">
+  <label>🔊 Voz: <select id="voiceSel"></select></label>
+  <label>Velocidad: <input id="rate" type="range" min="0.5" max="1.1" step="0.05" value="0.78"></label>
+</div>
 <div id="voiceBanner" class="banner" style="display:none"></div>
 
 <ul id="list"></ul>
 <div id="empty" class="empty" style="display:none">No se han encontrado resultados.</div>
-<div class="hint">Pulsa una entrada para ver su ficha. El altavoz 🔊 lee la pronunciación.
-  El micrófono 🎤 es experimental (usa el reconocedor del navegador y busca por parecido fonético).</div>
+<div class="hint">Pulsa una entrada para ver su ficha. El altavoz 🔊 lee la pronunciación silabeada
+  con la voz elegida (prueba voces en español/italiano para mayor fidelidad, o francesa para otro acento).
+  El micrófono 🎤 es experimental y solo funciona si abres la página desde <b>http://localhost</b> o
+  <b>https</b> (no desde un archivo local). En el móvil, esa función la hace la app Android.</div>
 
-<!-- Ficha de la palabra -->
 <div id="detail">
   <div class="bar"><button id="back">←</button><span>Ficha de la palabra</span>
     <span class="grow"></span><button id="dspk">🔊</button></div>
@@ -97,7 +104,6 @@ function normalize(t){
 }
 const INDEX = DATA.map(e => normalize(e.es+" "+e.wo+" "+e.pron+" "+e.cat));
 
-// --- Búsqueda de texto ----------------------------------------------------
 function search(q){
   const n = normalize(q);
   if(!n) return DATA.slice();
@@ -138,11 +144,41 @@ function phonetic(spoken){
   return scored.slice(0,15).map(x=>x[0]);
 }
 
-// --- Voz: hablar (TTS) ----------------------------------------------------
-function speak(text){
+// --- Voz: selección + hablar (TTS) ----------------------------------------
+let voices=[];
+const voiceSel=document.getElementById("voiceSel");
+const rateEl=document.getElementById("rate");
+
+function populateVoices(){
+  if(!window.speechSynthesis) return;
+  voices = speechSynthesis.getVoices();
+  voiceSel.innerHTML="";
+  // Ordenar: español primero, luego italiano, francés y el resto.
+  const rank = v => v.lang.startsWith("es")?0 : v.lang.startsWith("it")?1 :
+                    v.lang.startsWith("fr")?2 : 3;
+  voices.map((v,i)=>({v,i})).sort((a,b)=>rank(a.v)-rank(b.v))
+    .forEach(({v,i})=>{
+      const o=document.createElement("option");
+      o.value=i; o.textContent=v.name+"  ("+v.lang+")";
+      voiceSel.appendChild(o);
+    });
+  // Selección por defecto: una voz española.
+  const def = voices.findIndex(v=>v.lang.startsWith("es"));
+  if(def>=0) voiceSel.value=def;
+}
+if(window.speechSynthesis){
+  populateVoices();
+  speechSynthesis.onvoiceschanged = populateVoices;
+}
+
+function speak(entry){
+  // Lee la transcripción silabeada (fon) para sonar más claro y despacio.
+  const text = entry.fon || entry.pron || entry.wo;
   if(!text || !window.speechSynthesis) return;
   const u=new SpeechSynthesisUtterance(text);
-  u.lang="es-ES";
+  const v = voices[parseInt(voiceSel.value,10)];
+  if(v){ u.voice=v; u.lang=v.lang; } else { u.lang="es-ES"; }
+  u.rate = parseFloat(rateEl.value)||0.78;
   speechSynthesis.cancel(); speechSynthesis.speak(u);
 }
 
@@ -160,11 +196,10 @@ function render(items){
     g.querySelector(".es").textContent=e.es;
     g.querySelector(".wo").textContent=e.wo || "(traducción no disponible)";
     li.appendChild(g);
-    const toSpeak=e.pron||e.wo;
-    if(toSpeak){
+    if(e.fon||e.pron||e.wo){
       const b=document.createElement("button"); b.className="spk"; b.textContent="🔊";
       b.title="Escuchar";
-      b.onclick=ev=>{ev.stopPropagation(); speak(toSpeak);};
+      b.onclick=ev=>{ev.stopPropagation(); speak(e);};
       li.appendChild(b);
     }
     li.onclick=()=>openDetail(e);
@@ -185,7 +220,7 @@ function openDetail(e){
   detail.classList.add("open");
 }
 document.getElementById("back").onclick=()=>detail.classList.remove("open");
-document.getElementById("dspk").onclick=()=>{ if(currentDetail) speak(currentDetail.pron||currentDetail.wo); };
+document.getElementById("dspk").onclick=()=>{ if(currentDetail) speak(currentDetail); };
 
 // --- Búsqueda en tiempo real ---------------------------------------------
 const q=document.getElementById("q");
@@ -194,19 +229,30 @@ q.addEventListener("input",()=>{ banner.style.display="none"; render(search(q.va
 
 // --- Micrófono (experimental) --------------------------------------------
 const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
+function showBanner(msg){ banner.textContent=msg; banner.style.display="block"; }
 document.getElementById("mic").onclick=()=>{
-  if(!SR){ alert("Este navegador no tiene reconocimiento de voz. Prueba con Chrome."); return; }
+  // El reconocimiento web exige contexto seguro (https/localhost).
+  if(location.protocol==="file:" || (window.isSecureContext===false)){
+    showBanner("🎤 El micrófono del navegador no funciona abriendo el archivo directamente. "
+      +"Ábrelo desde http://localhost o https, o usa la app Android (que reconoce sin conexión).");
+    return;
+  }
+  if(!SR){ showBanner("🎤 Este navegador no tiene reconocimiento de voz. Prueba con Chrome."); return; }
   const r=new SR(); r.lang="es-ES"; r.interimResults=false; r.maxAlternatives=1;
   r.onresult=ev=>{
     const text=ev.results[0][0].transcript;
     q.value=text;
     const res=phonetic(text);
     render(res.length?res:search(text));
-    banner.textContent="🎤 He oído: «"+text+"». Mejores coincidencias:";
-    banner.style.display="block";
+    showBanner("🎤 He oído: «"+text+"». Mejores coincidencias:");
   };
-  r.onerror=()=>{ banner.textContent="🎤 No se pudo reconocer la voz."; banner.style.display="block"; };
-  r.start();
+  r.onerror=ev=>{
+    const m = ev.error==="not-allowed" ? "permiso de micrófono denegado"
+            : ev.error==="network" ? "necesita conexión (Chrome) y contexto seguro"
+            : ev.error;
+    showBanner("🎤 No se pudo reconocer la voz ("+m+").");
+  };
+  try { r.start(); } catch(e){ showBanner("🎤 No se pudo iniciar el micrófono."); }
 };
 
 render(DATA);

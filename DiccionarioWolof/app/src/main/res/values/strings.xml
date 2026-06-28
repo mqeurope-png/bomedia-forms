@@ -14,4 +14,5 @@
     <string name="voice_prompt">Habla ahora (en wolof o español)…</string>
     <string name="voice_heard">🎤 He oído: «%1$s». Mejores coincidencias:</string>
     <string name="voice_unavailable">No hay reconocimiento de voz disponible en este dispositivo.</string>
+    <string name="choose_voice">Elegir voz</string>
 </resources>
