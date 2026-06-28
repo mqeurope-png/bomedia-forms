@@ -26,6 +26,7 @@ import androidx.compose.material3.Divider
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.FilterChip
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -51,7 +52,6 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.bomedia.diccionariowolof.data.Entry
 import com.bomedia.diccionariowolof.ui.DictionaryViewModel
 import com.bomedia.diccionariowolof.ui.SpeakerState
-import com.bomedia.diccionariowolof.ui.label
 import com.bomedia.diccionariowolof.ui.rememberSpeaker
 import com.bomedia.diccionariowolof.ui.theme.DiccionarioWolofTheme
 
@@ -78,10 +78,17 @@ class MainActivity : ComponentActivity() {
 @Composable
 fun DictionaryApp(viewModel: DictionaryViewModel = viewModel()) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
-    // Motor de voz compartido por toda la app (conserva la voz elegida).
     val speaker = rememberSpeaker()
 
+    // Idioma activo: false = Wolof (oír/buscar wolof), true = Español.
+    var spanishMode by remember { mutableStateOf(false) }
+    // Entrada seleccionada: si es null se ve la lista; si no, su ficha.
     var selected by remember { mutableStateOf<Entry?>(null) }
+
+    // Acción de "escuchar" según el idioma activo.
+    val onSpeak: (Entry) -> Unit = { entry ->
+        if (spanishMode) speaker.speakSpanish(entry.es) else speaker.speakWolof(entry)
+    }
 
     val current = selected
     if (current == null) {
@@ -90,21 +97,26 @@ fun DictionaryApp(viewModel: DictionaryViewModel = viewModel()) {
             results = uiState.results,
             voiceHeard = uiState.voiceHeard,
             speaker = speaker,
+            spanishMode = spanishMode,
+            onModeChange = { spanishMode = it },
             onQueryChange = viewModel::onQueryChange,
-            onVoiceResult = viewModel::onVoiceResult,
+            onVoiceResult = { text -> viewModel.onVoiceResult(text, spanishMode) },
             onEntryClick = { selected = it },
+            onSpeak = onSpeak,
         )
     } else {
         EntryDetailScreen(
             entry = current,
             speaker = speaker,
+            spanishMode = spanishMode,
             onBack = { selected = null },
+            onSpeak = onSpeak,
         )
     }
 }
 
 /**
- * Pantalla principal: barra de búsqueda arriba y lista de palabras debajo.
+ * Pantalla principal: selector de idioma, barra de búsqueda y lista de palabras.
  * La lista se filtra en tiempo real a medida que se escribe.
  */
 @OptIn(ExperimentalMaterial3Api::class)
@@ -114,15 +126,18 @@ fun SearchScreen(
     results: List<Entry>,
     voiceHeard: String?,
     speaker: SpeakerState,
+    spanishMode: Boolean,
+    onModeChange: (Boolean) -> Unit,
     onQueryChange: (String) -> Unit,
     onVoiceResult: (String) -> Unit,
     onEntryClick: (Entry) -> Unit,
+    onSpeak: (Entry) -> Unit,
 ) {
     val context = androidx.compose.ui.platform.LocalContext.current
 
     // Reconocimiento de voz mediante el reconocedor del sistema (se le pide
-    // que trabaje SIN conexión). Devuelve una transcripción aproximada que
-    // luego se compara fonéticamente con el wolof del diccionario.
+    // que trabaje SIN conexión). Devuelve una transcripción que se busca según
+    // el idioma activo (texto español o parecido fonético wolof).
     val voiceLauncher = rememberLauncherForActivityResult(
         ActivityResultContracts.StartActivityForResult()
     ) { result ->
@@ -163,6 +178,10 @@ fun SearchScreen(
     ) { innerPadding ->
         Column(modifier = Modifier.padding(innerPadding)) {
 
+            // Selector de idioma: Español / Wolof.
+            LanguageSelector(spanishMode = spanishMode, onModeChange = onModeChange)
+
+            // Barra de búsqueda con botón de micrófono.
             OutlinedTextField(
                 value = query,
                 onValueChange = onQueryChange,
@@ -204,7 +223,7 @@ fun SearchScreen(
                         EntryRow(
                             entry = entry,
                             onClick = { onEntryClick(entry) },
-                            onSpeak = { speaker.speak(entry) },
+                            onSpeak = { onSpeak(entry) },
                         )
                         Divider()
                     }
@@ -214,40 +233,30 @@ fun SearchScreen(
     }
 }
 
-/**
- * Botón con menú desplegable para elegir la voz del TTS (idioma/acento y, según
- * el dispositivo, voz masculina o femenina). Si no hay voces, no se muestra.
- */
+/** Conmutador Español / Wolof que decide el idioma de la voz y la búsqueda. */
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun VoicePicker(speaker: SpeakerState) {
-    if (speaker.voices.isEmpty()) return
-    var expanded by remember { mutableStateOf(false) }
-
-    IconButton(onClick = { expanded = true }) {
-        Icon(
-            painter = painterResource(R.drawable.ic_voice),
-            contentDescription = stringResource(R.string.choose_voice),
-        )
-    }
-    DropdownMenu(
-        expanded = expanded,
-        onDismissRequest = { expanded = false },
-        modifier = Modifier.heightIn(max = 360.dp),
+private fun LanguageSelector(spanishMode: Boolean, onModeChange: (Boolean) -> Unit) {
+    Row(
+        modifier = Modifier.padding(start = 16.dp, end = 16.dp, top = 8.dp),
+        horizontalArrangement = Arrangement.spacedBy(8.dp),
+        verticalAlignment = Alignment.CenterVertically,
     ) {
-        speaker.voices.forEach { voice ->
-            val isSel = voice == speaker.selected
-            DropdownMenuItem(
-                text = { Text((if (isSel) "✓ " else "") + voice.label()) },
-                onClick = {
-                    speaker.select(voice)
-                    // Pequeña muestra al elegir la voz (según su idioma).
-                    val muestra = if (voice.locale.language.startsWith("fr"))
-                        "dje-re-djef" else "ye-re-yef"
-                    speaker.speakRaw(muestra)
-                    expanded = false
-                },
-            )
-        }
+        Text(
+            text = stringResource(R.string.lang_label),
+            style = MaterialTheme.typography.labelLarge,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+        )
+        FilterChip(
+            selected = spanishMode,
+            onClick = { onModeChange(true) },
+            label = { Text(stringResource(R.string.lang_spanish)) },
+        )
+        FilterChip(
+            selected = !spanishMode,
+            onClick = { onModeChange(false) },
+            label = { Text(stringResource(R.string.lang_wolof)) },
+        )
     }
 }
 
@@ -276,13 +285,11 @@ private fun EntryRow(entry: Entry, onClick: () -> Unit, onSpeak: () -> Unit) {
                 overflow = TextOverflow.Ellipsis,
             )
         }
-        if (entry.wo.isNotEmpty()) {
-            IconButton(onClick = onSpeak) {
-                Icon(
-                    painter = painterResource(R.drawable.ic_volume),
-                    contentDescription = stringResource(R.string.listen),
-                )
-            }
+        IconButton(onClick = onSpeak) {
+            Icon(
+                painter = painterResource(R.drawable.ic_volume),
+                contentDescription = stringResource(R.string.listen),
+            )
         }
     }
 }
@@ -292,7 +299,13 @@ private fun EntryRow(entry: Entry, onClick: () -> Unit, onSpeak: () -> Unit) {
  */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun EntryDetailScreen(entry: Entry, speaker: SpeakerState, onBack: () -> Unit) {
+fun EntryDetailScreen(
+    entry: Entry,
+    speaker: SpeakerState,
+    spanishMode: Boolean,
+    onBack: () -> Unit,
+    onSpeak: (Entry) -> Unit,
+) {
     Scaffold(
         topBar = {
             TopAppBar(
@@ -307,13 +320,11 @@ fun EntryDetailScreen(entry: Entry, speaker: SpeakerState, onBack: () -> Unit) {
                 },
                 actions = {
                     VoicePicker(speaker)
-                    if (entry.wo.isNotEmpty()) {
-                        IconButton(onClick = { speaker.speak(entry) }) {
-                            Icon(
-                                painter = painterResource(R.drawable.ic_volume),
-                                contentDescription = stringResource(R.string.listen),
-                            )
-                        }
+                    IconButton(onClick = { onSpeak(entry) }) {
+                        Icon(
+                            painter = painterResource(R.drawable.ic_volume),
+                            contentDescription = stringResource(R.string.listen),
+                        )
                     }
                 },
             )
@@ -339,10 +350,6 @@ fun EntryDetailScreen(entry: Entry, speaker: SpeakerState, onBack: () -> Unit) {
                 entry.wo.ifEmpty { stringResource(R.string.no_translation) },
             )
             DetailField(stringResource(R.string.label_pron), entry.pron.ifEmpty { "—" })
-
-            TextButton(onClick = onBack) {
-                Text(stringResource(R.string.back))
-            }
         }
     }
 }
@@ -357,5 +364,42 @@ private fun DetailField(label: String, value: String) {
             color = MaterialTheme.colorScheme.onSurfaceVariant,
         )
         Text(text = value, style = MaterialTheme.typography.headlineSmall)
+    }
+}
+
+/**
+ * Botón con menú desplegable para elegir la voz del wolof. Android no expone el
+ * género, por eso las voces se numeran por idioma (al elegir suena una muestra).
+ */
+@Composable
+private fun VoicePicker(speaker: SpeakerState) {
+    val voces = speaker.labeledVoices
+    if (voces.isEmpty()) return
+    var expanded by remember { mutableStateOf(false) }
+
+    IconButton(onClick = { expanded = true }) {
+        Icon(
+            painter = painterResource(R.drawable.ic_voice),
+            contentDescription = stringResource(R.string.choose_voice),
+        )
+    }
+    DropdownMenu(
+        expanded = expanded,
+        onDismissRequest = { expanded = false },
+        modifier = Modifier.heightIn(max = 360.dp),
+    ) {
+        voces.forEach { (voice, etiqueta) ->
+            val isSel = voice == speaker.selected
+            DropdownMenuItem(
+                text = { Text((if (isSel) "✓ " else "") + etiqueta) },
+                onClick = {
+                    speaker.select(voice)
+                    val muestra = if (voice.locale.language.startsWith("fr"))
+                        "dje-re-djef" else "ye-re-yef"
+                    speaker.speakWolofRaw(muestra)
+                    expanded = false
+                },
+            )
+        }
     }
 }

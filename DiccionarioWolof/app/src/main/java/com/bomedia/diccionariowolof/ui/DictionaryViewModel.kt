@@ -50,16 +50,20 @@ class DictionaryViewModel(app: Application) : AndroidViewModel(app) {
     /**
      * Se llama cuando el reconocedor de voz devuelve una transcripción.
      *
-     * Como no existe reconocimiento de wolof, el texto reconocido (aproximado)
-     * se compara fonéticamente con la pronunciación y el wolof de cada entrada
-     * para ofrecer los candidatos más parecidos.
+     * @param spanishMode si es `true`, lo dicho se interpreta como ESPAÑOL y se
+     *   busca en el texto (español/wolof). Si es `false`, se interpreta como
+     *   WOLOF y se compara fonéticamente con la pronunciación/wolof.
      */
-    fun onVoiceResult(spoken: String) {
-        val matches = repository.phoneticSearch(spoken)
+    fun onVoiceResult(spoken: String, spanishMode: Boolean) {
+        val results = if (spanishMode) {
+            repository.search(spoken)
+        } else {
+            // Wolof: parecido fonético; si no hay, caemos a la búsqueda de texto.
+            repository.phoneticSearch(spoken).ifEmpty { repository.search(spoken) }
+        }
         _uiState.value = DictionaryUiState(
             query = spoken,
-            // Si la búsqueda fonética no encuentra nada, caemos a la de texto.
-            results = matches.ifEmpty { repository.search(spoken) },
+            results = results,
             voiceHeard = spoken,
         )
     }

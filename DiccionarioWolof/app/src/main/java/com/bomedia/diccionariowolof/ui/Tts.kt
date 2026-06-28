@@ -9,17 +9,22 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.platform.LocalContext
+import com.bomedia.diccionariowolof.data.Entry
 import java.util.Locale
 
 /**
  * Estado del motor de Texto-a-Voz (TTS), preparado para Compose.
  *
- * - Lee la transcripción silabeada (`fon`) más despacio para que suene claro.
- * - Permite elegir la VOZ entre las instaladas en el dispositivo (distintos
- *   idiomas/acentos y, según el aparato, voz masculina o femenina).
+ * Sabe leer de dos formas:
+ *  - **Wolof**: la transcripción silabeada (`fon`) con la VOZ elegida por el
+ *    usuario (francesa por defecto), más despacio para articular bien.
+ *  - **Español**: la palabra española con una voz ESPAÑOLA automática.
  */
 class SpeakerState {
     private var tts: TextToSpeech? = null
+
+    // Voz española elegida automáticamente para leer en español.
+    private var spanishVoice: Voice? = null
 
     var ready by mutableStateOf(false)
         private set
@@ -28,13 +33,13 @@ class SpeakerState {
     var voices by mutableStateOf<List<Voice>>(emptyList())
         private set
 
-    /** Voz seleccionada actualmente (null = la de por defecto). */
+    /** Voz seleccionada para el wolof (null = la de por defecto). */
     var selected by mutableStateOf<Voice?>(null)
         private set
 
     internal fun attach(engine: TextToSpeech) {
         tts = engine
-        engine.setSpeechRate(SPEECH_RATE)
+        engine.setSpeechRate(RATE_WOLOF)
         // Voces utilizables offline (descartamos las que exigen red).
         val available = runCatching {
             engine.voices
@@ -45,18 +50,18 @@ class SpeakerState {
         }.getOrDefault(emptyList())
         voices = available
 
-        // Por defecto: voz FRANCESA (el francés es lengua cooficial en Senegal);
-        // si no hay, una española y, en último caso, la de por defecto.
+        spanishVoice = available.firstOrNull { it.locale.language == "es" }
+
+        // Voz wolof por defecto: FRANCESA (cooficial en Senegal); si no hay,
+        // española y, en último caso, la de por defecto del motor.
         val preferida = available.firstOrNull { it.locale.language == "fr" }
-            ?: available.firstOrNull { it.locale.language == "es" }
+            ?: spanishVoice
             ?: available.firstOrNull()
-        preferida?.let { applyVoice(it) } ?: run {
-            engine.language = Locale.FRENCH
-        }
+        preferida?.let { applyVoice(it) } ?: run { engine.language = Locale.FRENCH }
         ready = true
     }
 
-    /** Cambia la voz activa. */
+    /** Cambia la voz del wolof. */
     fun select(voice: Voice) = applyVoice(voice)
 
     private fun applyVoice(voice: Voice) {
@@ -64,21 +69,51 @@ class SpeakerState {
         selected = voice
     }
 
-    /** Idioma de la voz activa (p. ej. "fr", "es"), o null si no hay. */
-    private fun currentLanguage(): String? = selected?.locale?.language
-
-    /** Lee una entrada eligiendo la transcripción según la voz activa. */
-    fun speak(entry: com.bomedia.diccionariowolof.data.Entry) {
-        speakRaw(entry.speakable(currentLanguage()))
+    /** Lee una entrada en WOLOF (pronunciación) con la voz elegida. */
+    fun speakWolof(entry: Entry) {
+        if (!ready) return
+        selected?.let { runCatching { tts?.voice = it } }
+        speakWith(entry.speakable(selected?.locale?.language), RATE_WOLOF)
     }
 
-    /** Lee un texto literal (para muestras puntuales). */
-    fun speakRaw(text: String) {
-        if (ready && text.isNotBlank()) {
-            tts?.setSpeechRate(SPEECH_RATE)
-            tts?.speak(text, TextToSpeech.QUEUE_FLUSH, null, "wolof-pron")
+    /** Lee un texto en WOLOF (muestras puntuales) con la voz elegida. */
+    fun speakWolofRaw(text: String) {
+        if (!ready) return
+        selected?.let { runCatching { tts?.voice = it } }
+        speakWith(text, RATE_WOLOF)
+    }
+
+    /** Lee un texto en ESPAÑOL con una voz española automática. */
+    fun speakSpanish(text: String) {
+        if (!ready) return
+        val v = spanishVoice
+        if (v != null) runCatching { tts?.voice = v }
+        else runCatching { tts?.language = Locale("es", "ES") }
+        speakWith(text, RATE_SPANISH)
+    }
+
+    private fun speakWith(text: String, rate: Float) {
+        if (text.isNotBlank()) {
+            tts?.setSpeechRate(rate)
+            tts?.speak(text, TextToSpeech.QUEUE_FLUSH, null, "tts")
         }
     }
+
+    /**
+     * Voces con una etiqueta legible y numerada por idioma, p. ej.
+     * "Francés (Francia) · voz 1". Android no expone el género de la voz, por
+     * eso se numeran para poder distinguirlas (al elegir una suena una muestra).
+     */
+    val labeledVoices: List<Pair<Voice, String>>
+        get() {
+            val cuenta = HashMap<String, Int>()
+            return voices.map { v ->
+                val idioma = v.locale.displayName.replaceFirstChar { it.uppercase() }
+                val n = (cuenta[idioma] ?: 0) + 1
+                cuenta[idioma] = n
+                v to "$idioma · voz $n"
+            }
+        }
 
     internal fun release() {
         tts?.stop()
@@ -88,8 +123,8 @@ class SpeakerState {
     }
 
     companion object {
-        // Más lento que el habitual (1.0) para articular mejor las sílabas.
-        private const val SPEECH_RATE = 0.78f
+        private const val RATE_WOLOF = 0.78f    // lento: articula las sílabas
+        private const val RATE_SPANISH = 0.95f  // español casi natural
     }
 }
 
@@ -112,12 +147,4 @@ fun rememberSpeaker(): SpeakerState {
         onDispose { state.release() }
     }
     return state
-}
-
-/** Etiqueta legible para una voz (idioma/acento + identificador corto). */
-fun Voice.label(): String {
-    val idioma = locale.displayName.replaceFirstChar { it.uppercase() }
-    // El nombre técnico ayuda a distinguir voces (p. ej. masculina/femenina).
-    val corto = name.substringAfterLast('-').substringAfterLast('#')
-    return if (corto.isNotBlank() && corto != name) "$idioma · $corto" else idioma
 }

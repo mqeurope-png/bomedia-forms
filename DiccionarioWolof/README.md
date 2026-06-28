@@ -59,7 +59,14 @@ python3 tools/build_web_demo.py
      "e" de apoyo (`nga` → `ne-ga`) para que la voz no los deletree.
    - Funciona sin conexión si el móvil tiene instalada esa voz.
 
-4. **🎤 Búsqueda por voz (experimental)** — ver la sección siguiente.
+4. **Selector de idioma [ Español | Wolof ]**: decide cómo se comportan el
+   micrófono y el altavoz.
+   - **Español**: el micro 🎤 busca lo que dices en español (encuentra el
+     término español) y el 🔊 lee la palabra en español (voz española).
+   - **Wolof**: el micro busca por parecido fonético con el wolof y el 🔊 lee la
+     pronunciación wolof con la voz elegida.
+
+5. **🎤 Búsqueda por voz (experimental)** — ver la sección siguiente.
 
 5. **Rendimiento**: el JSON se carga **una sola vez** al iniciar y se mantiene en
    memoria; todo funciona sin conexión.

@@ -15,4 +15,7 @@
     <string name="voice_heard">🎤 He oído: «%1$s». Mejores coincidencias:</string>
     <string name="voice_unavailable">No hay reconocimiento de voz disponible en este dispositivo.</string>
     <string name="choose_voice">Elegir voz</string>
+    <string name="lang_label">Idioma:</string>
+    <string name="lang_spanish">Español</string>
+    <string name="lang_wolof">Wolof</string>
 </resources>
