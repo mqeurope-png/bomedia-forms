@@ -9,4 +9,9 @@
     <string name="label_wolof">Wolof</string>
     <string name="label_pron">Pronunciación</string>
     <string name="back">Volver</string>
+    <string name="listen">Escuchar</string>
+    <string name="voice_search">Buscar por voz</string>
+    <string name="voice_prompt">Habla ahora (en wolof o español)…</string>
+    <string name="voice_heard">🎤 He oído: «%1$s». Mejores coincidencias:</string>
+    <string name="voice_unavailable">No hay reconocimiento de voz disponible en este dispositivo.</string>
 </resources>

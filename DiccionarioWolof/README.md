@@ -1,47 +1,98 @@
 # Diccionario Wolof 🇸🇳
 
-Diccionario **completamente offline** entre **español** y **wolof**, pensado
-para viajeros que visitan Senegal (el wolof también se habla en Gambia y en
-zonas de Mali y Mauritania).
+Diccionario **offline** entre **español** y **wolof**, pensado para viajeros que
+visitan Senegal (el wolof también se habla en Gambia y en zonas de Mali y
+Mauritania).
 
-- Sin Internet · Sin publicidad · Sin APIs externas · Sin permisos · Sin login
+- Sin Internet · Sin publicidad · Sin APIs externas · Sin login
 - Kotlin + Jetpack Compose + **Material Design 3**
 - Compatible con **Android 7.0 (API 24)** o superior
-- Datos en un único archivo **`assets/diccionario.json`**
+- **427 entradas**: vocabulario + **frases y conversaciones** del libro fuente
+- Datos en un único archivo **`assets/diccionario.json`**, organizado por categorías
+
+---
+
+## 🚀 Probar la demo SIN instalar nada
+
+En la carpeta **`demo/`** hay un archivo **`index.html`** que es una demo web del
+diccionario (mismo contenido y misma lógica de búsqueda que la app).
+
+1. Abre **`demo/index.html`** en cualquier navegador (doble clic, o ábrelo en el
+   móvil). Funciona **offline**, sin servidor.
+2. Prueba la búsqueda, pulsa una entrada para ver su ficha, usa 🔊 para escuchar
+   la pronunciación y 🎤 para la búsqueda por voz (experimental).
+
+> Para la voz y el micrófono en la web se recomienda **Chrome**. La demo sirve
+> para validar el contenido y la experiencia antes de compilar el APK; la app
+> real Android es la versión definitiva.
+
+La demo se regenera con:
+```bash
+cd DiccionarioWolof
+python3 tools/build_web_demo.py
+```
 
 ---
 
 ## ✨ Características
 
-1. **Pantalla principal**
-   - Barra de búsqueda arriba y lista de palabras debajo.
-   - La búsqueda funciona **mientras escribes** (en tiempo real).
-   - Busca a la vez en **español y en wolof** (y también en la pronunciación).
+1. **Pantalla principal**: barra de búsqueda arriba y lista debajo. Filtra
+   **mientras escribes**, a la vez en **español, wolof, pronunciación y categoría**.
+   - `gracias` → **Jërëjëf** · `jërëjëf` (o `jereje`) → **Gracias**
+   - Ignora mayúsculas, acentos y caracteres wolof (`ë à é ó ŋ`); admite
+     coincidencias parciales (`gra` → *Gracias*).
 
-   Ejemplos:
-   - Buscar `gracias` → muestra **Jërëjëf**.
-   - Buscar `jërëjëf` (o `jereje`) → muestra **Gracias**.
-
-2. **Ficha de la palabra** (al pulsar una entrada)
-   - Español
-   - Wolof
-   - Pronunciación aproximada en español
-
-   Ejemplo:
+2. **Ficha de la palabra**: categoría, Español, Wolof y Pronunciación aproximada.
    ```
    Español:        Gracias
    Wolof:          Jërëjëf
    Pronunciación:  Yereyef
    ```
 
-3. **Búsqueda inteligente**
-   - Ignora mayúsculas/minúsculas.
-   - Ignora acentos y caracteres específicos del wolof (`ë`, `à`, `é`, `ó`, `ŋ`).
-   - Encuentra **coincidencias parciales** (`gra` → *Gracias*, `jeri`/`jere` → *Jërëjëf*).
+3. **🔊 Escuchar (offline)**: cada entrada tiene un botón de altavoz que lee la
+   pronunciación con la **voz española** del móvil (Text-to-Speech). Como la
+   pronunciación está escrita en grafía española, al leerla suena parecida al
+   wolof. Funciona sin conexión si el móvil tiene instalada la voz española.
 
-4. **Rendimiento**
-   - El JSON se carga **una sola vez** al iniciar y se mantiene en memoria.
-   - Todo funciona sin conexión.
+4. **🎤 Búsqueda por voz (experimental)** — ver la sección siguiente.
+
+5. **Rendimiento**: el JSON se carga **una sola vez** al iniciar y se mantiene en
+   memoria; todo funciona sin conexión.
+
+---
+
+## 🎤 Sobre el reconocimiento de voz en wolof (léelo)
+
+**No existe un reconocedor de voz de wolof** ni online ni, mucho menos, offline.
+Android (Google) no reconoce wolof, y los modelos experimentales que hay son
+grandes, requieren Internet y tienen poca calidad.
+
+Lo que esta app hace es una **aproximación offline honesta**:
+
+1. Usa el **reconocedor de voz del propio sistema** y le pide trabajar **sin
+   conexión** (`EXTRA_PREFER_OFFLINE`), en modo español (el idioma más cercano a
+   nuestra grafía de pronunciación).
+2. Ese reconocedor produce una **transcripción aproximada** de lo que ha oído.
+3. La app compara esa transcripción con la **pronunciación** y el **wolof** de
+   cada entrada mediante una **coincidencia fonética** (distancia de edición de
+   Levenshtein + parecido palabra a palabra) y muestra los **candidatos más
+   parecidos**.
+
+**Limitaciones (importante):**
+- Es **aproximado**: acertará en palabras/frases del diccionario y fallará con
+  frases largas o muy distintas a las de la fuente.
+- El reconocimiento *offline* depende de que el móvil tenga instalado el
+  **paquete de idioma español sin conexión** (Ajustes → Sistema → Idiomas →
+  Reconocimiento de voz / Voz sin conexión). Si no lo tiene, el sistema puede
+  usar Internet o no funcionar.
+- La app **no añade el permiso de micrófono** en su manifiesto: delega en la
+  pantalla de reconocimiento del sistema, que gestiona el micrófono. Así se
+  mantiene "sin permisos" en la propia app.
+
+> Alternativa 100% autónoma (avanzada): integrar un modelo **Vosk** en español
+> dentro de la APK para no depender del sistema. Aumenta mucho el tamaño y queda
+> fuera del alcance de esta app sencilla; el código de coincidencia fonética
+> (`DictionaryRepository.phoneticSearch`) ya está preparado para reutilizarse.
 
 ---
 
@@ -49,23 +100,28 @@ zonas de Mali y Mauritania).
 
 ```
 DiccionarioWolof/
+├─ demo/
+│  └─ index.html                       ← demo web (pruébala sin compilar)
+├─ tools/
+│  ├─ generate_dict.py                 ← genera el JSON (con la pronunciación)
+│  └─ build_web_demo.py                ← genera demo/index.html desde el JSON
 ├─ app/
 │  ├─ build.gradle.kts
 │  └─ src/main/
 │     ├─ AndroidManifest.xml
 │     ├─ assets/
-│     │  └─ diccionario.json          ← ¡los datos van aquí!
+│     │  └─ diccionario.json           ← ¡los datos van aquí!
 │     ├─ java/com/bomedia/diccionariowolof/
-│     │  ├─ MainActivity.kt            ← interfaz (Compose)
+│     │  ├─ MainActivity.kt            ← interfaz (Compose) + voz/TTS
 │     │  ├─ data/
-│     │  │  ├─ Entry.kt                ← modelo de datos
-│     │  │  └─ DictionaryRepository.kt ← carga del JSON + búsqueda
+│     │  │  ├─ Entry.kt                ← modelo (cat, es, wo, pron)
+│     │  │  └─ DictionaryRepository.kt ← carga JSON + búsqueda + fonética
 │     │  └─ ui/
 │     │     ├─ DictionaryViewModel.kt  ← estado de la pantalla
+│     │     ├─ Tts.kt                  ← "escuchar" (Text-to-Speech)
 │     │     └─ theme/Theme.kt          ← tema Material 3 (fondo blanco)
 │     └─ res/                          ← textos, tema, iconos
-├─ build.gradle.kts
-├─ settings.gradle.kts
+├─ build.gradle.kts · settings.gradle.kts
 └─ gradlew / gradlew.bat               ← Gradle Wrapper (incluido)
 ```
 
@@ -79,27 +135,18 @@ DiccionarioWolof/
 - Android SDK con la **API 34** instalada (Android Studio lo ofrece al abrir).
 
 ### Pasos
-1. Abre Android Studio y elige **File → Open…** (o *Open an existing project*).
-2. Selecciona la carpeta **`DiccionarioWolof/`** y pulsa *OK*.
-3. Espera a que termine el **Gradle Sync** (Android Studio descargará las
-   dependencias la primera vez; necesita conexión solo en este paso).
-4. Para probarla: selecciona un emulador o un móvil y pulsa **Run ▶**.
-5. Para generar el APK:
-   - Menú **Build → Build Bundle(s) / APK(s) → Build APK(s)**.
-   - Al terminar, pulsa el enlace **locate** del aviso, o busca el archivo en:
-     ```
-     app/build/outputs/apk/debug/app-debug.apk
-     ```
-   - Ese **APK de depuración** ya se puede instalar en cualquier móvil
-     (activando "Orígenes desconocidos").
+1. En Android Studio: **File → Open…** y selecciona la carpeta **`DiccionarioWolof/`**.
+2. Espera al **Gradle Sync** (solo la primera vez descarga dependencias).
+3. Para probarla: elige un emulador o móvil y pulsa **Run ▶**.
+4. Para generar el APK: **Build → Build Bundle(s) / APK(s) → Build APK(s)**.
+   El archivo queda en:
+   ```
+   app/build/outputs/apk/debug/app-debug.apk
+   ```
+   Ese APK de depuración se puede instalar en cualquier móvil (activando
+   "Orígenes desconocidos").
 
-### APK de publicación (opcional, firmado)
-1. Menú **Build → Generate Signed Bundle / APK…**
-2. Elige **APK**, crea o selecciona un *keystore* y sigue el asistente.
-3. El APK firmado quedará en `app/build/outputs/apk/release/`.
-
-### Desde la línea de comandos (alternativa)
-Con el Android SDK instalado y la variable `ANDROID_HOME` configurada:
+### Desde la línea de comandos (con el Android SDK y `ANDROID_HOME` configurados)
 ```bash
 cd DiccionarioWolof
 ./gradlew assembleDebug      # APK de depuración
@@ -110,14 +157,12 @@ cd DiccionarioWolof
 
 ## ➕ Cómo ampliar el diccionario
 
-Solo tienes que editar **un archivo**:
-`app/src/main/assets/diccionario.json`.
-
-Cada entrada tiene este formato:
+Edita **`app/src/main/assets/diccionario.json`**. Cada entrada:
 
 ```json
 [
   {
+    "cat": "Saludos y cortesía",
     "es": "Gracias",
     "wo": "Jërëjëf",
     "pron": "Yereyef"
@@ -125,34 +170,32 @@ Cada entrada tiene este formato:
 ]
 ```
 
+- `cat`  → categoría temática (para agrupar/buscar). Opcional.
 - `es`   → palabra o frase en español (obligatorio).
-- `wo`   → traducción en wolof. **Déjalo como `""`** si no la conoces con
-  certeza (la app lo mostrará como *"traducción no disponible"* en lugar de
-  inventar una traducción).
+- `wo`   → traducción en wolof. **Déjalo `""`** si no la conoces con certeza
+  (la app mostrará *"traducción no disponible"* en vez de inventarla).
 - `pron` → pronunciación aproximada en español.
 
-Añade tantos objetos como quieras al array, guarda el archivo y vuelve a
-compilar. **No hay que tocar el código**: la app ordena, indexa y busca
-automáticamente sobre el nuevo contenido.
+Añade objetos al array, guarda y recompila. **No hay que tocar el código**: la
+app ordena, indexa, busca y lee en voz alta automáticamente.
 
-> Consejo: el repositorio incluye el script
-> `tools/generate_dict.py`, que genera este JSON calculando la pronunciación
-> aproximada de forma automática a partir de la ortografía wolof.
+> El script `tools/generate_dict.py` regenera el JSON calculando la
+> pronunciación de forma automática a partir de la ortografía wolof, y
+> `tools/build_web_demo.py` regenera la demo web.
 
 ---
 
 ## 📚 Fuente de los datos
 
-El diccionario inicial (~336 entradas: saludos, números, comida, transporte,
-mercado, dinero, alojamiento, salud, emergencias y expresiones habituales)
-está tomado del libro de conversación:
+Vocabulario, frases y **conversaciones** de los diez temas del libro:
 
 > **Dímelo en wolof** — Mahu Thiam Fall.
 > Coedición de *oozebap* y *les éditions madina*, Barcelona, 2012.
 
-Cuando una traducción no aparece en la fuente o no es segura, el campo `wo`
-se ha dejado vacío en lugar de inventarla.
+Cuando una traducción no aparece en la fuente o no es segura, el campo `wo` se
+ha dejado vacío en lugar de inventarla.
 
-La pronunciación es **aproximada** y sigue las reglas del alfabeto wolof
-descritas en ese mismo libro (por ejemplo: `c`→"ch", `j`→"y", `x`→"j" jota,
-`ŋ`→"ng", `ë`/`é`→"e", `à`→"a", `ó`→"o", y la `g` siempre dura).
+La **pronunciación es aproximada** y sigue las reglas del alfabeto wolof
+descritas en el propio libro (págs. 6-8): `c`→"ch", `j`→"y", `x`→"j" (jota),
+`ŋ`→"ng", `q`→"k", `ë`/`é`→"e", `à`→"a", `ó`→"o", `g` siempre dura, y las letras
+dobles como sonidos largos.

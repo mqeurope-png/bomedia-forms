@@ -1,11 +1,21 @@
 package com.bomedia.diccionariowolof
 
+import android.app.Activity
+import android.content.ActivityNotFoundException
+import android.content.Intent
+import android.os.Build
 import android.os.Bundle
+import android.speech.RecognizerIntent
+import android.widget.Toast
 import androidx.activity.ComponentActivity
+import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.compose.setContent
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -27,7 +37,9 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
@@ -35,6 +47,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.bomedia.diccionariowolof.data.Entry
 import com.bomedia.diccionariowolof.ui.DictionaryViewModel
+import com.bomedia.diccionariowolof.ui.rememberSpeaker
 import com.bomedia.diccionariowolof.ui.theme.DiccionarioWolofTheme
 
 /**
@@ -60,6 +73,7 @@ class MainActivity : ComponentActivity() {
 @Composable
 fun DictionaryApp(viewModel: DictionaryViewModel = viewModel()) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+    val speak = rememberSpeaker()
 
     // Entrada seleccionada: si es null se ve la lista; si no, su ficha.
     var selected by remember { mutableStateOf<Entry?>(null) }
@@ -69,13 +83,17 @@ fun DictionaryApp(viewModel: DictionaryViewModel = viewModel()) {
         SearchScreen(
             query = uiState.query,
             results = uiState.results,
+            voiceHeard = uiState.voiceHeard,
             onQueryChange = viewModel::onQueryChange,
+            onVoiceResult = viewModel::onVoiceResult,
             onEntryClick = { selected = it },
+            onSpeak = speak,
         )
     } else {
         EntryDetailScreen(
             entry = current,
             onBack = { selected = null },
+            onSpeak = speak,
         )
     }
 }
@@ -89,15 +107,57 @@ fun DictionaryApp(viewModel: DictionaryViewModel = viewModel()) {
 fun SearchScreen(
     query: String,
     results: List<Entry>,
+    voiceHeard: String?,
     onQueryChange: (String) -> Unit,
+    onVoiceResult: (String) -> Unit,
     onEntryClick: (Entry) -> Unit,
+    onSpeak: (String) -> Unit,
 ) {
+    val context = androidx.compose.ui.platform.LocalContext.current
+
+    // Reconocimiento de voz mediante el reconocedor del sistema (se le pide
+    // que trabaje SIN conexión). Devuelve una transcripción aproximada que
+    // luego se compara fonéticamente con el wolof del diccionario.
+    val voiceLauncher = rememberLauncherForActivityResult(
+        ActivityResultContracts.StartActivityForResult()
+    ) { result ->
+        if (result.resultCode == Activity.RESULT_OK) {
+            val text = result.data
+                ?.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS)
+                ?.firstOrNull()
+            if (!text.isNullOrBlank()) onVoiceResult(text)
+        }
+    }
+
+    fun startVoice() {
+        val intent = Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH).apply {
+            putExtra(
+                RecognizerIntent.EXTRA_LANGUAGE_MODEL,
+                RecognizerIntent.LANGUAGE_MODEL_FREE_FORM,
+            )
+            // Idioma base del reconocedor (español, el más cercano a nuestra
+            // grafía de pronunciación). El usuario habla wolof y se transcribe
+            // de forma aproximada.
+            putExtra(RecognizerIntent.EXTRA_LANGUAGE, "es-ES")
+            putExtra(RecognizerIntent.EXTRA_PROMPT, context.getString(R.string.voice_prompt))
+            // Pista para intentar el reconocimiento OFFLINE (Android 6+).
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                putExtra(RecognizerIntent.EXTRA_PREFER_OFFLINE, true)
+            }
+        }
+        try {
+            voiceLauncher.launch(intent)
+        } catch (e: ActivityNotFoundException) {
+            Toast.makeText(context, R.string.voice_unavailable, Toast.LENGTH_LONG).show()
+        }
+    }
+
     Scaffold(
         topBar = { TopAppBar(title = { Text(stringResource(R.string.app_name)) }) }
     ) { innerPadding ->
         Column(modifier = Modifier.padding(innerPadding)) {
 
-            // Barra de búsqueda.
+            // Barra de búsqueda con botón de micrófono integrado.
             OutlinedTextField(
                 value = query,
                 onValueChange = onQueryChange,
@@ -106,20 +166,42 @@ fun SearchScreen(
                     .fillMaxWidth()
                     .padding(horizontal = 16.dp, vertical = 8.dp),
                 label = { Text(stringResource(R.string.search_hint)) },
+                trailingIcon = {
+                    IconButton(onClick = { startVoice() }) {
+                        Icon(
+                            painter = painterResource(R.drawable.ic_mic),
+                            contentDescription = stringResource(R.string.voice_search),
+                        )
+                    }
+                },
             )
 
+            // Aviso cuando los resultados provienen del micrófono.
+            if (voiceHeard != null) {
+                Text(
+                    text = stringResource(R.string.voice_heard, voiceHeard),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .background(MaterialTheme.colorScheme.surfaceVariant)
+                        .padding(horizontal = 16.dp, vertical = 8.dp),
+                    style = MaterialTheme.typography.bodySmall,
+                )
+            }
+
             if (results.isEmpty()) {
-                // Sin resultados para la búsqueda actual.
                 Text(
                     text = stringResource(R.string.no_results),
                     modifier = Modifier.padding(16.dp),
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                 )
             } else {
-                // Lista de palabras.
                 LazyColumn(modifier = Modifier.fillMaxSize()) {
                     items(results, key = { it.es }) { entry ->
-                        EntryRow(entry = entry, onClick = { onEntryClick(entry) })
+                        EntryRow(
+                            entry = entry,
+                            onClick = { onEntryClick(entry) },
+                            onSpeak = onSpeak,
+                        )
                         Divider()
                     }
                 }
@@ -128,29 +210,41 @@ fun SearchScreen(
     }
 }
 
-/** Una fila de la lista: español arriba y wolof debajo. */
+/** Una fila de la lista: español, wolof y botón para escucharla. */
 @Composable
-private fun EntryRow(entry: Entry, onClick: () -> Unit) {
-    Column(
+private fun EntryRow(entry: Entry, onClick: () -> Unit, onSpeak: (String) -> Unit) {
+    Row(
         modifier = Modifier
             .fillMaxWidth()
             .clickable(onClick = onClick)
-            .padding(horizontal = 16.dp, vertical = 12.dp)
+            .padding(start = 16.dp, end = 4.dp, top = 12.dp, bottom = 12.dp),
+        verticalAlignment = Alignment.CenterVertically,
     ) {
-        Text(
-            text = entry.es,
-            style = MaterialTheme.typography.bodyLarge,
-            maxLines = 2,
-            overflow = TextOverflow.Ellipsis,
-        )
-        Text(
-            // Si no se conoce la traducción se indica de forma explícita.
-            text = entry.wo.ifEmpty { stringResource(R.string.no_translation) },
-            style = MaterialTheme.typography.bodyMedium,
-            color = MaterialTheme.colorScheme.primary,
-            maxLines = 2,
-            overflow = TextOverflow.Ellipsis,
-        )
+        Column(modifier = Modifier.weight(1f)) {
+            Text(
+                text = entry.es,
+                style = MaterialTheme.typography.bodyLarge,
+                maxLines = 2,
+                overflow = TextOverflow.Ellipsis,
+            )
+            Text(
+                text = entry.wo.ifEmpty { stringResource(R.string.no_translation) },
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.primary,
+                maxLines = 2,
+                overflow = TextOverflow.Ellipsis,
+            )
+        }
+        // Botón "escuchar" (lee la pronunciación con la voz española).
+        val toSpeak = entry.pron.ifEmpty { entry.wo }
+        if (toSpeak.isNotEmpty()) {
+            IconButton(onClick = { onSpeak(toSpeak) }) {
+                Icon(
+                    painter = painterResource(R.drawable.ic_volume),
+                    contentDescription = stringResource(R.string.listen),
+                )
+            }
+        }
     }
 }
 
@@ -159,7 +253,7 @@ private fun EntryRow(entry: Entry, onClick: () -> Unit) {
  */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun EntryDetailScreen(entry: Entry, onBack: () -> Unit) {
+fun EntryDetailScreen(entry: Entry, onBack: () -> Unit, onSpeak: (String) -> Unit) {
     Scaffold(
         topBar = {
             TopAppBar(
@@ -167,9 +261,20 @@ fun EntryDetailScreen(entry: Entry, onBack: () -> Unit) {
                 navigationIcon = {
                     IconButton(onClick = onBack) {
                         Icon(
-                            painter = androidx.compose.ui.res.painterResource(R.drawable.ic_back),
+                            painter = painterResource(R.drawable.ic_back),
                             contentDescription = stringResource(R.string.back),
                         )
+                    }
+                },
+                actions = {
+                    val toSpeak = entry.pron.ifEmpty { entry.wo }
+                    if (toSpeak.isNotEmpty()) {
+                        IconButton(onClick = { onSpeak(toSpeak) }) {
+                            Icon(
+                                painter = painterResource(R.drawable.ic_volume),
+                                contentDescription = stringResource(R.string.listen),
+                            )
+                        }
                     }
                 },
             )
@@ -182,18 +287,19 @@ fun EntryDetailScreen(entry: Entry, onBack: () -> Unit) {
                 .padding(24.dp),
             verticalArrangement = Arrangement.spacedBy(20.dp),
         ) {
+            if (entry.cat.isNotEmpty()) {
+                Text(
+                    text = entry.cat,
+                    style = MaterialTheme.typography.labelMedium,
+                    color = MaterialTheme.colorScheme.primary,
+                )
+            }
+            DetailField(stringResource(R.string.label_spanish), entry.es)
             DetailField(
-                label = stringResource(R.string.label_spanish),
-                value = entry.es,
+                stringResource(R.string.label_wolof),
+                entry.wo.ifEmpty { stringResource(R.string.no_translation) },
             )
-            DetailField(
-                label = stringResource(R.string.label_wolof),
-                value = entry.wo.ifEmpty { stringResource(R.string.no_translation) },
-            )
-            DetailField(
-                label = stringResource(R.string.label_pron),
-                value = entry.pron.ifEmpty { "—" },
-            )
+            DetailField(stringResource(R.string.label_pron), entry.pron.ifEmpty { "—" })
 
             TextButton(onClick = onBack) {
                 Text(stringResource(R.string.back))
@@ -211,9 +317,6 @@ private fun DetailField(label: String, value: String) {
             style = MaterialTheme.typography.labelMedium,
             color = MaterialTheme.colorScheme.onSurfaceVariant,
         )
-        Text(
-            text = value,
-            style = MaterialTheme.typography.headlineSmall,
-        )
+        Text(text = value, style = MaterialTheme.typography.headlineSmall)
     }
 }
