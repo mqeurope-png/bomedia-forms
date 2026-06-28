@@ -18,4 +18,5 @@
     <string name="lang_label">Idioma:</string>
     <string name="lang_spanish">Español</string>
     <string name="lang_wolof">Wolof</string>
+    <string name="speed_label">Velocidad:</string>
 </resources>

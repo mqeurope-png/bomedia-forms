@@ -32,6 +32,7 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Slider
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -191,6 +192,9 @@ fun SearchScreen(
             // Selector de idioma: Español / Wolof.
             LanguageSelector(spanishMode = spanishMode, onModeChange = onModeChange)
 
+            // Control de velocidad de la voz.
+            SpeedSlider(speaker)
+
             // Barra de búsqueda con botón de micrófono.
             OutlinedTextField(
                 value = query,
@@ -267,6 +271,30 @@ private fun LanguageSelector(spanishMode: Boolean, onModeChange: (Boolean) -> Un
             onClick = { onModeChange(false) },
             label = { Text(stringResource(R.string.lang_wolof)) },
         )
+    }
+}
+
+/** Control deslizante para la velocidad de la voz (de lenta 🐢 a rápida 🐇). */
+@Composable
+private fun SpeedSlider(speaker: SpeakerState) {
+    Row(
+        modifier = Modifier.padding(start = 16.dp, end = 16.dp, top = 2.dp),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.spacedBy(8.dp),
+    ) {
+        Text(
+            text = stringResource(R.string.speed_label),
+            style = MaterialTheme.typography.labelLarge,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+        )
+        Text("🐢")
+        Slider(
+            value = speaker.wolofRate,
+            onValueChange = { speaker.setRate(it) },
+            valueRange = 0.5f..1.1f,
+            modifier = Modifier.weight(1f),
+        )
+        Text("🐇")
     }
 }
 

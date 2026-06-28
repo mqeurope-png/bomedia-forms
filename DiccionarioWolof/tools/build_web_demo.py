@@ -168,7 +168,7 @@ function populateVoices(){
       if(!(o.v.lang && o.v.lang.toLowerCase().startsWith(lang))) continue;
       if(seen.has(o.v.name)) continue;   // evita duplicados
       seen.add(o.v.name); picked.push(o);
-      if(seen.size>=2) break;            // máximo 2 por idioma
+      if(seen.size>=4) break;            // hasta 4 por idioma (incluye masculinas)
     }
   });
   picked.forEach(o=>{

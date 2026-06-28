@@ -37,6 +37,13 @@ class SpeakerState {
     var selected by mutableStateOf<Voice?>(null)
         private set
 
+    /** Velocidad de lectura del wolof (ajustable con el control). */
+    var wolofRate by mutableStateOf(0.78f)
+        private set
+
+    /** Ajusta la velocidad de la voz (0.5 = lenta, 1.0 = normal). */
+    fun setRate(rate: Float) { wolofRate = rate.coerceIn(0.4f, 1.3f) }
+
     internal fun attach(engine: TextToSpeech) {
         tts = engine
         engine.setSpeechRate(RATE_WOLOF)
@@ -48,13 +55,13 @@ class SpeakerState {
                 ?: emptyList<Voice>()
         }.getOrDefault(emptyList())
 
-        // Nos quedamos con un máximo de 2 voces por idioma (francés, español e
-        // inglés) para no abrumar: suelen ser una masculina y una femenina.
+        // Hasta MAX_PER_LANG voces por idioma (francés, español, inglés), para
+        // que aparezcan tanto femeninas como masculinas sin saturar la lista.
         voices = LANGS.flatMap { lang ->
             available.filter { it.locale.language == lang }
                 .distinctBy { it.name }
                 .sortedBy { it.name }
-                .take(2)
+                .take(MAX_PER_LANG)
         }
 
         spanishVoice = voices.firstOrNull { it.locale.language == "es" }
@@ -81,14 +88,14 @@ class SpeakerState {
     fun speakWolof(entry: Entry) {
         if (!ready) return
         selected?.let { runCatching { tts?.voice = it } }
-        speakWith(entry.speakable(selected?.locale?.language), RATE_WOLOF)
+        speakWith(entry.speakable(selected?.locale?.language), wolofRate)
     }
 
     /** Lee un texto en WOLOF (muestras puntuales) con la voz elegida. */
     fun speakWolofRaw(text: String) {
         if (!ready) return
         selected?.let { runCatching { tts?.voice = it } }
-        speakWith(text, RATE_WOLOF)
+        speakWith(text, wolofRate)
     }
 
     /** Lee un texto en ESPAÑOL con una voz española automática. */
@@ -133,6 +140,8 @@ class SpeakerState {
     companion object {
         private const val RATE_WOLOF = 0.78f    // lento: articula las sílabas
         private const val RATE_SPANISH = 0.95f  // español casi natural
+
+        private const val MAX_PER_LANG = 4      // voces por idioma en el selector
 
         // Idiomas ofrecidos en el selector de voz (en este orden).
         private val LANGS = listOf("fr", "es", "en")
