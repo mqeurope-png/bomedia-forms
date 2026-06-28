@@ -10,7 +10,14 @@ on:
     branches:
       - claude/loving-euler-95ngr8
     paths:
-      - "DiccionarioWolof/**"
+      # Solo recompilar cuando cambia el código/recursos de la app, no la
+      # documentación, la demo web ni los scripts.
+      - "DiccionarioWolof/app/**"
+      - "DiccionarioWolof/build.gradle.kts"
+      - "DiccionarioWolof/settings.gradle.kts"
+      - "DiccionarioWolof/gradle.properties"
+      - "DiccionarioWolof/gradle/**"
+      - "DiccionarioWolof/gradlew"
       - ".github/workflows/build-apk.yml"
   workflow_dispatch:
 
