@@ -46,17 +46,17 @@ jobs:
       - name: Make gradlew executable
         run: chmod +x gradlew
 
-      - name: Build debug APK
+      - name: Build release APK
         run: >-
-          ./gradlew assembleDebug --no-daemon --stacktrace
+          ./gradlew assembleRelease --no-daemon --stacktrace
           -PappVersionCode=${{ github.run_number }}
           -PappVersionName=build-${{ github.run_number }}
 
       - name: Upload APK as artifact
         uses: actions/upload-artifact@v4
         with:
-          name: diccionario-wolof-debug
-          path: DiccionarioWolof/app/build/outputs/apk/debug/app-debug.apk
+          name: diccionario-wolof-release
+          path: DiccionarioWolof/app/build/outputs/apk/release/app-release.apk
           if-no-files-found: error
 
       # Publica también una "release" con el APK para descargarlo fácilmente
@@ -67,10 +67,11 @@ jobs:
           tag_name: apk-build-${{ github.run_number }}
           name: Diccionario Wolof · APK (build ${{ github.run_number }})
           body: |
-            APK de depuración de **Diccionario Wolof** generado automáticamente.
+            APK de **Diccionario Wolof** (versión de publicación firmada),
+            generado automáticamente.
 
-            Para instalarlo en el móvil: descarga `app-debug.apk`, ábrelo y
+            Para instalarlo en el móvil: descarga `app-release.apk`, ábrelo y
             permite la instalación de "orígenes desconocidos".
-          files: DiccionarioWolof/app/build/outputs/apk/debug/app-debug.apk
+          files: DiccionarioWolof/app/build/outputs/apk/release/app-release.apk
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

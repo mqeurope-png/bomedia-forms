@@ -40,6 +40,10 @@ android {
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
+            // Firmamos el release con la misma clave estable, para poder
+            // compartir un APK no-debug (menos bloqueado por Play Protect) y que
+            // se actualice sobre las builds anteriores sin desinstalar.
+            signingConfig = signingConfigs.getByName("debug")
         }
     }
 
