@@ -189,6 +189,13 @@ def aproximar_pron_fr(wo: str) -> str:
     if not wo:
         return ""
 
+    # Palabras que la voz FRANCESA leería como siglas y deletrearía (p. ej.
+    # "lan" -> "L.A.N."). Se reescriben para que las lea como palabra: la "e"
+    # final francesa es muda, así "lane" suena /lan/.
+    overrides = {
+        "lan": "lane",   # «¿qué?» (Lan ngay…, Lan moo…): muy frecuente
+    }
+
     def conv(token: str) -> str:
         s = token.lower()
         # Letras dobles (sonidos largos) -> simples.
@@ -208,7 +215,7 @@ def aproximar_pron_fr(wo: str) -> str:
         s = s.replace("\x13", "u")    # u muda francesa (gu, gui)
         s = s.replace("\x12", "e")    # ë -> e (schwa francesa)
         s = s.replace("\x11", "é")    # é
-        return s
+        return overrides.get(s, s)    # excepciones anti-deletreo (lan -> lane)
 
     partes = re.split(r"([ \-/])", wo)
     return "".join(conv(p) if p.strip() and p not in " -/" else p

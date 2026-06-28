@@ -317,7 +317,7 @@
     "wo": "Yow lan ngay def ci mbedd mi waxtu wii?",
     "pron": "Yow lan ngay def chi mbed mi wajtu wi?",
     "fon_es": "Yow lan negay def chi mebed mi wajtu wi?",
-    "fon_fr": "yow lan negay déf tchi mebéd mi wakhtou wi?"
+    "fon_fr": "yow lane negay déf tchi mebéd mi wakhtou wi?"
   },
   {
     "cat": "Saludos y cortesía",
@@ -613,7 +613,7 @@
     "wo": "Ci lan ngay yëngëtu?",
     "pron": "Chi lan ngay yenguetu?",
     "fon_es": "Chi lan negay yenguetu?",
-    "fon_fr": "tchi lan negay yenguetou?"
+    "fon_fr": "tchi lane negay yenguetou?"
   },
   {
     "cat": "Presentarse",
@@ -637,7 +637,7 @@
     "wo": "Lan mooy sa nimero telefon?",
     "pron": "Lan moy sa nimero telefon?",
     "fon_es": "Lan moy sa nimero telefon?",
-    "fon_fr": "lan moy sa niméro téléfon?"
+    "fon_fr": "lane moy sa niméro téléfon?"
   },
   {
     "cat": "Presentarse",
@@ -2293,7 +2293,7 @@
     "wo": "Lan ngeen bëggoon?",
     "pron": "Lan nguen begon?",
     "fon_es": "Lan neguen begon?",
-    "fon_fr": "lan neguén begon?"
+    "fon_fr": "lane neguén begon?"
   },
   {
     "cat": "Compras y dinero",
@@ -2333,7 +2333,7 @@
     "wo": "Lan mooy sa taay?",
     "pron": "Lan moy sa tay?",
     "fon_es": "Lan moy sa tay?",
-    "fon_fr": "lan moy sa tay?"
+    "fon_fr": "lane moy sa tay?"
   },
   {
     "cat": "Compras y dinero",
@@ -2621,7 +2621,7 @@
     "wo": "Lan nga bëgg a naan?",
     "pron": "Lan nga beg a nan?",
     "fon_es": "Lan nega beg a nan?",
-    "fon_fr": "lan nega beg a nan?"
+    "fon_fr": "lane nega beg a nan?"
   },
   {
     "cat": "Comida y bebida",
@@ -2629,7 +2629,7 @@
     "wo": "Lan ngeen di jël?",
     "pron": "Lan nguen di yel?",
     "fon_es": "Lan neguen di yel?",
-    "fon_fr": "lan neguén di djel?"
+    "fon_fr": "lane neguén di djel?"
   },
   {
     "cat": "Comida y bebida",
@@ -2637,7 +2637,7 @@
     "wo": "Lan ngeen di naan nak?",
     "pron": "Lan nguen di nan nak?",
     "fon_es": "Lan neguen di nan nak?",
-    "fon_fr": "lan neguén di nan nak?"
+    "fon_fr": "lane neguén di nan nak?"
   },
   {
     "cat": "Comida y bebida",
@@ -2645,7 +2645,7 @@
     "wo": "Lan ngeen di jël deseer?",
     "pron": "Lan nguen di yel deser?",
     "fon_es": "Lan neguen di yel deser?",
-    "fon_fr": "lan neguén di djel désér?"
+    "fon_fr": "lane neguén di djel désér?"
   },
   {
     "cat": "Comida y bebida",
@@ -2725,7 +2725,7 @@
     "wo": "Lan nga ñuy digël?",
     "pron": "Lan nga ñuy diguel?",
     "fon_es": "Lan nega ñuy diguel?",
-    "fon_fr": "lan nega gnouy diguel?"
+    "fon_fr": "lane nega gnouy diguel?"
   },
   {
     "cat": "Comida y bebida",
@@ -2805,7 +2805,7 @@
     "wo": "Lan moo la dal?",
     "pron": "Lan mo la dal?",
     "fon_es": "Lan mo la dal?",
-    "fon_fr": "lan mo la dal?"
+    "fon_fr": "lane mo la dal?"
   },
   {
     "cat": "Salud y emergencias",
@@ -3165,7 +3165,7 @@
     "wo": "Lan ngay liggéey?",
     "pron": "Lan ngay liguey?",
     "fon_es": "Lan negay liguey?",
-    "fon_fr": "lan negay liguééy?"
+    "fon_fr": "lane negay liguééy?"
   },
   {
     "cat": "Trabajo y oficios",
