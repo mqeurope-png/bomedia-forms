@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Diccionario Wolof</string>
+    <string name="search_hint">Buscar en español o wolof…</string>
+    <string name="no_results">No se han encontrado resultados.</string>
+    <string name="no_translation">(traducción no disponible)</string>
+    <string name="detail_title">Ficha de la palabra</string>
+    <string name="label_spanish">Español</string>
+    <string name="label_wolof">Wolof</string>
+    <string name="label_pron">Pronunciación</string>
+    <string name="back">Volver</string>
+</resources>

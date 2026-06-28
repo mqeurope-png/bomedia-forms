@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!--
+        Tema base de la ventana (fondo blanco, sin barra de acción). La interfaz
+        visible se construye con Jetpack Compose y Material 3; este tema solo
+        define el aspecto de la ventana antes de que Compose dibuje.
+    -->
+    <style name="Theme.DiccionarioWolof" parent="android:Theme.Material.Light.NoActionBar">
+        <item name="android:windowBackground">@android:color/white</item>
+        <item name="android:statusBarColor">#00695C</item>
+    </style>
+
+</resources>
