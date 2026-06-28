@@ -49,10 +49,15 @@ python3 tools/build_web_demo.py
    Pronunciación:  Yereyef
    ```
 
-3. **🔊 Escuchar (offline)**: cada entrada tiene un botón de altavoz que lee la
-   pronunciación con la **voz española** del móvil (Text-to-Speech). Como la
-   pronunciación está escrita en grafía española, al leerla suena parecida al
-   wolof. Funciona sin conexión si el móvil tiene instalada la voz española.
+3. **🔊 Escuchar (offline)**: cada entrada tiene un botón de altavoz (Text-to-
+   Speech). Se puede **elegir la voz** (idioma/acento y, según el móvil, hombre
+   o mujer) con el botón de voz de la barra superior. La voz **por defecto es
+   francesa** (lengua cooficial en Senegal); también hay voz española, etc.
+   - Para cada voz se usa una transcripción fonética distinta y silabeada:
+     `Jërëjëf` → voz española **"ye-re-yef"**, voz francesa **"dje-re-djef"**.
+   - Los grupos prenasales del wolof (`nga`, `nd`, `mb`…) se adaptan con una
+     "e" de apoyo (`nga` → `ne-ga`) para que la voz no los deletree.
+   - Funciona sin conexión si el móvil tiene instalada esa voz.
 
 4. **🎤 Búsqueda por voz (experimental)** — ver la sección siguiente.
 
@@ -153,6 +158,18 @@ cd DiccionarioWolof
 ./gradlew assembleRelease    # APK de publicación (sin firmar)
 ```
 
+### APK automático en GitHub (para probar en el móvil sin compilar tú)
+El repositorio incluye un workflow (`.github/workflows/build-apk.yml`) que
+**compila el APK solo** cuando hay cambios en `DiccionarioWolof/` (o lanzándolo
+a mano en la pestaña **Actions → Build APK Diccionario Wolof → Run workflow**).
+
+Al terminar tendrás el APK en dos sitios:
+- En la propia ejecución (**Actions → … → Artifacts → `diccionario-wolof-debug`**).
+- Como **Release** (`apk-build-N`) con el archivo `app-debug.apk` enlazado
+  directamente, ideal para **abrirlo y descargarlo desde el móvil**.
+
+Luego, en el teléfono: abre el `.apk`, permite "orígenes desconocidos" e instala.
+
 ---
 
 ## ➕ Cómo ampliar el diccionario
@@ -165,19 +182,24 @@ Edita **`app/src/main/assets/diccionario.json`**. Cada entrada:
     "cat": "Saludos y cortesía",
     "es": "Gracias",
     "wo": "Jërëjëf",
-    "pron": "Yereyef"
+    "pron": "Yereyef",
+    "fon_es": "ye-re-yef",
+    "fon_fr": "dje-re-djef"
   }
 ]
 ```
 
-- `cat`  → categoría temática (para agrupar/buscar). Opcional.
-- `es`   → palabra o frase en español (obligatorio).
-- `wo`   → traducción en wolof. **Déjalo `""`** si no la conoces con certeza
+- `cat`    → categoría temática (para agrupar/buscar). Opcional.
+- `es`     → palabra o frase en español (obligatorio).
+- `wo`     → traducción en wolof. **Déjalo `""`** si no la conoces con certeza
   (la app mostrará *"traducción no disponible"* en vez de inventarla).
-- `pron` → pronunciación aproximada en español.
+- `pron`   → pronunciación aproximada en español (la que se muestra).
+- `fon_es` / `fon_fr` → transcripción silabeada para la voz española / francesa.
 
-Añade objetos al array, guarda y recompila. **No hay que tocar el código**: la
-app ordena, indexa, busca y lee en voz alta automáticamente.
+Lo más cómodo es **no editar `pron`/`fon_*` a mano**: ejecuta
+`python3 tools/generate_dict.py` y se recalculan solos. Añade tus pares
+español/wolof en ese script. **No hay que tocar el código de la app**: ordena,
+indexa, busca y lee en voz alta automáticamente.
 
 > El script `tools/generate_dict.py` regenera el JSON calculando la
 > pronunciación de forma automática a partir de la ortografía wolof, y

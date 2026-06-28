@@ -4,2988 +4,3415 @@
     "es": "¡Hola! / Buenos días (saludo)",
     "wo": "Salaamaalekum",
     "pron": "Salamalekum",
-    "fon": "sa-la-ma-le-kum"
+    "fon_es": "sa-la-ma-le-kum",
+    "fon_fr": "sa-la-ma-lé-koum"
   },
   {
     "cat": "Saludos y cortesía",
     "es": "Respuesta al saludo (y contigo)",
     "wo": "Maalekum salaam",
     "pron": "Malekum salam",
-    "fon": "ma-le-kum sa-lam"
+    "fon_es": "ma-le-kum sa-lam",
+    "fon_fr": "ma-lé-koum sa-lam"
   },
   {
     "cat": "Saludos y cortesía",
     "es": "¿Qué tal? / ¿Cómo estás?",
     "wo": "Nan nga def?",
     "pron": "Nan nga def?",
-    "fon": "nan nga def?"
+    "fon_es": "nan ne-ga def?",
+    "fon_fr": "nan ne-ga déf?"
   },
   {
     "cat": "Saludos y cortesía",
     "es": "¿Cómo estás?",
     "wo": "Naka nga def?",
     "pron": "Naka nga def?",
-    "fon": "na-ka nga def?"
+    "fon_es": "na-ka ne-ga def?",
+    "fon_fr": "na-ka ne-ga déf?"
   },
   {
     "cat": "Saludos y cortesía",
     "es": "¿Cómo estáis?",
     "wo": "Nan ngeen def?",
     "pron": "Nan nguen def?",
-    "fon": "nan nguen def?"
+    "fon_es": "nan ne-guen def?",
+    "fon_fr": "nan ne-guén déf?"
   },
   {
     "cat": "Saludos y cortesía",
     "es": "Estoy bien",
     "wo": "Maa ngi fi rekk",
     "pron": "Ma ngui fi rek",
-    "fon": "ma ngui fi rek"
+    "fon_es": "ma ne-gui fi rek",
+    "fon_fr": "ma ne-gui fi rék"
   },
   {
     "cat": "Saludos y cortesía",
     "es": "Bien, gracias a Dios",
     "wo": "Maa ngi sant",
     "pron": "Ma ngui sant",
-    "fon": "ma ngui sant"
+    "fon_es": "ma ne-gui sant",
+    "fon_fr": "ma ne-gui sant"
   },
   {
     "cat": "Saludos y cortesía",
     "es": "Bien, en paz",
     "wo": "Jàmm rekk",
     "pron": "Yam rek",
-    "fon": "yam rek"
+    "fon_es": "yam rek",
+    "fon_fr": "djam rék"
   },
   {
     "cat": "Saludos y cortesía",
     "es": "Gracias",
     "wo": "Jërëjëf",
     "pron": "Yereyef",
-    "fon": "ye-re-yef"
+    "fon_es": "ye-re-yef",
+    "fon_fr": "dje-re-djef"
   },
   {
     "cat": "Saludos y cortesía",
     "es": "Muchas gracias",
     "wo": "Jërëjëf waay",
     "pron": "Yereyef way",
-    "fon": "ye-re-yef way"
+    "fon_es": "ye-re-yef way",
+    "fon_fr": "dje-re-djef way"
   },
   {
     "cat": "Saludos y cortesía",
     "es": "De nada",
     "wo": "Amul benn solo",
     "pron": "Amul ben solo",
-    "fon": "a-mul ben so-lo"
+    "fon_es": "a-mul ben so-lo",
+    "fon_fr": "a-moul bén so-lo"
   },
   {
     "cat": "Saludos y cortesía",
     "es": "De nada / No es nada",
     "wo": "Du dara",
     "pron": "Du dara",
-    "fon": "du da-ra"
+    "fon_es": "du da-ra",
+    "fon_fr": "dou da-ra"
   },
   {
     "cat": "Saludos y cortesía",
     "es": "Sí",
     "wo": "Waaw",
     "pron": "Waw",
-    "fon": "waw"
+    "fon_es": "waw",
+    "fon_fr": "waw"
   },
   {
     "cat": "Saludos y cortesía",
     "es": "No",
     "wo": "Déedéet",
     "pron": "Dedet",
-    "fon": "de-det"
+    "fon_es": "de-det",
+    "fon_fr": "dé-é-dé-ét"
   },
   {
     "cat": "Saludos y cortesía",
     "es": "Perdona / Perdóname",
     "wo": "Baal ma",
     "pron": "Bal ma",
-    "fon": "bal ma"
+    "fon_es": "bal ma",
+    "fon_fr": "bal ma"
   },
   {
     "cat": "Saludos y cortesía",
     "es": "Perdóname, por favor",
     "wo": "Nga baal ma de",
     "pron": "Nga bal ma de",
-    "fon": "nga bal ma de"
+    "fon_es": "ne-ga bal ma de",
+    "fon_fr": "ne-ga bal ma dé"
   },
   {
     "cat": "Saludos y cortesía",
     "es": "Por favor",
     "wo": "Nga baal ma",
     "pron": "Nga bal ma",
-    "fon": "nga bal ma"
+    "fon_es": "ne-ga bal ma",
+    "fon_fr": "ne-ga bal ma"
   },
   {
     "cat": "Saludos y cortesía",
     "es": "No importa / No tiene importancia",
     "wo": "Amul benn solo",
     "pron": "Amul ben solo",
-    "fon": "a-mul ben so-lo"
+    "fon_es": "a-mul ben so-lo",
+    "fon_fr": "a-moul bén so-lo"
   },
   {
     "cat": "Saludos y cortesía",
     "es": "Lo siento",
     "wo": "Maa ngi jéglu",
     "pron": "Ma ngui yeglu",
-    "fon": "ma ngui ye-glu"
+    "fon_es": "ma ne-gui ye-glu",
+    "fon_fr": "ma ne-gui djé-glou"
   },
   {
     "cat": "Saludos y cortesía",
     "es": "Hasta mañana",
     "wo": "Ba suba",
     "pron": "Ba suba",
-    "fon": "ba su-ba"
+    "fon_es": "ba su-ba",
+    "fon_fr": "ba sou-ba"
   },
   {
     "cat": "Saludos y cortesía",
     "es": "Hasta mañana, entonces",
     "wo": "Baax na, kon ba suba",
     "pron": "Baj na, kon ba suba",
-    "fon": "baj na, kon ba su-ba"
+    "fon_es": "baj na, kon ba su-ba",
+    "fon_fr": "bakh na, kon ba sou-ba"
   },
   {
     "cat": "Saludos y cortesía",
     "es": "Hasta luego / Hasta otra",
     "wo": "Ba beneen",
     "pron": "Ba benen",
-    "fon": "ba be-nen"
+    "fon_es": "ba be-nen",
+    "fon_fr": "ba bé-nén"
   },
   {
     "cat": "Saludos y cortesía",
     "es": "¡Que paséis buena noche!",
     "wo": "Fanaan leen ak jàmm",
     "pron": "Fanan len ak yam",
-    "fon": "fa-nan len ak yam"
+    "fon_es": "fa-nan len ak yam",
+    "fon_fr": "fa-nan lén ak djam"
   },
   {
     "cat": "Saludos y cortesía",
     "es": "¿Has dormido bien?",
     "wo": "Nelaw nga bu baax?",
     "pron": "Nelaw nga bu baj?",
-    "fon": "ne-law nga bu baj?"
+    "fon_es": "ne-law ne-ga bu baj?",
+    "fon_fr": "né-law ne-ga bou bakh?"
   },
   {
     "cat": "Saludos y cortesía",
     "es": "Sí, he dormido muy bien",
     "wo": "Waaw, nelaw naa bu baax",
     "pron": "Waw, nelaw na bu baj",
-    "fon": "waw, ne-law na bu baj"
+    "fon_es": "waw, ne-law na bu baj",
+    "fon_fr": "waw, né-law na bou bakh"
   },
   {
     "cat": "Saludos y cortesía",
     "es": "¿Cómo va la mañana?",
     "wo": "Naka suba si?",
     "pron": "Naka suba si?",
-    "fon": "na-ka su-ba si?"
+    "fon_es": "na-ka su-ba si?",
+    "fon_fr": "na-ka sou-ba si?"
   },
   {
     "cat": "Saludos y cortesía",
     "es": "¿Cómo has pasado el día?",
     "wo": "Nan nga yendoo?",
     "pron": "Nan nga yendo?",
-    "fon": "nan nga yen-do?"
+    "fon_es": "nan ne-ga yen-do?",
+    "fon_fr": "nan ne-ga yén-do?"
   },
   {
     "cat": "Saludos y cortesía",
     "es": "¿Cómo están tus hijos?",
     "wo": "Naka xale yi?",
     "pron": "Naka jale yi?",
-    "fon": "na-ka ja-le yi?"
+    "fon_es": "na-ka ja-le yi?",
+    "fon_fr": "na-ka kha-lé yi?"
   },
   {
     "cat": "Saludos y cortesía",
     "es": "Están muy bien",
     "wo": "Ñu ngi ci jàmm",
     "pron": "Ñu ngui chi yam",
-    "fon": "ñu ngui chi yam"
+    "fon_es": "ñu ne-gui chi yam",
+    "fon_fr": "gnou ne-gui tchi djam"
   },
   {
     "cat": "Saludos y cortesía",
     "es": "¿Cómo está tu padre?",
     "wo": "Naka sa pàppa?",
     "pron": "Naka sa papa?",
-    "fon": "na-ka sa pa-pa?"
+    "fon_es": "na-ka sa pa-pa?",
+    "fon_fr": "na-ka sa pa-pa?"
   },
   {
     "cat": "Saludos y cortesía",
     "es": "¿Cómo están tus padres?",
     "wo": "Naka sa pàppa ak sa yaay?",
     "pron": "Naka sa papa ak sa yay?",
-    "fon": "na-ka sa pa-pa ak sa yay?"
+    "fon_es": "na-ka sa pa-pa ak sa yay?",
+    "fon_fr": "na-ka sa pa-pa ak sa yay?"
   },
   {
     "cat": "Saludos y cortesía",
     "es": "Mi madre está bien",
     "wo": "Sama yaay mu ngi ci jàmm",
     "pron": "Sama yay mu ngui chi yam",
-    "fon": "sa-ma yay mu ngui chi yam"
+    "fon_es": "sa-ma yay mu ne-gui chi yam",
+    "fon_fr": "sa-ma yay mou ne-gui tchi djam"
   },
   {
     "cat": "Saludos y cortesía",
     "es": "Se encuentra bien, se ha ido a trabajar",
     "wo": "Mu ngi ci sant, dafa dem ligeeyi",
     "pron": "Mu ngui chi sant, dafa dem ligueyi",
-    "fon": "mu ngui chi sant, da-fa dem li-gue-yi"
+    "fon_es": "mu ne-gui chi sant, da-fa dem li-gue-yi",
+    "fon_fr": "mou ne-gui tchi sant, da-fa dém li-gué-yi"
   },
   {
     "cat": "Saludos y cortesía",
     "es": "¿Qué tal está tu madre?",
     "wo": "Ana sa yaay?",
     "pron": "Ana sa yay?",
-    "fon": "a-na sa yay?"
+    "fon_es": "a-na sa yay?",
+    "fon_fr": "a-na sa yay?"
   },
   {
     "cat": "Saludos y cortesía",
     "es": "Estamos bien",
     "wo": "Ñu ngi fi rekk",
     "pron": "Ñu ngui fi rek",
-    "fon": "ñu ngui fi rek"
+    "fon_es": "ñu ne-gui fi rek",
+    "fon_fr": "gnou ne-gui fi rék"
   },
   {
     "cat": "Saludos y cortesía",
     "es": "¿Cómo va el trabajo?",
     "wo": "Naka liggéey bi nak?",
     "pron": "Naka liguey bi nak?",
-    "fon": "na-ka li-guey bi nak?"
+    "fon_es": "na-ka li-guey bi nak?",
+    "fon_fr": "na-ka li-gué-éy bi nak?"
   },
   {
     "cat": "Saludos y cortesía",
     "es": "Tengo mucho trabajo estos días",
     "wo": "Damaa bari ligeey lool fan yii",
     "pron": "Dama bari liguey lol fan yi",
-    "fon": "da-ma ba-ri li-guey lol fan yi"
+    "fon_es": "da-ma ba-ri li-guey lol fan yi",
+    "fon_fr": "da-ma ba-ri li-guéy lol fan yi"
   },
   {
     "cat": "Saludos y cortesía",
     "es": "Siéntate un poco",
     "wo": "Toogal tuuti",
     "pron": "Togal tuti",
-    "fon": "to-gal tu-ti"
+    "fon_es": "to-gal tu-ti",
+    "fon_fr": "to-gal tou-ti"
   },
   {
     "cat": "Saludos y cortesía",
     "es": "Dale recuerdos a la familia",
     "wo": "Nuyul ma njaboot ga",
     "pron": "Nuyul ma nyabot ga",
-    "fon": "nu-yul ma nya-bot ga"
+    "fon_es": "nu-yul ma ne-ya-bot ga",
+    "fon_fr": "nou-youl ma ne-dja-bot ga"
   },
   {
     "cat": "Saludos y cortesía",
     "es": "¿Qué haces por la calle a estas horas?",
     "wo": "Yow lan ngay def ci mbedd mi waxtu wii?",
     "pron": "Yow lan ngay def chi mbed mi wajtu wi?",
-    "fon": "yow lan ngay def chi mbed mi waj-tu wi?"
+    "fon_es": "yow lan ne-gay def chi me-bed mi waj-tu wi?",
+    "fon_fr": "yow lan ne-gay déf tchi me-béd mi wakh-tou wi?"
   },
   {
     "cat": "Saludos y cortesía",
     "es": "Vale / De acuerdo / Está bien",
     "wo": "Baax na",
     "pron": "Baj na",
-    "fon": "baj na"
+    "fon_es": "baj na",
+    "fon_fr": "bakh na"
   },
   {
     "cat": "Saludos y cortesía",
     "es": "¡Diga! / ¿Dígame? (al teléfono)",
     "wo": "Alóo",
     "pron": "Alo",
-    "fon": "a-lo"
+    "fon_es": "a-lo",
+    "fon_fr": "a-lo-o"
   },
   {
     "cat": "Saludos y cortesía",
     "es": "¿Quién es? / ¿Quién llama?",
     "wo": "Yow yaay kan?",
     "pron": "Yow yay kan?",
-    "fon": "yow yay kan?"
+    "fon_es": "yow yay kan?",
+    "fon_fr": "yow yay kan?"
   },
   {
     "cat": "Saludos y cortesía",
     "es": "Espera, ahora se pone",
     "wo": "Xaaral, mu ngi ñëw",
     "pron": "Jaral, mu ngui ñew",
-    "fon": "ja-ral, mu ngui ñew"
+    "fon_es": "ja-ral, mu ne-gui ñew",
+    "fon_fr": "kha-ral, mou ne-gui gnew"
   },
   {
     "cat": "Saludos y cortesía",
     "es": "Espera (un momento)",
     "wo": "Xaaral",
     "pron": "Jaral",
-    "fon": "ja-ral"
+    "fon_es": "ja-ral",
+    "fon_fr": "kha-ral"
   },
   {
     "cat": "Saludos y cortesía",
     "es": "Esperad un momento",
     "wo": "Xaar leen tuuti",
     "pron": "Jar len tuti",
-    "fon": "jar len tu-ti"
+    "fon_es": "jar len tu-ti",
+    "fon_fr": "khar lén tou-ti"
   },
   {
     "cat": "Saludos y cortesía",
     "es": "Bienvenido",
     "wo": "",
     "pron": "",
-    "fon": ""
+    "fon_es": "",
+    "fon_fr": ""
   },
   {
     "cat": "Presentarse",
     "es": "¿Cómo te llamas?",
     "wo": "Noo tuddu?",
     "pron": "No tudu?",
-    "fon": "no tu-du?"
+    "fon_es": "no tu-du?",
+    "fon_fr": "no tou-dou?"
   },
   {
     "cat": "Presentarse",
     "es": "Me llamo...",
     "wo": "Maa ngi tuddu...",
     "pron": "Ma ngui tudu...",
-    "fon": "ma ngui tu-du..."
+    "fon_es": "ma ne-gui tu-du...",
+    "fon_fr": "ma ne-gui tou-dou."
   },
   {
     "cat": "Presentarse",
     "es": "Me llamo Amina",
     "wo": "Maa ngi tuddu Amina",
     "pron": "Ma ngui tudu amina",
-    "fon": "ma ngui tu-du a-mi-na"
+    "fon_es": "ma ne-gui tu-du a-mi-na",
+    "fon_fr": "ma ne-gui tou-dou a-mi-na"
   },
   {
     "cat": "Presentarse",
     "es": "¿De dónde eres?",
     "wo": "Waa fan nga?",
     "pron": "Wa fan nga?",
-    "fon": "wa fan nga?"
+    "fon_es": "wa fan ne-ga?",
+    "fon_fr": "wa fan ne-ga?"
   },
   {
     "cat": "Presentarse",
     "es": "Soy español",
     "wo": "Waa Espaañ laa",
     "pron": "Wa españ la",
-    "fon": "wa es-pañ la"
+    "fon_es": "wa es-pañ la",
+    "fon_fr": "wa és-pagn la"
   },
   {
     "cat": "Presentarse",
     "es": "Soy senegalés",
     "wo": "Waa Senegaal laa",
     "pron": "Wa senegal la",
-    "fon": "wa se-ne-gal la"
+    "fon_es": "wa se-ne-gal la",
+    "fon_fr": "wa sé-né-gal la"
   },
   {
     "cat": "Presentarse",
     "es": "Soy senegalés pero vivo en Barcelona",
     "wo": "Waa Senegaal laa waaye Barcelona laa dëkk",
     "pron": "Wa senegal la waye barchelona la dek",
-    "fon": "wa se-ne-gal la wa-ye bar-che-lo-na la dek"
+    "fon_es": "wa se-ne-gal la wa-ye bar-che-lo-na la dek",
+    "fon_fr": "wa sé-né-gal la wa-yé bar-tché-lo-na la dek"
   },
   {
     "cat": "Presentarse",
     "es": "Soy de Dakar",
     "wo": "Waa Ndakaaru laa",
     "pron": "Wa ndakaru la",
-    "fon": "wa nda-ka-ru la"
+    "fon_es": "wa ne-da-ka-ru la",
+    "fon_fr": "wa ne-da-ka-rou la"
   },
   {
     "cat": "Presentarse",
     "es": "¿Dónde vives?",
     "wo": "Fan nga dëkk?",
     "pron": "Fan nga dek?",
-    "fon": "fan nga dek?"
+    "fon_es": "fan ne-ga dek?",
+    "fon_fr": "fan ne-ga dek?"
   },
   {
     "cat": "Presentarse",
     "es": "Vivo en Barcelona",
     "wo": "Maa ngi dëkk Barcelona",
     "pron": "Ma ngui dek barchelona",
-    "fon": "ma ngui dek bar-che-lo-na"
+    "fon_es": "ma ne-gui dek bar-che-lo-na",
+    "fon_fr": "ma ne-gui dek bar-tché-lo-na"
   },
   {
     "cat": "Presentarse",
     "es": "¿Vives aquí?",
     "wo": "Fii nga dëkk?",
     "pron": "Fi nga dek?",
-    "fon": "fi nga dek?"
+    "fon_es": "fi ne-ga dek?",
+    "fon_fr": "fi ne-ga dek?"
   },
   {
     "cat": "Presentarse",
     "es": "Sí, vivo aquí en Barcelona",
     "wo": "Waaw, fii ci Barcelona laa dëkk",
     "pron": "Waw, fi chi barchelona la dek",
-    "fon": "waw, fi chi bar-che-lo-na la dek"
+    "fon_es": "waw, fi chi bar-che-lo-na la dek",
+    "fon_fr": "waw, fi tchi bar-tché-lo-na la dek"
   },
   {
     "cat": "Presentarse",
     "es": "¿En qué barrio vives?",
     "wo": "Ban koñ nga dëkk?",
     "pron": "Ban koñ nga dek?",
-    "fon": "ban koñ nga dek?"
+    "fon_es": "ban koñ ne-ga dek?",
+    "fon_fr": "ban kogn ne-ga dek?"
   },
   {
     "cat": "Presentarse",
     "es": "¿Cuándo has llegado?",
     "wo": "Kañ nga egsi?",
     "pron": "Kañ nga egsi?",
-    "fon": "kañ nga eg-si?"
+    "fon_es": "kañ ne-ga eg-si?",
+    "fon_fr": "kagn ne-ga ég-si?"
   },
   {
     "cat": "Presentarse",
     "es": "Llegué ayer por la tarde",
     "wo": "Egsi naa démb ci ngoon",
     "pron": "Egsi na demb chi ngon",
-    "fon": "eg-si na demb chi ngon"
+    "fon_es": "eg-si na demb chi ne-gon",
+    "fon_fr": "ég-si na démb tchi ne-gon"
   },
   {
     "cat": "Presentarse",
     "es": "¿Es tu primer viaje a Senegal?",
     "wo": "Bii mooy sa yoon bu njëkk ci Senegaal?",
     "pron": "Bi moy sa yon bu nyek chi senegal?",
-    "fon": "bi moy sa yon bu nyek chi se-ne-gal?"
+    "fon_es": "bi moy sa yon bu ne-yek chi se-ne-gal?",
+    "fon_fr": "bi moy sa yon bou ne-djek tchi sé-né-gal?"
   },
   {
     "cat": "Presentarse",
     "es": "Estoy muy contento de venir a Senegal",
     "wo": "Kontaan naa lool ci ñëw fii ci Senegaal",
     "pron": "Kontan na lol chi ñew fi chi senegal",
-    "fon": "kon-tan na lol chi ñew fi chi se-ne-gal"
+    "fon_es": "kon-tan na lol chi ñew fi chi se-ne-gal",
+    "fon_fr": "kon-tan na lol tchi gnew fi tchi sé-né-gal"
   },
   {
     "cat": "Presentarse",
     "es": "¿Eres tú Astu?",
     "wo": "Yow yaay Astu?",
     "pron": "Yow yay astu?",
-    "fon": "yow yay as-tu?"
+    "fon_es": "yow yay as-tu?",
+    "fon_fr": "yow yay as-tou?"
   },
   {
     "cat": "Presentarse",
     "es": "No, no soy yo",
     "wo": "Déedéet, du man de",
     "pron": "Dedet, du man de",
-    "fon": "de-det, du man de"
+    "fon_es": "de-det, du man de",
+    "fon_fr": "dé-é-dé-ét, dou man dé"
   },
   {
     "cat": "Presentarse",
     "es": "Y tú, ¿quién eres?",
     "wo": "Yow nak yaay kan?",
     "pron": "Yow nak yay kan?",
-    "fon": "yow nak yay kan?"
+    "fon_es": "yow nak yay kan?",
+    "fon_fr": "yow nak yay kan?"
   },
   {
     "cat": "Presentarse",
     "es": "¿Conoces a Faatu?",
     "wo": "Xam nga Faatu?",
     "pron": "Jam nga fatu?",
-    "fon": "jam nga fa-tu?"
+    "fon_es": "jam ne-ga fa-tu?",
+    "fon_fr": "kham ne-ga fa-tou?"
   },
   {
     "cat": "Presentarse",
     "es": "No, no nos conocemos",
     "wo": "Déedéet, xamantewuñu de",
     "pron": "Dedet, jamantewuñu de",
-    "fon": "de-det, ja-man-te-wu-ñu de"
+    "fon_es": "de-det, ja-man-te-wu-ñu de",
+    "fon_fr": "dé-é-dé-ét, kha-man-té-wou-gnou dé"
   },
   {
     "cat": "Presentarse",
     "es": "Es mi esposa",
     "wo": "Mooy sama soxna",
     "pron": "Moy sama sojna",
-    "fon": "moy sa-ma soj-na"
+    "fon_es": "moy sa-ma soj-na",
+    "fon_fr": "moy sa-ma sokh-na"
   },
   {
     "cat": "Presentarse",
     "es": "Encantado de conocerte",
     "wo": "Kontaan naa lool ci xamante ak yow",
     "pron": "Kontan na lol chi jamante ak yow",
-    "fon": "kon-tan na lol chi ja-man-te ak yow"
+    "fon_es": "kon-tan na lol chi ja-man-te ak yow",
+    "fon_fr": "kon-tan na lol tchi kha-man-té ak yow"
   },
   {
     "cat": "Presentarse",
     "es": "Yo también, encantado",
     "wo": "Man tamit kontaan naa ci",
     "pron": "Man tamit kontan na chi",
-    "fon": "man ta-mit kon-tan na chi"
+    "fon_es": "man ta-mit kon-tan na chi",
+    "fon_fr": "man ta-mit kon-tan na tchi"
   },
   {
     "cat": "Presentarse",
     "es": "¿Cuántos años tienes?",
     "wo": "Ñaata at nga am?",
     "pron": "Ñata at nga am?",
-    "fon": "ña-ta at nga am?"
+    "fon_es": "ña-ta at ne-ga am?",
+    "fon_fr": "gna-ta at ne-ga am?"
   },
   {
     "cat": "Presentarse",
     "es": "Tengo veinte años",
     "wo": "Am naa ñaar-fukki at",
     "pron": "Am na ñar-fuki at",
-    "fon": "am na ñar--fu-ki at"
+    "fon_es": "am na ñar--fu-ki at",
+    "fon_fr": "am na gnar--fou-ki at"
   },
   {
     "cat": "Presentarse",
     "es": "¿Tienes hijos?",
     "wo": "Ndax am nga doom?",
     "pron": "Ndaj am nga dom?",
-    "fon": "ndaj am nga dom?"
+    "fon_es": "ne-daj am ne-ga dom?",
+    "fon_fr": "ne-dakh am ne-ga dom?"
   },
   {
     "cat": "Presentarse",
     "es": "Tengo dos hijos: un niño y una niña",
     "wo": "Am naa ñaari doom: kenn ku góor ak kenn ku jigeen",
     "pron": "Am na ñari dom: ken ku gor ak ken ku yiguen",
-    "fon": "am na ña-ri dom: ken ku gor ak ken ku yi-guen"
+    "fon_es": "am na ña-ri dom: ken ku gor ak ken ku yi-guen",
+    "fon_fr": "am na gna-ri dom: kén kou go-or ak kén kou dji-guén"
   },
   {
     "cat": "Presentarse",
     "es": "¿A qué te dedicas?",
     "wo": "Ci lan ngay yëngëtu?",
     "pron": "Chi lan ngay yenguetu?",
-    "fon": "chi lan ngay yen-gue-tu?"
+    "fon_es": "chi lan ne-gay yen-gue-tu?",
+    "fon_fr": "tchi lan ne-gay yen-gue-tou?"
   },
   {
     "cat": "Presentarse",
     "es": "¿Estudias o trabajas?",
     "wo": "Dangay jàng wala dangay liggéey?",
     "pron": "Dangay yang wala dangay liguey?",
-    "fon": "dan-gay yang wa-la dan-gay li-guey?"
+    "fon_es": "dan-gay yang wa-la dan-gay li-guey?",
+    "fon_fr": "dan-gay djang wa-la dan-gay li-gué-éy?"
   },
   {
     "cat": "Presentarse",
     "es": "¿Tienes teléfono móvil?",
     "wo": "Ndax yor nga portaabal?",
     "pron": "Ndaj yor nga portabal?",
-    "fon": "ndaj yor nga por-ta-bal?"
+    "fon_es": "ne-daj yor ne-ga por-ta-bal?",
+    "fon_fr": "ne-dakh yor ne-ga por-ta-bal?"
   },
   {
     "cat": "Presentarse",
     "es": "¿Cuál es tu número de teléfono?",
     "wo": "Lan mooy sa nimero telefon?",
     "pron": "Lan moy sa nimero telefon?",
-    "fon": "lan moy sa ni-me-ro te-le-fon?"
+    "fon_es": "lan moy sa ni-me-ro te-le-fon?",
+    "fon_fr": "lan moy sa ni-mé-ro té-lé-fon?"
   },
   {
     "cat": "Presentarse",
     "es": "¿Me puedes dar tu teléfono?",
     "wo": "Ndax mën nga ma jox sa telefon?",
     "pron": "Ndaj men nga ma yoj sa telefon?",
-    "fon": "ndaj men nga ma yoj sa te-le-fon?"
+    "fon_es": "ne-daj men ne-ga ma yoj sa te-le-fon?",
+    "fon_fr": "ne-dakh men ne-ga ma djokh sa té-lé-fon?"
   },
   {
     "cat": "Presentarse",
     "es": "Te llamaré uno de estos días",
     "wo": "Dinaa la woo ci fan yii",
     "pron": "Dina la wo chi fan yi",
-    "fon": "di-na la wo chi fan yi"
+    "fon_es": "di-na la wo chi fan yi",
+    "fon_fr": "di-na la wo tchi fan yi"
   },
   {
     "cat": "Presentarse",
     "es": "Vale, espero tu llamada",
     "wo": "Baax na, maa ngi xaar sa woote",
     "pron": "Baj na, ma ngui jar sa wote",
-    "fon": "baj na, ma ngui jar sa wo-te"
+    "fon_es": "baj na, ma ne-gui jar sa wo-te",
+    "fon_fr": "bakh na, ma ne-gui khar sa wo-té"
   },
   {
     "cat": "Presentarse",
     "es": "¿Tienes marido?",
     "wo": "Am nga jëkkër?",
     "pron": "Am nga yeker?",
-    "fon": "am nga ye-ker?"
+    "fon_es": "am ne-ga ye-ker?",
+    "fon_fr": "am ne-ga dje-ker?"
   },
   {
     "cat": "Presentarse",
     "es": "No tengo marido",
     "wo": "Amuma jëkkër",
     "pron": "Amuma yeker",
-    "fon": "a-mu-ma ye-ker"
+    "fon_es": "a-mu-ma ye-ker",
+    "fon_fr": "a-mou-ma dje-ker"
   },
   {
     "cat": "Presentarse",
     "es": "¿Tienes esposa?",
     "wo": "Am nga jabar?",
     "pron": "Am nga yabar?",
-    "fon": "am nga ya-bar?"
+    "fon_es": "am ne-ga ya-bar?",
+    "fon_fr": "am ne-ga dja-bar?"
   },
   {
     "cat": "Presentarse",
     "es": "No, soy soltero",
     "wo": "Déedéet, selibateer laa",
     "pron": "Dedet, selibater la",
-    "fon": "de-det, se-li-ba-ter la"
+    "fon_es": "de-det, se-li-ba-ter la",
+    "fon_fr": "dé-é-dé-ét, sé-li-ba-tér la"
   },
   {
     "cat": "Números",
     "es": "Cero",
     "wo": "tus",
     "pron": "Tus",
-    "fon": "tus"
+    "fon_es": "tus",
+    "fon_fr": "tous"
   },
   {
     "cat": "Números",
     "es": "Uno",
     "wo": "benn",
     "pron": "Ben",
-    "fon": "ben"
+    "fon_es": "ben",
+    "fon_fr": "bén"
   },
   {
     "cat": "Números",
     "es": "Dos",
     "wo": "ñaar",
     "pron": "Ñar",
-    "fon": "ñar"
+    "fon_es": "ñar",
+    "fon_fr": "gnar"
   },
   {
     "cat": "Números",
     "es": "Tres",
     "wo": "ñett",
     "pron": "Ñet",
-    "fon": "ñet"
+    "fon_es": "ñet",
+    "fon_fr": "gnét"
   },
   {
     "cat": "Números",
     "es": "Cuatro",
     "wo": "ñent",
     "pron": "Ñent",
-    "fon": "ñent"
+    "fon_es": "ñent",
+    "fon_fr": "gnént"
   },
   {
     "cat": "Números",
     "es": "Cinco",
     "wo": "juróom",
     "pron": "Yurom",
-    "fon": "yu-rom"
+    "fon_es": "yu-rom",
+    "fon_fr": "djou-ro-om"
   },
   {
     "cat": "Números",
     "es": "Seis",
     "wo": "juróom benn",
     "pron": "Yurom ben",
-    "fon": "yu-rom ben"
+    "fon_es": "yu-rom ben",
+    "fon_fr": "djou-ro-om bén"
   },
   {
     "cat": "Números",
     "es": "Siete",
     "wo": "juróom ñaar",
     "pron": "Yurom ñar",
-    "fon": "yu-rom ñar"
+    "fon_es": "yu-rom ñar",
+    "fon_fr": "djou-ro-om gnar"
   },
   {
     "cat": "Números",
     "es": "Ocho",
     "wo": "juróom ñett",
     "pron": "Yurom ñet",
-    "fon": "yu-rom ñet"
+    "fon_es": "yu-rom ñet",
+    "fon_fr": "djou-ro-om gnét"
   },
   {
     "cat": "Números",
     "es": "Nueve",
     "wo": "juróom ñent",
     "pron": "Yurom ñent",
-    "fon": "yu-rom ñent"
+    "fon_es": "yu-rom ñent",
+    "fon_fr": "djou-ro-om gnént"
   },
   {
     "cat": "Números",
     "es": "Diez",
     "wo": "fukk",
     "pron": "Fuk",
-    "fon": "fuk"
+    "fon_es": "fuk",
+    "fon_fr": "fouk"
   },
   {
     "cat": "Números",
     "es": "Once",
     "wo": "fukk ak benn",
     "pron": "Fuk ak ben",
-    "fon": "fuk ak ben"
+    "fon_es": "fuk ak ben",
+    "fon_fr": "fouk ak bén"
   },
   {
     "cat": "Números",
     "es": "Doce",
     "wo": "fukk ak ñaar",
     "pron": "Fuk ak ñar",
-    "fon": "fuk ak ñar"
+    "fon_es": "fuk ak ñar",
+    "fon_fr": "fouk ak gnar"
   },
   {
     "cat": "Números",
     "es": "Trece",
     "wo": "fukk ak ñett",
     "pron": "Fuk ak ñet",
-    "fon": "fuk ak ñet"
+    "fon_es": "fuk ak ñet",
+    "fon_fr": "fouk ak gnét"
   },
   {
     "cat": "Números",
     "es": "Catorce",
     "wo": "fukk ak ñent",
     "pron": "Fuk ak ñent",
-    "fon": "fuk ak ñent"
+    "fon_es": "fuk ak ñent",
+    "fon_fr": "fouk ak gnént"
   },
   {
     "cat": "Números",
     "es": "Quince",
     "wo": "fukk ak juróom",
     "pron": "Fuk ak yurom",
-    "fon": "fuk ak yu-rom"
+    "fon_es": "fuk ak yu-rom",
+    "fon_fr": "fouk ak djou-ro-om"
   },
   {
     "cat": "Números",
     "es": "Dieciséis",
     "wo": "fukk ak juróom benn",
     "pron": "Fuk ak yurom ben",
-    "fon": "fuk ak yu-rom ben"
+    "fon_es": "fuk ak yu-rom ben",
+    "fon_fr": "fouk ak djou-ro-om bén"
   },
   {
     "cat": "Números",
     "es": "Diecisiete",
     "wo": "fukk ak juróom ñaar",
     "pron": "Fuk ak yurom ñar",
-    "fon": "fuk ak yu-rom ñar"
+    "fon_es": "fuk ak yu-rom ñar",
+    "fon_fr": "fouk ak djou-ro-om gnar"
   },
   {
     "cat": "Números",
     "es": "Dieciocho",
     "wo": "fukk ak juróom ñett",
     "pron": "Fuk ak yurom ñet",
-    "fon": "fuk ak yu-rom ñet"
+    "fon_es": "fuk ak yu-rom ñet",
+    "fon_fr": "fouk ak djou-ro-om gnét"
   },
   {
     "cat": "Números",
     "es": "Diecinueve",
     "wo": "fukk ak juróom ñent",
     "pron": "Fuk ak yurom ñent",
-    "fon": "fuk ak yu-rom ñent"
+    "fon_es": "fuk ak yu-rom ñent",
+    "fon_fr": "fouk ak djou-ro-om gnént"
   },
   {
     "cat": "Números",
     "es": "Veinte",
     "wo": "ñaar fukk",
     "pron": "Ñar fuk",
-    "fon": "ñar fuk"
+    "fon_es": "ñar fuk",
+    "fon_fr": "gnar fouk"
   },
   {
     "cat": "Números",
     "es": "Treinta",
     "wo": "fan weer",
     "pron": "Fan wer",
-    "fon": "fan wer"
+    "fon_es": "fan wer",
+    "fon_fr": "fan wér"
   },
   {
     "cat": "Números",
     "es": "Cuarenta",
     "wo": "ñent fukk",
     "pron": "Ñent fuk",
-    "fon": "ñent fuk"
+    "fon_es": "ñent fuk",
+    "fon_fr": "gnént fouk"
   },
   {
     "cat": "Números",
     "es": "Cincuenta",
     "wo": "juróom fukk",
     "pron": "Yurom fuk",
-    "fon": "yu-rom fuk"
+    "fon_es": "yu-rom fuk",
+    "fon_fr": "djou-ro-om fouk"
   },
   {
     "cat": "Números",
     "es": "Sesenta",
     "wo": "juróom benn fukk",
     "pron": "Yurom ben fuk",
-    "fon": "yu-rom ben fuk"
+    "fon_es": "yu-rom ben fuk",
+    "fon_fr": "djou-ro-om bén fouk"
   },
   {
     "cat": "Números",
     "es": "Setenta",
     "wo": "juróom ñaar fukk",
     "pron": "Yurom ñar fuk",
-    "fon": "yu-rom ñar fuk"
+    "fon_es": "yu-rom ñar fuk",
+    "fon_fr": "djou-ro-om gnar fouk"
   },
   {
     "cat": "Números",
     "es": "Ochenta",
     "wo": "juróom ñett fukk",
     "pron": "Yurom ñet fuk",
-    "fon": "yu-rom ñet fuk"
+    "fon_es": "yu-rom ñet fuk",
+    "fon_fr": "djou-ro-om gnét fouk"
   },
   {
     "cat": "Números",
     "es": "Noventa",
     "wo": "juróom ñent fukk",
     "pron": "Yurom ñent fuk",
-    "fon": "yu-rom ñent fuk"
+    "fon_es": "yu-rom ñent fuk",
+    "fon_fr": "djou-ro-om gnént fouk"
   },
   {
     "cat": "Números",
     "es": "Cien",
     "wo": "téeméer",
     "pron": "Temer",
-    "fon": "te-mer"
+    "fon_es": "te-mer",
+    "fon_fr": "té-é-mé-ér"
   },
   {
     "cat": "Números",
     "es": "Doscientos",
     "wo": "ñaari téeméer",
     "pron": "Ñari temer",
-    "fon": "ña-ri te-mer"
+    "fon_es": "ña-ri te-mer",
+    "fon_fr": "gna-ri té-é-mé-ér"
   },
   {
     "cat": "Números",
     "es": "Quinientos",
     "wo": "juróomi téeméer",
     "pron": "Yuromi temer",
-    "fon": "yu-ro-mi te-mer"
+    "fon_es": "yu-ro-mi te-mer",
+    "fon_fr": "djou-ro-o-mi té-é-mé-ér"
   },
   {
     "cat": "Números",
     "es": "Mil",
     "wo": "junni",
     "pron": "Yuni",
-    "fon": "yu-ni"
+    "fon_es": "yu-ni",
+    "fon_fr": "djou-ni"
   },
   {
     "cat": "Números",
     "es": "Un millón",
     "wo": "milyoŋ",
     "pron": "Milyong",
-    "fon": "mil-yong"
+    "fon_es": "mil-yong",
+    "fon_fr": "mil-yong"
   },
   {
     "cat": "Tiempo y días",
     "es": "Lunes",
     "wo": "Altine",
     "pron": "Altine",
-    "fon": "al-ti-ne"
+    "fon_es": "al-ti-ne",
+    "fon_fr": "al-ti-né"
   },
   {
     "cat": "Tiempo y días",
     "es": "Martes",
     "wo": "Talaata",
     "pron": "Talata",
-    "fon": "ta-la-ta"
+    "fon_es": "ta-la-ta",
+    "fon_fr": "ta-la-ta"
   },
   {
     "cat": "Tiempo y días",
     "es": "Miércoles",
     "wo": "Àllarba",
     "pron": "Alarba",
-    "fon": "a-lar-ba"
+    "fon_es": "a-lar-ba",
+    "fon_fr": "a-lar-ba"
   },
   {
     "cat": "Tiempo y días",
     "es": "Jueves",
     "wo": "Alxames",
     "pron": "Aljames",
-    "fon": "al-ja-mes"
+    "fon_es": "al-ja-mes",
+    "fon_fr": "al-kha-més"
   },
   {
     "cat": "Tiempo y días",
     "es": "Viernes",
     "wo": "Àjjuma",
     "pron": "Ayuma",
-    "fon": "a-yu-ma"
+    "fon_es": "a-yu-ma",
+    "fon_fr": "a-djou-ma"
   },
   {
     "cat": "Tiempo y días",
     "es": "Sábado",
     "wo": "Gaawu",
     "pron": "Gawu",
-    "fon": "ga-wu"
+    "fon_es": "ga-wu",
+    "fon_fr": "ga-wou"
   },
   {
     "cat": "Tiempo y días",
     "es": "Domingo",
     "wo": "Dibéer",
     "pron": "Diber",
-    "fon": "di-ber"
+    "fon_es": "di-ber",
+    "fon_fr": "di-bé-ér"
   },
   {
     "cat": "Tiempo y días",
     "es": "Día",
     "wo": "bés",
     "pron": "Bes",
-    "fon": "bes"
+    "fon_es": "bes",
+    "fon_fr": "bés"
   },
   {
     "cat": "Tiempo y días",
     "es": "Hoy",
     "wo": "Tey",
     "pron": "Tey",
-    "fon": "tey"
+    "fon_es": "tey",
+    "fon_fr": "téy"
   },
   {
     "cat": "Tiempo y días",
     "es": "Mañana (el día siguiente)",
     "wo": "Ëllëg",
     "pron": "Eleg",
-    "fon": "e-leg"
+    "fon_es": "e-leg",
+    "fon_fr": "e-leg"
   },
   {
     "cat": "Tiempo y días",
     "es": "Pasado mañana",
     "wo": "Ginnaaw suba",
     "pron": "Guinaw suba",
-    "fon": "gui-naw su-ba"
+    "fon_es": "gui-naw su-ba",
+    "fon_fr": "gui-naw sou-ba"
   },
   {
     "cat": "Tiempo y días",
     "es": "Ayer",
     "wo": "Démb",
     "pron": "Demb",
-    "fon": "demb"
+    "fon_es": "demb",
+    "fon_fr": "démb"
   },
   {
     "cat": "Tiempo y días",
     "es": "Antes de ayer",
     "wo": "Bërki-démb",
     "pron": "Berki-demb",
-    "fon": "ber-ki--demb"
+    "fon_es": "ber-ki--demb",
+    "fon_fr": "ber-ki--démb"
   },
   {
     "cat": "Tiempo y días",
     "es": "Semana",
     "wo": "Ayubés",
     "pron": "Ayubes",
-    "fon": "a-yu-bes"
+    "fon_es": "a-yu-bes",
+    "fon_fr": "a-you-bés"
   },
   {
     "cat": "Tiempo y días",
     "es": "Mes",
     "wo": "Weer",
     "pron": "Wer",
-    "fon": "wer"
+    "fon_es": "wer",
+    "fon_fr": "wér"
   },
   {
     "cat": "Tiempo y días",
     "es": "Año",
     "wo": "At",
     "pron": "At",
-    "fon": "at"
+    "fon_es": "at",
+    "fon_fr": "at"
   },
   {
     "cat": "Tiempo y días",
     "es": "Por la mañana",
     "wo": "Ci suba",
     "pron": "Chi suba",
-    "fon": "chi su-ba"
+    "fon_es": "chi su-ba",
+    "fon_fr": "tchi sou-ba"
   },
   {
     "cat": "Tiempo y días",
     "es": "Por la tarde",
     "wo": "Ci ngoon",
     "pron": "Chi ngon",
-    "fon": "chi ngon"
+    "fon_es": "chi ne-gon",
+    "fon_fr": "tchi ne-gon"
   },
   {
     "cat": "Tiempo y días",
     "es": "Por la noche",
     "wo": "Ci guddi",
     "pron": "Chi gudi",
-    "fon": "chi gu-di"
+    "fon_es": "chi gu-di",
+    "fon_fr": "tchi gou-di"
   },
   {
     "cat": "Tiempo y días",
     "es": "¿Qué día es hoy?",
     "wo": "Tey ban bés la?",
     "pron": "Tey ban bes la?",
-    "fon": "tey ban bes la?"
+    "fon_es": "tey ban bes la?",
+    "fon_fr": "téy ban bés la?"
   },
   {
     "cat": "Tiempo y días",
     "es": "¿Qué hora es? / ¿Tienes hora?",
     "wo": "Ban waxtu moo jot?",
     "pron": "Ban wajtu mo yot?",
-    "fon": "ban waj-tu mo yot?"
+    "fon_es": "ban waj-tu mo yot?",
+    "fon_fr": "ban wakh-tou mo djot?"
   },
   {
     "cat": "Tiempo y días",
     "es": "A las ocho",
     "wo": "Juróom ñetti waxtu",
     "pron": "Yurom ñeti wajtu",
-    "fon": "yu-rom ñe-ti waj-tu"
+    "fon_es": "yu-rom ñe-ti waj-tu",
+    "fon_fr": "djou-ro-om gné-ti wakh-tou"
   },
   {
     "cat": "Tiempo y días",
     "es": "¿A qué hora te levantas?",
     "wo": "Ban waxtu ngay jóg?",
     "pron": "Ban wajtu ngay yog?",
-    "fon": "ban waj-tu ngay yog?"
+    "fon_es": "ban waj-tu ne-gay yog?",
+    "fon_fr": "ban wakh-tou ne-gay djog?"
   },
   {
     "cat": "Tiempo y días",
     "es": "¿A qué hora empiezas a trabajar?",
     "wo": "Ban waxtu ngay tàmbalee liggéey?",
     "pron": "Ban wajtu ngay tambale liguey?",
-    "fon": "ban waj-tu ngay tam-ba-le li-guey?"
+    "fon_es": "ban waj-tu ne-gay tam-ba-le li-guey?",
+    "fon_fr": "ban wakh-tou ne-gay tam-ba-lé li-gué-éy?"
   },
   {
     "cat": "Tiempo y días",
     "es": "Feliz año nuevo",
     "wo": "Dewénati",
     "pron": "Dewenati",
-    "fon": "de-we-na-ti"
+    "fon_es": "de-we-na-ti",
+    "fon_fr": "dé-wé-na-ti"
   },
   {
     "cat": "Familia",
     "es": "Padre",
     "wo": "pàppa",
     "pron": "Papa",
-    "fon": "pa-pa"
+    "fon_es": "pa-pa",
+    "fon_fr": "pa-pa"
   },
   {
     "cat": "Familia",
     "es": "Madre",
     "wo": "yaay",
     "pron": "Yay",
-    "fon": "yay"
+    "fon_es": "yay",
+    "fon_fr": "yay"
   },
   {
     "cat": "Familia",
     "es": "Hijo / Hija",
     "wo": "doom",
     "pron": "Dom",
-    "fon": "dom"
+    "fon_es": "dom",
+    "fon_fr": "dom"
   },
   {
     "cat": "Familia",
     "es": "Hijo mayor",
     "wo": "taaw",
     "pron": "Taw",
-    "fon": "taw"
+    "fon_es": "taw",
+    "fon_fr": "taw"
   },
   {
     "cat": "Familia",
     "es": "Hijo menor",
     "wo": "caat",
     "pron": "Chat",
-    "fon": "chat"
+    "fon_es": "chat",
+    "fon_fr": "tchat"
   },
   {
     "cat": "Familia",
     "es": "Hermano/a mayor",
     "wo": "mag",
     "pron": "Mag",
-    "fon": "mag"
+    "fon_es": "mag",
+    "fon_fr": "mag"
   },
   {
     "cat": "Familia",
     "es": "Hermano/a menor",
     "wo": "rakk",
     "pron": "Rak",
-    "fon": "rak"
+    "fon_es": "rak",
+    "fon_fr": "rak"
   },
   {
     "cat": "Familia",
     "es": "Marido / Esposo",
     "wo": "jëkkër",
     "pron": "Yeker",
-    "fon": "ye-ker"
+    "fon_es": "ye-ker",
+    "fon_fr": "dje-ker"
   },
   {
     "cat": "Familia",
     "es": "Esposa / Mujer",
     "wo": "jabar",
     "pron": "Yabar",
-    "fon": "ya-bar"
+    "fon_es": "ya-bar",
+    "fon_fr": "dja-bar"
   },
   {
     "cat": "Familia",
     "es": "Abuelo / Abuela",
     "wo": "maam",
     "pron": "Mam",
-    "fon": "mam"
+    "fon_es": "mam",
+    "fon_fr": "mam"
   },
   {
     "cat": "Familia",
     "es": "Nieto / Nieta",
     "wo": "sët",
     "pron": "Set",
-    "fon": "set"
+    "fon_es": "set",
+    "fon_fr": "set"
   },
   {
     "cat": "Familia",
     "es": "Tío",
     "wo": "nijaay",
     "pron": "Niyay",
-    "fon": "ni-yay"
+    "fon_es": "ni-yay",
+    "fon_fr": "ni-djay"
   },
   {
     "cat": "Familia",
     "es": "Tía",
     "wo": "tànta",
     "pron": "Tanta",
-    "fon": "tan-ta"
+    "fon_es": "tan-ta",
+    "fon_fr": "tan-ta"
   },
   {
     "cat": "Familia",
     "es": "Sobrino / Sobrina",
     "wo": "jarbaat",
     "pron": "Yarbat",
-    "fon": "yar-bat"
+    "fon_es": "yar-bat",
+    "fon_fr": "djar-bat"
   },
   {
     "cat": "Familia",
     "es": "Primo / Prima (materno)",
     "wo": "doomu tànta",
     "pron": "Domu tanta",
-    "fon": "do-mu tan-ta"
+    "fon_es": "do-mu tan-ta",
+    "fon_fr": "do-mou tan-ta"
   },
   {
     "cat": "Familia",
     "es": "Primo / Prima (paterno)",
     "wo": "doomu bàjjen",
     "pron": "Domu bayen",
-    "fon": "do-mu ba-yen"
+    "fon_es": "do-mu ba-yen",
+    "fon_fr": "do-mou ba-djén"
   },
   {
     "cat": "Familia",
     "es": "Amigo / Amiga",
     "wo": "xarit",
     "pron": "Jarit",
-    "fon": "ja-rit"
+    "fon_es": "ja-rit",
+    "fon_fr": "kha-rit"
   },
   {
     "cat": "Familia",
     "es": "Vecino / Vecina",
     "wo": "dëkkandoo",
     "pron": "Dekando",
-    "fon": "de-kan-do"
+    "fon_es": "de-kan-do",
+    "fon_fr": "de-kan-do"
   },
   {
     "cat": "Familia",
     "es": "Hombre",
     "wo": "góor",
     "pron": "Gor",
-    "fon": "gor"
+    "fon_es": "gor",
+    "fon_fr": "go-or"
   },
   {
     "cat": "Familia",
     "es": "Mujer",
     "wo": "jigeen",
     "pron": "Yiguen",
-    "fon": "yi-guen"
+    "fon_es": "yi-guen",
+    "fon_fr": "dji-guén"
   },
   {
     "cat": "Familia",
     "es": "Niño / Niña",
     "wo": "xale",
     "pron": "Jale",
-    "fon": "ja-le"
+    "fon_es": "ja-le",
+    "fon_fr": "kha-lé"
   },
   {
     "cat": "Familia",
     "es": "Joven",
     "wo": "ndaw",
     "pron": "Ndaw",
-    "fon": "ndaw"
+    "fon_es": "ne-daw",
+    "fon_fr": "ne-daw"
   },
   {
     "cat": "Familia",
     "es": "Familia",
     "wo": "njaboot",
     "pron": "Nyabot",
-    "fon": "nya-bot"
+    "fon_es": "ne-ya-bot",
+    "fon_fr": "ne-dja-bot"
   },
   {
     "cat": "Familia",
     "es": "Es mi primo",
     "wo": "Mooy sama doomu nijaay",
     "pron": "Moy sama domu niyay",
-    "fon": "moy sa-ma do-mu ni-yay"
+    "fon_es": "moy sa-ma do-mu ni-yay",
+    "fon_fr": "moy sa-ma do-mou ni-djay"
   },
   {
     "cat": "Familia",
     "es": "¿Y éste, quién es?",
     "wo": "Kii nak mooy kan?",
     "pron": "Ki nak moy kan?",
-    "fon": "ki nak moy kan?"
+    "fon_es": "ki nak moy kan?",
+    "fon_fr": "ki nak moy kan?"
   },
   {
     "cat": "Familia",
     "es": "¡Qué guapo es!",
     "wo": "A ka rafet!",
     "pron": "A ka rafet!",
-    "fon": "a ka ra-fet!"
+    "fon_es": "a ka ra-fet!",
+    "fon_fr": "a ka ra-fét!"
   },
   {
     "cat": "Familia",
     "es": "¿Está casado?",
     "wo": "Ndax mu ngi sëy?",
     "pron": "Ndaj mu ngui sey?",
-    "fon": "ndaj mu ngui sey?"
+    "fon_es": "ne-daj mu ne-gui sey?",
+    "fon_fr": "ne-dakh mou ne-gui sey?"
   },
   {
     "cat": "Familia",
     "es": "No, es soltero",
     "wo": "Déedéet, selibateer la",
     "pron": "Dedet, selibater la",
-    "fon": "de-det, se-li-ba-ter la"
+    "fon_es": "de-det, se-li-ba-ter la",
+    "fon_fr": "dé-é-dé-ét, sé-li-ba-tér la"
   },
   {
     "cat": "Descripciones",
     "es": "Es alto",
     "wo": "dafa njool",
     "pron": "Dafa nyol",
-    "fon": "da-fa nyol"
+    "fon_es": "da-fa ne-yol",
+    "fon_fr": "da-fa ne-djol"
   },
   {
     "cat": "Descripciones",
     "es": "Es bajo (de estatura)",
     "wo": "dafa gàtt",
     "pron": "Dafa gat",
-    "fon": "da-fa gat"
+    "fon_es": "da-fa gat",
+    "fon_fr": "da-fa gat"
   },
   {
     "cat": "Descripciones",
     "es": "Es guapo/a",
     "wo": "dafa rafet",
     "pron": "Dafa rafet",
-    "fon": "da-fa ra-fet"
+    "fon_es": "da-fa ra-fet",
+    "fon_fr": "da-fa ra-fét"
   },
   {
     "cat": "Descripciones",
     "es": "Es feo/a",
     "wo": "dangaa ñaaw",
     "pron": "Danga ñaw",
-    "fon": "dan-ga ñaw"
+    "fon_es": "dan-ga ñaw",
+    "fon_fr": "dan-ga gnaw"
   },
   {
     "cat": "Descripciones",
     "es": "Es amable",
     "wo": "dafa baax",
     "pron": "Dafa baj",
-    "fon": "da-fa baj"
+    "fon_es": "da-fa baj",
+    "fon_fr": "da-fa bakh"
   },
   {
     "cat": "Descripciones",
     "es": "Eres simpático/a",
     "wo": "dangaa baax",
     "pron": "Danga baj",
-    "fon": "dan-ga baj"
+    "fon_es": "dan-ga baj",
+    "fon_fr": "dan-ga bakh"
   },
   {
     "cat": "Descripciones",
     "es": "Soy inteligente",
     "wo": "damaa am xel",
     "pron": "Dama am jel",
-    "fon": "da-ma am jel"
+    "fon_es": "da-ma am jel",
+    "fon_fr": "da-ma am khél"
   },
   {
     "cat": "Descripciones",
     "es": "Es grande",
     "wo": "dafa rëy",
     "pron": "Dafa rey",
-    "fon": "da-fa rey"
+    "fon_es": "da-fa rey",
+    "fon_fr": "da-fa rey"
   },
   {
     "cat": "Descripciones",
     "es": "Eres moreno/a",
     "wo": "nit ku ñuul nga",
     "pron": "Nit ku ñul nga",
-    "fon": "nit ku ñul nga"
+    "fon_es": "nit ku ñul ne-ga",
+    "fon_fr": "nit kou gnoul ne-ga"
   },
   {
     "cat": "Descripciones",
     "es": "Soy joven",
     "wo": "xale laa",
     "pron": "Jale la",
-    "fon": "ja-le la"
+    "fon_es": "ja-le la",
+    "fon_fr": "kha-lé la"
   },
   {
     "cat": "Descripciones",
     "es": "Eres viejo/a",
     "wo": "màgget nga",
     "pron": "Maguet nga",
-    "fon": "ma-guet nga"
+    "fon_es": "ma-guet ne-ga",
+    "fon_fr": "ma-guét ne-ga"
   },
   {
     "cat": "Descripciones",
     "es": "Estoy contento/a",
     "wo": "kontaan naa",
     "pron": "Kontan na",
-    "fon": "kon-tan na"
+    "fon_es": "kon-tan na",
+    "fon_fr": "kon-tan na"
   },
   {
     "cat": "Casa y alojamiento",
     "es": "Casa",
     "wo": "kër",
     "pron": "Ker",
-    "fon": "ker"
+    "fon_es": "ker",
+    "fon_fr": "ker"
   },
   {
     "cat": "Casa y alojamiento",
     "es": "Habitación / Dormitorio",
     "wo": "néeg",
     "pron": "Neg",
-    "fon": "neg"
+    "fon_es": "neg",
+    "fon_fr": "né-ég"
   },
   {
     "cat": "Casa y alojamiento",
     "es": "Salón",
     "wo": "saal",
     "pron": "Sal",
-    "fon": "sal"
+    "fon_es": "sal",
+    "fon_fr": "sal"
   },
   {
     "cat": "Casa y alojamiento",
     "es": "Cocina",
     "wo": "waañ",
     "pron": "Wañ",
-    "fon": "wañ"
+    "fon_es": "wañ",
+    "fon_fr": "wagn"
   },
   {
     "cat": "Casa y alojamiento",
     "es": "Cuarto de baño",
     "wo": "wanag",
     "pron": "Wanag",
-    "fon": "wa-nag"
+    "fon_es": "wa-nag",
+    "fon_fr": "wa-nag"
   },
   {
     "cat": "Casa y alojamiento",
     "es": "Ducha",
     "wo": "sangukaay",
     "pron": "Sangukay",
-    "fon": "san-gu-kay"
+    "fon_es": "san-gu-kay",
+    "fon_fr": "san-gou-kay"
   },
   {
     "cat": "Casa y alojamiento",
     "es": "Cama",
     "wo": "lal",
     "pron": "Lal",
-    "fon": "lal"
+    "fon_es": "lal",
+    "fon_fr": "lal"
   },
   {
     "cat": "Casa y alojamiento",
     "es": "Mesa",
     "wo": "taabal",
     "pron": "Tabal",
-    "fon": "ta-bal"
+    "fon_es": "ta-bal",
+    "fon_fr": "ta-bal"
   },
   {
     "cat": "Casa y alojamiento",
     "es": "Silla",
     "wo": "siis",
     "pron": "Sis",
-    "fon": "sis"
+    "fon_es": "sis",
+    "fon_fr": "sis"
   },
   {
     "cat": "Casa y alojamiento",
     "es": "Puerta",
     "wo": "bunt",
     "pron": "Bunt",
-    "fon": "bunt"
+    "fon_es": "bunt",
+    "fon_fr": "bount"
   },
   {
     "cat": "Casa y alojamiento",
     "es": "Ventana",
     "wo": "polonteer",
     "pron": "Polonter",
-    "fon": "po-lon-ter"
+    "fon_es": "po-lon-ter",
+    "fon_fr": "po-lon-tér"
   },
   {
     "cat": "Casa y alojamiento",
     "es": "Llave",
     "wo": "caabi",
     "pron": "Chabi",
-    "fon": "cha-bi"
+    "fon_es": "cha-bi",
+    "fon_fr": "tcha-bi"
   },
   {
     "cat": "Casa y alojamiento",
     "es": "Apartamento",
     "wo": "apartamaŋ",
     "pron": "Apartamang",
-    "fon": "a-par-ta-mang"
+    "fon_es": "a-par-ta-mang",
+    "fon_fr": "a-par-ta-mang"
   },
   {
     "cat": "Casa y alojamiento",
     "es": "Hotel",
     "wo": "otel",
     "pron": "Otel",
-    "fon": "o-tel"
+    "fon_es": "o-tel",
+    "fon_fr": "o-tél"
   },
   {
     "cat": "Casa y alojamiento",
     "es": "Ascensor",
     "wo": "asaansëer",
     "pron": "Asanser",
-    "fon": "a-san-ser"
+    "fon_es": "a-san-ser",
+    "fon_fr": "a-san-se-ér"
   },
   {
     "cat": "Casa y alojamiento",
     "es": "Frigorífico",
     "wo": "filisideer",
     "pron": "Filisider",
-    "fon": "fi-li-si-der"
+    "fon_es": "fi-li-si-der",
+    "fon_fr": "fi-li-si-dér"
   },
   {
     "cat": "Casa y alojamiento",
     "es": "Armario",
     "wo": "armoor",
     "pron": "Armor",
-    "fon": "ar-mor"
+    "fon_es": "ar-mor",
+    "fon_fr": "ar-mor"
   },
   {
     "cat": "Casa y alojamiento",
     "es": "Lámpara",
     "wo": "làmp",
     "pron": "Lamp",
-    "fon": "lamp"
+    "fon_es": "lamp",
+    "fon_fr": "lamp"
   },
   {
     "cat": "Casa y alojamiento",
     "es": "Espejo",
     "wo": "seetu",
     "pron": "Setu",
-    "fon": "se-tu"
+    "fon_es": "se-tu",
+    "fon_fr": "sé-tou"
   },
   {
     "cat": "Casa y alojamiento",
     "es": "Alfombra",
     "wo": "moket",
     "pron": "Moket",
-    "fon": "mo-ket"
+    "fon_es": "mo-ket",
+    "fon_fr": "mo-két"
   },
   {
     "cat": "Casa y alojamiento",
     "es": "Terraza",
     "wo": "teeraas",
     "pron": "Teras",
-    "fon": "te-ras"
+    "fon_es": "te-ras",
+    "fon_fr": "té-ras"
   },
   {
     "cat": "Casa y alojamiento",
     "es": "¿Vives en una casa o en un apartamento?",
     "wo": "Ci kër nga dëkk wala ci apartamaŋ?",
     "pron": "Chi ker nga dek wala chi apartamang?",
-    "fon": "chi ker nga dek wa-la chi a-par-ta-mang?"
+    "fon_es": "chi ker ne-ga dek wa-la chi a-par-ta-mang?",
+    "fon_fr": "tchi ker ne-ga dek wa-la tchi a-par-ta-mang?"
   },
   {
     "cat": "Casa y alojamiento",
     "es": "¿Vives sola?",
     "wo": "Yow rekk yaa dëkk?",
     "pron": "Yow rek ya dek?",
-    "fon": "yow rek ya dek?"
+    "fon_es": "yow rek ya dek?",
+    "fon_fr": "yow rék ya dek?"
   },
   {
     "cat": "Casa y alojamiento",
     "es": "¿Cuántas habitaciones tiene tu piso?",
     "wo": "Ñaata néeg la sa kër am?",
     "pron": "Ñata neg la sa ker am?",
-    "fon": "ña-ta neg la sa ker am?"
+    "fon_es": "ña-ta neg la sa ker am?",
+    "fon_fr": "gna-ta né-ég la sa ker am?"
   },
   {
     "cat": "Casa y alojamiento",
     "es": "¿Cómo es tu piso?",
     "wo": "Nan la sa kër mel?",
     "pron": "Nan la sa ker mel?",
-    "fon": "nan la sa ker mel?"
+    "fon_es": "nan la sa ker mel?",
+    "fon_fr": "nan la sa ker mél?"
   },
   {
     "cat": "Casa y alojamiento",
     "es": "Mi piso es muy grande",
     "wo": "Sama kër rëy na lool",
     "pron": "Sama ker rey na lol",
-    "fon": "sa-ma ker rey na lol"
+    "fon_es": "sa-ma ker rey na lol",
+    "fon_fr": "sa-ma ker rey na lol"
   },
   {
     "cat": "Casa y alojamiento",
     "es": "¿Quieres venir a mi casa?",
     "wo": "Ndax bëgg nga ñëw sama kër?",
     "pron": "Ndaj beg nga ñew sama ker?",
-    "fon": "ndaj beg nga ñew sa-ma ker?"
+    "fon_es": "ne-daj beg ne-ga ñew sa-ma ker?",
+    "fon_fr": "ne-dakh beg ne-ga gnew sa-ma ker?"
   },
   {
     "cat": "Casa y alojamiento",
     "es": "Puedes venir cuando quieras",
     "wo": "Mën nga ñëw saa yoo bëggee",
     "pron": "Men nga ñew sa yo begue",
-    "fon": "men nga ñew sa yo be-gue"
+    "fon_es": "men ne-ga ñew sa yo be-gue",
+    "fon_fr": "men ne-ga gnew sa yo be-gué"
   },
   {
     "cat": "Casa y alojamiento",
     "es": "Está muy cerca de aquí",
     "wo": "Jege na fii lool",
     "pron": "Yegue na fi lol",
-    "fon": "ye-gue na fi lol"
+    "fon_es": "ye-gue na fi lol",
+    "fon_fr": "djé-gué na fi lol"
   },
   {
     "cat": "Lugares y direcciones",
     "es": "Aeropuerto",
     "wo": "ayropoor",
     "pron": "Ayropor",
-    "fon": "ay-ro-por"
+    "fon_es": "ay-ro-por",
+    "fon_fr": "ay-ro-por"
   },
   {
     "cat": "Lugares y direcciones",
     "es": "Ayuntamiento",
     "wo": "meeri",
     "pron": "Meri",
-    "fon": "me-ri"
+    "fon_es": "me-ri",
+    "fon_fr": "mé-ri"
   },
   {
     "cat": "Lugares y direcciones",
     "es": "Banco",
     "wo": "bànk",
     "pron": "Bank",
-    "fon": "bank"
+    "fon_es": "bank",
+    "fon_fr": "bank"
   },
   {
     "cat": "Lugares y direcciones",
     "es": "Hospital",
     "wo": "opitaal",
     "pron": "Opital",
-    "fon": "o-pi-tal"
+    "fon_es": "o-pi-tal",
+    "fon_fr": "o-pi-tal"
   },
   {
     "cat": "Lugares y direcciones",
     "es": "Mezquita",
     "wo": "jàkka",
     "pron": "Yaka",
-    "fon": "ya-ka"
+    "fon_es": "ya-ka",
+    "fon_fr": "dja-ka"
   },
   {
     "cat": "Lugares y direcciones",
     "es": "Iglesia",
     "wo": "igiliis",
     "pron": "Iguilis",
-    "fon": "i-gui-lis"
+    "fon_es": "i-gui-lis",
+    "fon_fr": "i-gui-lis"
   },
   {
     "cat": "Lugares y direcciones",
     "es": "Cine",
     "wo": "sinemaa",
     "pron": "Sinema",
-    "fon": "si-ne-ma"
+    "fon_es": "si-ne-ma",
+    "fon_fr": "si-né-ma"
   },
   {
     "cat": "Lugares y direcciones",
     "es": "Estación de tren",
     "wo": "gaar",
     "pron": "Gar",
-    "fon": "gar"
+    "fon_es": "gar",
+    "fon_fr": "gar"
   },
   {
     "cat": "Lugares y direcciones",
     "es": "Gasolinera",
     "wo": "estasiyoŋ",
     "pron": "Estasiyong",
-    "fon": "es-ta-si-yong"
+    "fon_es": "es-ta-si-yong",
+    "fon_fr": "és-ta-si-yong"
   },
   {
     "cat": "Lugares y direcciones",
     "es": "Mercado",
     "wo": "marse",
     "pron": "Marse",
-    "fon": "mar-se"
+    "fon_es": "mar-se",
+    "fon_fr": "mar-sé"
   },
   {
     "cat": "Lugares y direcciones",
     "es": "Oficina de correos",
     "wo": "post",
     "pron": "Post",
-    "fon": "post"
+    "fon_es": "post",
+    "fon_fr": "post"
   },
   {
     "cat": "Lugares y direcciones",
     "es": "Parada de autobús",
     "wo": "arebiis",
     "pron": "Arebis",
-    "fon": "a-re-bis"
+    "fon_es": "a-re-bis",
+    "fon_fr": "a-ré-bis"
   },
   {
     "cat": "Lugares y direcciones",
     "es": "Parque",
     "wo": "sardeŋ",
     "pron": "Sardeng",
-    "fon": "sar-deng"
+    "fon_es": "sar-deng",
+    "fon_fr": "sar-déng"
   },
   {
     "cat": "Lugares y direcciones",
     "es": "Puerto",
     "wo": "poor",
     "pron": "Por",
-    "fon": "por"
+    "fon_es": "por",
+    "fon_fr": "por"
   },
   {
     "cat": "Lugares y direcciones",
     "es": "Calle",
     "wo": "mbedd",
     "pron": "Mbed",
-    "fon": "mbed"
+    "fon_es": "me-bed",
+    "fon_fr": "me-béd"
   },
   {
     "cat": "Lugares y direcciones",
     "es": "Carretera",
     "wo": "tali bu mag",
     "pron": "Tali bu mag",
-    "fon": "ta-li bu mag"
+    "fon_es": "ta-li bu mag",
+    "fon_fr": "ta-li bou mag"
   },
   {
     "cat": "Lugares y direcciones",
     "es": "Supermercado",
     "wo": "ipeermarse",
     "pron": "Ipermarse",
-    "fon": "i-per-mar-se"
+    "fon_es": "i-per-mar-se",
+    "fon_fr": "i-pér-mar-sé"
   },
   {
     "cat": "Lugares y direcciones",
     "es": "Estación de metro",
     "wo": "gaaru metoró",
     "pron": "Garu metoro",
-    "fon": "ga-ru me-to-ro"
+    "fon_es": "ga-ru me-to-ro",
+    "fon_fr": "ga-rou mé-to-ro"
   },
   {
     "cat": "Lugares y direcciones",
     "es": "Farmacia",
     "wo": "farmasi",
     "pron": "Farmasi",
-    "fon": "far-ma-si"
+    "fon_es": "far-ma-si",
+    "fon_fr": "far-ma-si"
   },
   {
     "cat": "Lugares y direcciones",
     "es": "Restaurante",
     "wo": "restoraŋ",
     "pron": "Restorang",
-    "fon": "res-to-rang"
+    "fon_es": "res-to-rang",
+    "fon_fr": "rés-to-rang"
   },
   {
     "cat": "Lugares y direcciones",
     "es": "Tienda",
     "wo": "bitig",
     "pron": "Bitig",
-    "fon": "bi-tig"
+    "fon_es": "bi-tig",
+    "fon_fr": "bi-tig"
   },
   {
     "cat": "Lugares y direcciones",
     "es": "A la derecha",
     "wo": "ci ndeyjoor",
     "pron": "Chi ndeyor",
-    "fon": "chi nde-yor"
+    "fon_es": "chi ne-de-yor",
+    "fon_fr": "tchi ne-déy-djor"
   },
   {
     "cat": "Lugares y direcciones",
     "es": "A la izquierda",
     "wo": "ci càmmooñ",
     "pron": "Chi chamoñ",
-    "fon": "chi cha-moñ"
+    "fon_es": "chi cha-moñ",
+    "fon_fr": "tchi tcha-mogn"
   },
   {
     "cat": "Lugares y direcciones",
     "es": "Recto / Sigue recto",
     "wo": "Jubalal",
     "pron": "Yubalal",
-    "fon": "yu-ba-lal"
+    "fon_es": "yu-ba-lal",
+    "fon_fr": "djou-ba-lal"
   },
   {
     "cat": "Lugares y direcciones",
     "es": "Gira (a la derecha/izquierda)",
     "wo": "Jàddal",
     "pron": "Yadal",
-    "fon": "ya-dal"
+    "fon_es": "ya-dal",
+    "fon_fr": "dja-dal"
   },
   {
     "cat": "Lugares y direcciones",
     "es": "Cruza",
     "wo": "Jéggil",
     "pron": "Yeguil",
-    "fon": "ye-guil"
+    "fon_es": "ye-guil",
+    "fon_fr": "djé-guil"
   },
   {
     "cat": "Lugares y direcciones",
     "es": "Toma / Coge",
     "wo": "Jëlal",
     "pron": "Yelal",
-    "fon": "ye-lal"
+    "fon_es": "ye-lal",
+    "fon_fr": "dje-lal"
   },
   {
     "cat": "Lugares y direcciones",
     "es": "Cerca",
     "wo": "jege",
     "pron": "Yegue",
-    "fon": "ye-gue"
+    "fon_es": "ye-gue",
+    "fon_fr": "djé-gué"
   },
   {
     "cat": "Lugares y direcciones",
     "es": "Lejos",
     "wo": "sori",
     "pron": "Sori",
-    "fon": "so-ri"
+    "fon_es": "so-ri",
+    "fon_fr": "so-ri"
   },
   {
     "cat": "Lugares y direcciones",
     "es": "Aquí",
     "wo": "fii",
     "pron": "Fi",
-    "fon": "fi"
+    "fon_es": "fi",
+    "fon_fr": "fi"
   },
   {
     "cat": "Lugares y direcciones",
     "es": "Allí",
     "wo": "foofu",
     "pron": "Fofu",
-    "fon": "fo-fu"
+    "fon_es": "fo-fu",
+    "fon_fr": "fo-fou"
   },
   {
     "cat": "Lugares y direcciones",
     "es": "Encima de",
     "wo": "ci kaw",
     "pron": "Chi kaw",
-    "fon": "chi kaw"
+    "fon_es": "chi kaw",
+    "fon_fr": "tchi kaw"
   },
   {
     "cat": "Lugares y direcciones",
     "es": "Debajo de",
     "wo": "ci suuf",
     "pron": "Chi suf",
-    "fon": "chi suf"
+    "fon_es": "chi suf",
+    "fon_fr": "tchi souf"
   },
   {
     "cat": "Lugares y direcciones",
     "es": "Delante de",
     "wo": "ci kanam",
     "pron": "Chi kanam",
-    "fon": "chi ka-nam"
+    "fon_es": "chi ka-nam",
+    "fon_fr": "tchi ka-nam"
   },
   {
     "cat": "Lugares y direcciones",
     "es": "Detrás de",
     "wo": "ci ginaaw",
     "pron": "Chi guinaw",
-    "fon": "chi gui-naw"
+    "fon_es": "chi gui-naw",
+    "fon_fr": "tchi gui-naw"
   },
   {
     "cat": "Lugares y direcciones",
     "es": "Al lado de",
     "wo": "ci wetu",
     "pron": "Chi wetu",
-    "fon": "chi we-tu"
+    "fon_es": "chi we-tu",
+    "fon_fr": "tchi wé-tou"
   },
   {
     "cat": "Lugares y direcciones",
     "es": "Dentro de",
     "wo": "ci biir",
     "pron": "Chi bir",
-    "fon": "chi bir"
+    "fon_es": "chi bir",
+    "fon_fr": "tchi bir"
   },
   {
     "cat": "Lugares y direcciones",
     "es": "Entre",
     "wo": "ci diggante",
     "pron": "Chi digante",
-    "fon": "chi di-gan-te"
+    "fon_es": "chi di-gan-te",
+    "fon_fr": "tchi di-gan-té"
   },
   {
     "cat": "Lugares y direcciones",
     "es": "Por favor, ¿sabes dónde está la calle...?",
     "wo": "Nga baal ma, fan la mbedd ... nekk?",
     "pron": "Nga bal ma, fan la mbed ... nek?",
-    "fon": "nga bal ma, fan la mbed ... nek?"
+    "fon_es": "ne-ga bal ma, fan la me-bed ... nek?",
+    "fon_fr": "ne-ga bal ma, fan la me-béd . nék?"
   },
   {
     "cat": "Lugares y direcciones",
     "es": "Lo siento, no lo sé",
     "wo": "Maa ngi jéglu de, xamuma ko",
     "pron": "Ma ngui yeglu de, jamuma ko",
-    "fon": "ma ngui ye-glu de, ja-mu-ma ko"
+    "fon_es": "ma ne-gui ye-glu de, ja-mu-ma ko",
+    "fon_fr": "ma ne-gui djé-glou dé, kha-mou-ma ko"
   },
   {
     "cat": "Lugares y direcciones",
     "es": "¿Hay un banco por aquí?",
     "wo": "Ndax ab bànk am na ci boor yii?",
     "pron": "Ndaj ab bank am na chi bor yi?",
-    "fon": "ndaj ab bank am na chi bor yi?"
+    "fon_es": "ne-daj ab bank am na chi bor yi?",
+    "fon_fr": "ne-dakh ab bank am na tchi bor yi?"
   },
   {
     "cat": "Lugares y direcciones",
     "es": "¿Está muy lejos?",
     "wo": "Mbaa du dafa sori lool?",
     "pron": "Mba du dafa sori lol?",
-    "fon": "mba du da-fa so-ri lol?"
+    "fon_es": "me-ba du da-fa so-ri lol?",
+    "fon_fr": "me-ba dou da-fa so-ri lol?"
   },
   {
     "cat": "Lugares y direcciones",
     "es": "¿Sabes dónde hay una parada de autobuses?",
     "wo": "Xam nga fan moo am arebiis?",
     "pron": "Jam nga fan mo am arebis?",
-    "fon": "jam nga fan mo am a-re-bis?"
+    "fon_es": "jam ne-ga fan mo am a-re-bis?",
+    "fon_fr": "kham ne-ga fan mo am a-ré-bis?"
   },
   {
     "cat": "Lugares y direcciones",
     "es": "¿Sabe usted dónde hay una estación de metro?",
     "wo": "Xamuloo fan moo am gaaru metoró?",
     "pron": "Jamulo fan mo am garu metoro?",
-    "fon": "ja-mu-lo fan mo am ga-ru me-to-ro?"
+    "fon_es": "ja-mu-lo fan mo am ga-ru me-to-ro?",
+    "fon_fr": "kha-mou-lo fan mo am ga-rou mé-to-ro?"
   },
   {
     "cat": "Lugares y direcciones",
     "es": "Muchas gracias, es usted muy amable",
     "wo": "Jërëjëf waay, ku baax nga",
     "pron": "Yereyef way, ku baj nga",
-    "fon": "ye-re-yef way, ku baj nga"
+    "fon_es": "ye-re-yef way, ku baj ne-ga",
+    "fon_fr": "dje-re-djef way, kou bakh ne-ga"
   },
   {
     "cat": "Lugares y direcciones",
     "es": "No hay de qué",
     "wo": "Amul benn solo",
     "pron": "Amul ben solo",
-    "fon": "a-mul ben so-lo"
+    "fon_es": "a-mul ben so-lo",
+    "fon_fr": "a-moul bén so-lo"
   },
   {
     "cat": "Lugares y direcciones",
     "es": "Querría enviar este paquete a Senegal",
     "wo": "Damaa bëggoon a yónnee kóli bii Senegaal",
     "pron": "Dama begon a yone koli bi senegal",
-    "fon": "da-ma be-gon a yo-ne ko-li bi se-ne-gal"
+    "fon_es": "da-ma be-gon a yo-ne ko-li bi se-ne-gal",
+    "fon_fr": "da-ma be-gon a yo-né ko-li bi sé-né-gal"
   },
   {
     "cat": "Transporte",
     "es": "Coche",
     "wo": "oto",
     "pron": "Oto",
-    "fon": "o-to"
+    "fon_es": "o-to",
+    "fon_fr": "o-to"
   },
   {
     "cat": "Transporte",
     "es": "Taxi",
     "wo": "taksi",
     "pron": "Taksi",
-    "fon": "tak-si"
+    "fon_es": "tak-si",
+    "fon_fr": "tak-si"
   },
   {
     "cat": "Transporte",
     "es": "Autobús",
     "wo": "biis",
     "pron": "Bis",
-    "fon": "bis"
+    "fon_es": "bis",
+    "fon_fr": "bis"
   },
   {
     "cat": "Transporte",
     "es": "Avión",
     "wo": "abiyoŋ",
     "pron": "Abiyong",
-    "fon": "a-bi-yong"
+    "fon_es": "a-bi-yong",
+    "fon_fr": "a-bi-yong"
   },
   {
     "cat": "Transporte",
     "es": "Camión",
     "wo": "kamiyoŋ",
     "pron": "Kamiyong",
-    "fon": "ka-mi-yong"
+    "fon_es": "ka-mi-yong",
+    "fon_fr": "ka-mi-yong"
   },
   {
     "cat": "Transporte",
     "es": "Metro",
     "wo": "metoró",
     "pron": "Metoro",
-    "fon": "me-to-ro"
+    "fon_es": "me-to-ro",
+    "fon_fr": "mé-to-ro"
   },
   {
     "cat": "Transporte",
     "es": "Coger un taxi",
     "wo": "jël taksi",
     "pron": "Yel taksi",
-    "fon": "yel tak-si"
+    "fon_es": "yel tak-si",
+    "fon_fr": "djel tak-si"
   },
   {
     "cat": "Transporte",
     "es": "¿Adónde va usted?",
     "wo": "Fan ngeen di dem?",
     "pron": "Fan nguen di dem?",
-    "fon": "fan nguen di dem?"
+    "fon_es": "fan ne-guen di dem?",
+    "fon_fr": "fan ne-guén di dém?"
   },
   {
     "cat": "Transporte",
     "es": "Voy a la plaza de España, número 7",
     "wo": "Maa ngi dem ci palaasu Espaañ, nimero 7",
     "pron": "Ma ngui dem chi palasu españ, nimero 7",
-    "fon": "ma ngui dem chi pa-la-su es-pañ, ni-me-ro 7"
+    "fon_es": "ma ne-gui dem chi pa-la-su es-pañ, ni-me-ro 7",
+    "fon_fr": "ma ne-gui dém tchi pa-la-sou és-pagn, ni-mé-ro 7"
   },
   {
     "cat": "Transporte",
     "es": "¿Cuánto tardaremos en llegar?",
     "wo": "Ci ñaata minit lañu fay yegg?",
     "pron": "Chi ñata minit lañu fay yeg?",
-    "fon": "chi ña-ta mi-nit la-ñu fay yeg?"
+    "fon_es": "chi ña-ta mi-nit la-ñu fay yeg?",
+    "fon_fr": "tchi gna-ta mi-nit la-gnou fay yég?"
   },
   {
     "cat": "Transporte",
     "es": "Llegaremos en unos diez minutos",
     "wo": "Ñu ngi egg ci fukki minit rekk",
     "pron": "Ñu ngui eg chi fuki minit rek",
-    "fon": "ñu ngui eg chi fu-ki mi-nit rek"
+    "fon_es": "ñu ne-gui eg chi fu-ki mi-nit rek",
+    "fon_fr": "gnou ne-gui ég tchi fou-ki mi-nit rék"
   },
   {
     "cat": "Transporte",
     "es": "¿Cuánto tardas andando?",
     "wo": "Ci ñaata minit nga koy dox?",
     "pron": "Chi ñata minit nga koy doj?",
-    "fon": "chi ña-ta mi-nit nga koy doj?"
+    "fon_es": "chi ña-ta mi-nit ne-ga koy doj?",
+    "fon_fr": "tchi gna-ta mi-nit ne-ga koy dokh?"
   },
   {
     "cat": "Transporte",
     "es": "Sólo veinte minutos",
     "wo": "Ci ñaar-fukki minit rekk",
     "pron": "Chi ñar-fuki minit rek",
-    "fon": "chi ñar--fu-ki mi-nit rek"
+    "fon_es": "chi ñar--fu-ki mi-nit rek",
+    "fon_fr": "tchi gnar--fou-ki mi-nit rék"
   },
   {
     "cat": "Compras y dinero",
     "es": "Comprar",
     "wo": "jënd",
     "pron": "Yend",
-    "fon": "yend"
+    "fon_es": "yend",
+    "fon_fr": "djend"
   },
   {
     "cat": "Compras y dinero",
     "es": "Vender",
     "wo": "jaay",
     "pron": "Yay",
-    "fon": "yay"
+    "fon_es": "yay",
+    "fon_fr": "djay"
   },
   {
     "cat": "Compras y dinero",
     "es": "Dinero",
     "wo": "xaalis",
     "pron": "Jalis",
-    "fon": "ja-lis"
+    "fon_es": "ja-lis",
+    "fon_fr": "kha-lis"
   },
   {
     "cat": "Compras y dinero",
     "es": "¿Cuánto cuesta? / ¿Cuánto es?",
     "wo": "Ñaata la?",
     "pron": "Ñata la?",
-    "fon": "ña-ta la?"
+    "fon_es": "ña-ta la?",
+    "fon_fr": "gna-ta la?"
   },
   {
     "cat": "Compras y dinero",
     "es": "¿Cuánto cuestan?",
     "wo": "Ñaata lañuy jar?",
     "pron": "Ñata lañuy yar?",
-    "fon": "ña-ta la-ñuy yar?"
+    "fon_es": "ña-ta la-ñuy yar?",
+    "fon_fr": "gna-ta la-gnouy djar?"
   },
   {
     "cat": "Compras y dinero",
     "es": "Es caro",
     "wo": "dafa seer",
     "pron": "Dafa ser",
-    "fon": "da-fa ser"
+    "fon_es": "da-fa ser",
+    "fon_fr": "da-fa sér"
   },
   {
     "cat": "Compras y dinero",
     "es": "No son caras / No es caro",
     "wo": "Seeruñu de",
     "pron": "Seruñu de",
-    "fon": "se-ru-ñu de"
+    "fon_es": "se-ru-ñu de",
+    "fon_fr": "sé-rou-gnou dé"
   },
   {
     "cat": "Compras y dinero",
     "es": "Diez euros",
     "wo": "Fukki ëró",
     "pron": "Fuki ero",
-    "fon": "fu-ki e-ro"
+    "fon_es": "fu-ki e-ro",
+    "fon_fr": "fou-ki e-ro"
   },
   {
     "cat": "Compras y dinero",
     "es": "Vale. Me las llevo",
     "wo": "Baax na. Jël naa leen",
     "pron": "Baj na. yel na len",
-    "fon": "baj na. yel na len"
+    "fon_es": "baj na. yel na len",
+    "fon_fr": "bakh na. djel na lén"
   },
   {
     "cat": "Compras y dinero",
     "es": "¿Desea algo más?",
     "wo": "Bëgguloo leneen?",
     "pron": "Begulo lenen?",
-    "fon": "be-gu-lo le-nen?"
+    "fon_es": "be-gu-lo le-nen?",
+    "fon_fr": "be-gou-lo lé-nén?"
   },
   {
     "cat": "Compras y dinero",
     "es": "No, nada más, gracias",
     "wo": "Déedéet, bëgguma leneen, jërëjëf",
     "pron": "Dedet, beguma lenen, yereyef",
-    "fon": "de-det, be-gu-ma le-nen, ye-re-yef"
+    "fon_es": "de-det, be-gu-ma le-nen, ye-re-yef",
+    "fon_fr": "dé-é-dé-ét, be-gou-ma lé-nén, dje-re-djef"
   },
   {
     "cat": "Compras y dinero",
     "es": "Cóbreme, por favor",
     "wo": "Fayyeeku ma",
     "pron": "Fayeku ma",
-    "fon": "fa-ye-ku ma"
+    "fon_es": "fa-ye-ku ma",
+    "fon_fr": "fa-yé-kou ma"
   },
   {
     "cat": "Compras y dinero",
     "es": "¿Qué desea?",
     "wo": "Lan ngeen bëggoon?",
     "pron": "Lan nguen begon?",
-    "fon": "lan nguen be-gon?"
+    "fon_es": "lan ne-guen be-gon?",
+    "fon_fr": "lan ne-guén be-gon?"
   },
   {
     "cat": "Compras y dinero",
     "es": "Color",
     "wo": "kulëer",
     "pron": "Kuler",
-    "fon": "ku-ler"
+    "fon_es": "ku-ler",
+    "fon_fr": "kou-le-ér"
   },
   {
     "cat": "Compras y dinero",
     "es": "¿De qué color la quiere?",
     "wo": "Ban kulëer nga bëgg?",
     "pron": "Ban kuler nga beg?",
-    "fon": "ban ku-ler nga beg?"
+    "fon_es": "ban ku-ler ne-ga beg?",
+    "fon_fr": "ban kou-le-ér ne-ga beg?"
   },
   {
     "cat": "Compras y dinero",
     "es": "La quiero de color azul",
     "wo": "Kuloor bu buló laa bëgg",
     "pron": "Kulor bu bulo la beg",
-    "fon": "ku-lor bu bu-lo la beg"
+    "fon_es": "ku-lor bu bu-lo la beg",
+    "fon_fr": "kou-lor bou bou-lo la beg"
   },
   {
     "cat": "Compras y dinero",
     "es": "Talla",
     "wo": "taay",
     "pron": "Tay",
-    "fon": "tay"
+    "fon_es": "tay",
+    "fon_fr": "tay"
   },
   {
     "cat": "Compras y dinero",
     "es": "¿Cuál es su talla?",
     "wo": "Lan mooy sa taay?",
     "pron": "Lan moy sa tay?",
-    "fon": "lan moy sa tay?"
+    "fon_es": "lan moy sa tay?",
+    "fon_fr": "lan moy sa tay?"
   },
   {
     "cat": "Compras y dinero",
     "es": "Quiero comprar una camisa",
     "wo": "Damaa bëggoon a jënd ab simis",
     "pron": "Dama begon a yend ab simis",
-    "fon": "da-ma be-gon a yend ab si-mis"
+    "fon_es": "da-ma be-gon a yend ab si-mis",
+    "fon_fr": "da-ma be-gon a djend ab si-mis"
   },
   {
     "cat": "Compras y dinero",
     "es": "Estoy buscando unos zapatos",
     "wo": "Ay dàll laa bëgg",
     "pron": "Ay dal la beg",
-    "fon": "ay dal la beg"
+    "fon_es": "ay dal la beg",
+    "fon_fr": "ay dal la beg"
   },
   {
     "cat": "Compras y dinero",
     "es": "Póngame un kilo de naranjas",
     "wo": "Jaay ma benn kiló oraans",
     "pron": "Yay ma ben kilo orans",
-    "fon": "yay ma ben ki-lo o-rans"
+    "fon_es": "yay ma ben ki-lo o-rans",
+    "fon_fr": "djay ma bén ki-lo o-rans"
   },
   {
     "cat": "Compras y dinero",
     "es": "¿Tiene...?",
     "wo": "Ndax am nga...?",
     "pron": "Ndaj am nga...?",
-    "fon": "ndaj am nga...?"
+    "fon_es": "ne-daj am ne-ga...?",
+    "fon_fr": "ne-dakh am ne-ga.?"
   },
   {
     "cat": "Compras y dinero",
     "es": "¿Tiene sandía?",
     "wo": "Ndax am nga xaal?",
     "pron": "Ndaj am nga jal?",
-    "fon": "ndaj am nga jal?"
+    "fon_es": "ne-daj am ne-ga jal?",
+    "fon_fr": "ne-dakh am ne-ga khal?"
   },
   {
     "cat": "Compras y dinero",
     "es": "Lo siento, no me quedan",
     "wo": "Jégal ma de, desewuma ci dara",
     "pron": "Yegal ma de, desewuma chi dara",
-    "fon": "ye-gal ma de, de-se-wu-ma chi da-ra"
+    "fon_es": "ye-gal ma de, de-se-wu-ma chi da-ra",
+    "fon_fr": "djé-gal ma dé, dé-sé-wou-ma tchi da-ra"
   },
   {
     "cat": "Compras y dinero",
     "es": "¿Puedo ver esas gafas?",
     "wo": "Ndax mën naa xool linet yii?",
     "pron": "Ndaj men na jol linet yi?",
-    "fon": "ndaj men na jol li-net yi?"
+    "fon_es": "ne-daj men na jol li-net yi?",
+    "fon_fr": "ne-dakh men na khol li-nét yi?"
   },
   {
     "cat": "Compras y dinero",
     "es": "¿Me los puedo probar?",
     "wo": "Mën naa leen a natt?",
     "pron": "Men na len a nat?",
-    "fon": "men na len a nat?"
+    "fon_es": "men na len a nat?",
+    "fon_fr": "men na lén a nat?"
   },
   {
     "cat": "Comida y bebida",
     "es": "Comer",
     "wo": "lekk",
     "pron": "Lek",
-    "fon": "lek"
+    "fon_es": "lek",
+    "fon_fr": "lék"
   },
   {
     "cat": "Comida y bebida",
     "es": "Beber",
     "wo": "naan",
     "pron": "Nan",
-    "fon": "nan"
+    "fon_es": "nan",
+    "fon_fr": "nan"
   },
   {
     "cat": "Comida y bebida",
     "es": "Agua",
     "wo": "ndox",
     "pron": "Ndoj",
-    "fon": "ndoj"
+    "fon_es": "ne-doj",
+    "fon_fr": "ne-dokh"
   },
   {
     "cat": "Comida y bebida",
     "es": "Agua natural (no fría)",
     "wo": "ndox mu seddul",
     "pron": "Ndoj mu sedul",
-    "fon": "ndoj mu se-dul"
+    "fon_es": "ne-doj mu se-dul",
+    "fon_fr": "ne-dokh mou sé-doul"
   },
   {
     "cat": "Comida y bebida",
     "es": "Pan",
     "wo": "mburu",
     "pron": "Mburu",
-    "fon": "mbu-ru"
+    "fon_es": "me-bu-ru",
+    "fon_fr": "me-bou-rou"
   },
   {
     "cat": "Comida y bebida",
     "es": "Arroz",
     "wo": "ceeb",
     "pron": "Cheb",
-    "fon": "cheb"
+    "fon_es": "cheb",
+    "fon_fr": "tchéb"
   },
   {
     "cat": "Comida y bebida",
     "es": "Pollo",
     "wo": "ginaar",
     "pron": "Guinar",
-    "fon": "gui-nar"
+    "fon_es": "gui-nar",
+    "fon_fr": "gui-nar"
   },
   {
     "cat": "Comida y bebida",
     "es": "Carne",
     "wo": "yàpp",
     "pron": "Yap",
-    "fon": "yap"
+    "fon_es": "yap",
+    "fon_fr": "yap"
   },
   {
     "cat": "Comida y bebida",
     "es": "Pescado",
     "wo": "jën",
     "pron": "Yen",
-    "fon": "yen"
+    "fon_es": "yen",
+    "fon_fr": "djen"
   },
   {
     "cat": "Comida y bebida",
     "es": "Sal",
     "wo": "xorom",
     "pron": "Jorom",
-    "fon": "jo-rom"
+    "fon_es": "jo-rom",
+    "fon_fr": "kho-rom"
   },
   {
     "cat": "Comida y bebida",
     "es": "Azúcar",
     "wo": "suukër",
     "pron": "Suker",
-    "fon": "su-ker"
+    "fon_es": "su-ker",
+    "fon_fr": "sou-ker"
   },
   {
     "cat": "Comida y bebida",
     "es": "Aceite",
     "wo": "diwlin",
     "pron": "Diwlin",
-    "fon": "diw-lin"
+    "fon_es": "diw-lin",
+    "fon_fr": "diw-lin"
   },
   {
     "cat": "Comida y bebida",
     "es": "Leche",
     "wo": "meew",
     "pron": "Mew",
-    "fon": "mew"
+    "fon_es": "mew",
+    "fon_fr": "méw"
   },
   {
     "cat": "Comida y bebida",
     "es": "Huevo",
     "wo": "nen",
     "pron": "Nen",
-    "fon": "nen"
+    "fon_es": "nen",
+    "fon_fr": "nén"
   },
   {
     "cat": "Comida y bebida",
     "es": "Café",
     "wo": "kafe",
     "pron": "Kafe",
-    "fon": "ka-fe"
+    "fon_es": "ka-fe",
+    "fon_fr": "ka-fé"
   },
   {
     "cat": "Comida y bebida",
     "es": "Té",
     "wo": "attaaya",
     "pron": "Ataya",
-    "fon": "a-ta-ya"
+    "fon_es": "a-ta-ya",
+    "fon_fr": "a-ta-ya"
   },
   {
     "cat": "Comida y bebida",
     "es": "Queso",
     "wo": "formaas",
     "pron": "Formas",
-    "fon": "for-mas"
+    "fon_es": "for-mas",
+    "fon_fr": "for-mas"
   },
   {
     "cat": "Comida y bebida",
     "es": "Mantequilla",
     "wo": "bëer",
     "pron": "Ber",
-    "fon": "ber"
+    "fon_es": "ber",
+    "fon_fr": "be-ér"
   },
   {
     "cat": "Comida y bebida",
     "es": "Naranja",
     "wo": "oraans",
     "pron": "Orans",
-    "fon": "o-rans"
+    "fon_es": "o-rans",
+    "fon_fr": "o-rans"
   },
   {
     "cat": "Comida y bebida",
     "es": "Plátano",
     "wo": "banaana",
     "pron": "Banana",
-    "fon": "ba-na-na"
+    "fon_es": "ba-na-na",
+    "fon_fr": "ba-na-na"
   },
   {
     "cat": "Comida y bebida",
     "es": "Manzana",
     "wo": "pom",
     "pron": "Pom",
-    "fon": "pom"
+    "fon_es": "pom",
+    "fon_fr": "pom"
   },
   {
     "cat": "Comida y bebida",
     "es": "Tomate",
     "wo": "tamaate",
     "pron": "Tamate",
-    "fon": "ta-ma-te"
+    "fon_es": "ta-ma-te",
+    "fon_fr": "ta-ma-té"
   },
   {
     "cat": "Comida y bebida",
     "es": "Patata",
     "wo": "pombiteer",
     "pron": "Pombiter",
-    "fon": "pom-bi-ter"
+    "fon_es": "pom-bi-ter",
+    "fon_fr": "pom-bi-tér"
   },
   {
     "cat": "Comida y bebida",
     "es": "Cerveza",
     "wo": "beer",
     "pron": "Ber",
-    "fon": "ber"
+    "fon_es": "ber",
+    "fon_fr": "bér"
   },
   {
     "cat": "Comida y bebida",
     "es": "Fruta",
     "wo": "firwi",
     "pron": "Firwi",
-    "fon": "fir-wi"
+    "fon_es": "fir-wi",
+    "fon_fr": "fir-wi"
   },
   {
     "cat": "Comida y bebida",
     "es": "Tengo hambre",
     "wo": "Damaa xiif",
     "pron": "Dama jif",
-    "fon": "da-ma jif"
+    "fon_es": "da-ma jif",
+    "fon_fr": "da-ma khif"
   },
   {
     "cat": "Comida y bebida",
     "es": "Tengo sed",
     "wo": "Dama mar a naan",
     "pron": "Dama mar a nan",
-    "fon": "da-ma mar a nan"
+    "fon_es": "da-ma mar a nan",
+    "fon_fr": "da-ma mar a nan"
   },
   {
     "cat": "Comida y bebida",
     "es": "¿Qué quieres beber?",
     "wo": "Lan nga bëgg a naan?",
     "pron": "Lan nga beg a nan?",
-    "fon": "lan nga beg a nan?"
+    "fon_es": "lan ne-ga beg a nan?",
+    "fon_fr": "lan ne-ga beg a nan?"
   },
   {
     "cat": "Comida y bebida",
     "es": "¿Qué van a tomar?",
     "wo": "Lan ngeen di jël?",
     "pron": "Lan nguen di yel?",
-    "fon": "lan nguen di yel?"
+    "fon_es": "lan ne-guen di yel?",
+    "fon_fr": "lan ne-guén di djel?"
   },
   {
     "cat": "Comida y bebida",
     "es": "¿Y para beber?",
     "wo": "Lan ngeen di naan nak?",
     "pron": "Lan nguen di nan nak?",
-    "fon": "lan nguen di nan nak?"
+    "fon_es": "lan ne-guen di nan nak?",
+    "fon_fr": "lan ne-guén di nan nak?"
   },
   {
     "cat": "Comida y bebida",
     "es": "¿Qué tomarán de postre?",
     "wo": "Lan ngeen di jël deseer?",
     "pron": "Lan nguen di yel deser?",
-    "fon": "lan nguen di yel de-ser?"
+    "fon_es": "lan ne-guen di yel de-ser?",
+    "fon_fr": "lan ne-guén di djel dé-sér?"
   },
   {
     "cat": "Comida y bebida",
     "es": "Picante",
     "wo": "saf kaani",
     "pron": "Saf kani",
-    "fon": "saf ka-ni"
+    "fon_es": "saf ka-ni",
+    "fon_fr": "saf ka-ni"
   },
   {
     "cat": "Comida y bebida",
     "es": "Dulce",
     "wo": "saf suukër",
     "pron": "Saf suker",
-    "fon": "saf su-ker"
+    "fon_es": "saf su-ker",
+    "fon_fr": "saf sou-ker"
   },
   {
     "cat": "Comida y bebida",
     "es": "¡Qué rico! / ¡Está bueno!",
     "wo": "A ka neex!",
     "pron": "A ka nej!",
-    "fon": "a ka nej!"
+    "fon_es": "a ka nej!",
+    "fon_fr": "a ka nékh!"
   },
   {
     "cat": "Comida y bebida",
     "es": "Está muy bueno",
     "wo": "Neex na lool",
     "pron": "Nej na lol",
-    "fon": "nej na lol"
+    "fon_es": "nej na lol",
+    "fon_fr": "nékh na lol"
   },
   {
     "cat": "Comida y bebida",
     "es": "¿Te gusta?",
     "wo": "Neex na ci yow?",
     "pron": "Nej na chi yow?",
-    "fon": "nej na chi yow?"
+    "fon_es": "nej na chi yow?",
+    "fon_fr": "nékh na tchi yow?"
   },
   {
     "cat": "Comida y bebida",
     "es": "Me gustaría invitarte a comer a mi casa",
     "wo": "Dama laa bëggoon a inwite añ sama kër",
     "pron": "Dama la begon a inwite añ sama ker",
-    "fon": "da-ma la be-gon a in-wi-te añ sa-ma ker"
+    "fon_es": "da-ma la be-gon a in-wi-te añ sa-ma ker",
+    "fon_fr": "da-ma la be-gon a in-wi-té agn sa-ma ker"
   },
   {
     "cat": "Comida y bebida",
     "es": "¡Que aproveche!",
     "wo": "Lekkal bu baax",
     "pron": "Lekal bu baj",
-    "fon": "le-kal bu baj"
+    "fon_es": "le-kal bu baj",
+    "fon_fr": "lé-kal bou bakh"
   },
   {
     "cat": "Comida y bebida",
     "es": "¿Nos trae un poco de pan, por favor?",
     "wo": "Indil ñu tuuti mburu, nga baal ñu?",
     "pron": "Indil ñu tuti mburu, nga bal ñu?",
-    "fon": "in-dil ñu tu-ti mbu-ru, nga bal ñu?"
+    "fon_es": "in-dil ñu tu-ti me-bu-ru, ne-ga bal ñu?",
+    "fon_fr": "in-dil gnou tou-ti me-bou-rou, ne-ga bal gnou?"
   },
   {
     "cat": "Comida y bebida",
     "es": "¡Camarero! ¡Por favor!",
     "wo": "Serwëer! Nga baal ma!",
     "pron": "Serwer! nga bal ma!",
-    "fon": "ser-wer! nga bal ma!"
+    "fon_es": "ser-wer! ne-ga bal ma!",
+    "fon_fr": "sér-we-ér! ne-ga bal ma!"
   },
   {
     "cat": "Comida y bebida",
     "es": "¿Qué nos recomienda usted?",
     "wo": "Lan nga ñuy digël?",
     "pron": "Lan nga ñuy diguel?",
-    "fon": "lan nga ñuy di-guel?"
+    "fon_es": "lan ne-ga ñuy di-guel?",
+    "fon_fr": "lan ne-ga gnouy di-guel?"
   },
   {
     "cat": "Comida y bebida",
     "es": "La cuenta, por favor",
     "wo": "Ñaata la?",
     "pron": "Ñata la?",
-    "fon": "ña-ta la?"
+    "fon_es": "ña-ta la?",
+    "fon_fr": "gna-ta la?"
   },
   {
     "cat": "Comida y bebida",
     "es": "Camarero / Camarera",
     "wo": "serwëer",
     "pron": "Serwer",
-    "fon": "ser-wer"
+    "fon_es": "ser-wer",
+    "fon_fr": "sér-we-ér"
   },
   {
     "cat": "Comida y bebida",
     "es": "Plato",
     "wo": "palaat",
     "pron": "Palat",
-    "fon": "pa-lat"
+    "fon_es": "pa-lat",
+    "fon_fr": "pa-lat"
   },
   {
     "cat": "Comida y bebida",
     "es": "Vaso",
     "wo": "kaas",
     "pron": "Kas",
-    "fon": "kas"
+    "fon_es": "kas",
+    "fon_fr": "kas"
   },
   {
     "cat": "Comida y bebida",
     "es": "Cuchara",
     "wo": "kudd",
     "pron": "Kud",
-    "fon": "kud"
+    "fon_es": "kud",
+    "fon_fr": "koud"
   },
   {
     "cat": "Comida y bebida",
     "es": "Cuchillo",
     "wo": "paaka",
     "pron": "Paka",
-    "fon": "pa-ka"
+    "fon_es": "pa-ka",
+    "fon_fr": "pa-ka"
   },
   {
     "cat": "Comida y bebida",
     "es": "Café con leche",
     "wo": "kafe ak meew",
     "pron": "Kafe ak mew",
-    "fon": "ka-fe ak mew"
+    "fon_es": "ka-fe ak mew",
+    "fon_fr": "ka-fé ak méw"
   },
   {
     "cat": "Salud y emergencias",
     "es": "Médico / Doctor",
     "wo": "doktoor",
     "pron": "Doktor",
-    "fon": "dok-tor"
+    "fon_es": "dok-tor",
+    "fon_fr": "dok-tor"
   },
   {
     "cat": "Salud y emergencias",
     "es": "Hospital / Ambulatorio",
     "wo": "dispanseer",
     "pron": "Dispanser",
-    "fon": "dis-pan-ser"
+    "fon_es": "dis-pan-ser",
+    "fon_fr": "dis-pan-sér"
   },
   {
     "cat": "Salud y emergencias",
     "es": "¿Qué te pasa?",
     "wo": "Lan moo la dal?",
     "pron": "Lan mo la dal?",
-    "fon": "lan mo la dal?"
+    "fon_es": "lan mo la dal?",
+    "fon_fr": "lan mo la dal?"
   },
   {
     "cat": "Salud y emergencias",
     "es": "¿No te encuentras bien?",
     "wo": "Xanaa sa yaram neexul?",
     "pron": "Jana sa yaram nejul?",
-    "fon": "ja-na sa ya-ram ne-jul?"
+    "fon_es": "ja-na sa ya-ram ne-jul?",
+    "fon_fr": "kha-na sa ya-ram né-khoul?"
   },
   {
     "cat": "Salud y emergencias",
     "es": "No me encuentro bien",
     "wo": "Sama yaram neexul",
     "pron": "Sama yaram nejul",
-    "fon": "sa-ma ya-ram ne-jul"
+    "fon_es": "sa-ma ya-ram ne-jul",
+    "fon_fr": "sa-ma ya-ram né-khoul"
   },
   {
     "cat": "Salud y emergencias",
     "es": "Me duele la barriga",
     "wo": "Sama biir dafay metti",
     "pron": "Sama bir dafay meti",
-    "fon": "sa-ma bir da-fay me-ti"
+    "fon_es": "sa-ma bir da-fay me-ti",
+    "fon_fr": "sa-ma bir da-fay mé-ti"
   },
   {
     "cat": "Salud y emergencias",
     "es": "Me duele muchísimo la barriga",
     "wo": "Sama biir dafay metti lool",
     "pron": "Sama bir dafay meti lol",
-    "fon": "sa-ma bir da-fay me-ti lol"
+    "fon_es": "sa-ma bir da-fay me-ti lol",
+    "fon_fr": "sa-ma bir da-fay mé-ti lol"
   },
   {
     "cat": "Salud y emergencias",
     "es": "Me duele la cabeza",
     "wo": "Sama bopp dafay metti",
     "pron": "Sama bop dafay meti",
-    "fon": "sa-ma bop da-fay me-ti"
+    "fon_es": "sa-ma bop da-fay me-ti",
+    "fon_fr": "sa-ma bop da-fay mé-ti"
   },
   {
     "cat": "Salud y emergencias",
     "es": "Me duelen el pecho y el cuello",
     "wo": "Sama dënn ak sama put gi dañuy metti",
     "pron": "Sama den ak sama put gui dañuy meti",
-    "fon": "sa-ma den ak sa-ma put gui da-ñuy me-ti"
+    "fon_es": "sa-ma den ak sa-ma put gui da-ñuy me-ti",
+    "fon_fr": "sa-ma den ak sa-ma pout gui da-gnouy mé-ti"
   },
   {
     "cat": "Salud y emergencias",
     "es": "Me duele todo",
     "wo": "Lépp a may metti",
     "pron": "Lep a may meti",
-    "fon": "lep a may me-ti"
+    "fon_es": "lep a may me-ti",
+    "fon_fr": "lép a may mé-ti"
   },
   {
     "cat": "Salud y emergencias",
     "es": "¿Cómo te encuentras hoy?",
     "wo": "Naka yaram wi téy?",
     "pron": "Naka yaram wi tey?",
-    "fon": "na-ka ya-ram wi tey?"
+    "fon_es": "na-ka ya-ram wi tey?",
+    "fon_fr": "na-ka ya-ram wi téy?"
   },
   {
     "cat": "Salud y emergencias",
     "es": "Tengo fiebre",
     "wo": "Sama yaram dafa tàng",
     "pron": "Sama yaram dafa tang",
-    "fon": "sa-ma ya-ram da-fa tang"
+    "fon_es": "sa-ma ya-ram da-fa tang",
+    "fon_fr": "sa-ma ya-ram da-fa tang"
   },
   {
     "cat": "Salud y emergencias",
     "es": "Estoy enfermo",
     "wo": "Damaa feebar",
     "pron": "Dama febar",
-    "fon": "da-ma fe-bar"
+    "fon_es": "da-ma fe-bar",
+    "fon_fr": "da-ma fé-bar"
   },
   {
     "cat": "Salud y emergencias",
     "es": "Estoy cansado",
     "wo": "Damaa sonn",
     "pron": "Dama son",
-    "fon": "da-ma son"
+    "fon_es": "da-ma son",
+    "fon_fr": "da-ma son"
   },
   {
     "cat": "Salud y emergencias",
     "es": "Tengo gripe",
     "wo": "Am naa girip",
     "pron": "Am na guirip",
-    "fon": "am na gui-rip"
+    "fon_es": "am na gui-rip",
+    "fon_fr": "am na gui-rip"
   },
   {
     "cat": "Salud y emergencias",
     "es": "Tengo tos",
     "wo": "Damay sëxët",
     "pron": "Damay sejet",
-    "fon": "da-may se-jet"
+    "fon_es": "da-may se-jet",
+    "fon_fr": "da-may se-khet"
   },
   {
     "cat": "Salud y emergencias",
     "es": "Tengo frío",
     "wo": "Damaa sedd",
     "pron": "Dama sed",
-    "fon": "da-ma sed"
+    "fon_es": "da-ma sed",
+    "fon_fr": "da-ma séd"
   },
   {
     "cat": "Salud y emergencias",
     "es": "Tengo calor",
     "wo": "Damaa tàng",
     "pron": "Dama tang",
-    "fon": "da-ma tang"
+    "fon_es": "da-ma tang",
+    "fon_fr": "da-ma tang"
   },
   {
     "cat": "Salud y emergencias",
     "es": "Tengo diarrea",
     "wo": "Am naa biir buy daw",
     "pron": "Am na bir buy daw",
-    "fon": "am na bir buy daw"
+    "fon_es": "am na bir buy daw",
+    "fon_fr": "am na bir bouy daw"
   },
   {
     "cat": "Salud y emergencias",
     "es": "Estoy mareado",
     "wo": "Damay miir",
     "pron": "Damay mir",
-    "fon": "da-may mir"
+    "fon_es": "da-may mir",
+    "fon_fr": "da-may mir"
   },
   {
     "cat": "Salud y emergencias",
     "es": "Me he caído",
     "wo": "Damaa daanu",
     "pron": "Dama danu",
-    "fon": "da-ma da-nu"
+    "fon_es": "da-ma da-nu",
+    "fon_fr": "da-ma da-nou"
   },
   {
     "cat": "Salud y emergencias",
     "es": "Descansar",
     "wo": "noppaliku",
     "pron": "Nopaliku",
-    "fon": "no-pa-li-ku"
+    "fon_es": "no-pa-li-ku",
+    "fon_fr": "no-pa-li-kou"
   },
   {
     "cat": "Salud y emergencias",
     "es": "Pastillas / Medicina",
     "wo": "doom",
     "pron": "Dom",
-    "fon": "dom"
+    "fon_es": "dom",
+    "fon_fr": "dom"
   },
   {
     "cat": "Salud y emergencias",
     "es": "Respira hondo",
     "wo": "Noyyil bu baax",
     "pron": "Noyil bu baj",
-    "fon": "no-yil bu baj"
+    "fon_es": "no-yil bu baj",
+    "fon_fr": "no-yil bou bakh"
   },
   {
     "cat": "Salud y emergencias",
     "es": "Quería pedir cita con mi médico",
     "wo": "Damaa bëggoon a wut randewuu ak sama doktoor",
     "pron": "Dama begon a wut randewu ak sama doktor",
-    "fon": "da-ma be-gon a wut ran-de-wu ak sa-ma dok-tor"
+    "fon_es": "da-ma be-gon a wut ran-de-wu ak sa-ma dok-tor",
+    "fon_fr": "da-ma be-gon a wout ran-dé-wou ak sa-ma dok-tor"
   },
   {
     "cat": "Salud y emergencias",
     "es": "¿Quieres un vaso de leche?",
     "wo": "Ndax bëgg nga kaasu meew?",
     "pron": "Ndaj beg nga kasu mew?",
-    "fon": "ndaj beg nga ka-su mew?"
+    "fon_es": "ne-daj beg ne-ga ka-su mew?",
+    "fon_fr": "ne-dakh beg ne-ga ka-sou méw?"
   },
   {
     "cat": "Salud y emergencias",
     "es": "Cuerpo",
     "wo": "yaram",
     "pron": "Yaram",
-    "fon": "ya-ram"
+    "fon_es": "ya-ram",
+    "fon_fr": "ya-ram"
   },
   {
     "cat": "Salud y emergencias",
     "es": "Cabeza",
     "wo": "bopp",
     "pron": "Bop",
-    "fon": "bop"
+    "fon_es": "bop",
+    "fon_fr": "bop"
   },
   {
     "cat": "Salud y emergencias",
     "es": "Ojo",
     "wo": "bët",
     "pron": "Bet",
-    "fon": "bet"
+    "fon_es": "bet",
+    "fon_fr": "bet"
   },
   {
     "cat": "Salud y emergencias",
     "es": "Mano",
     "wo": "loxo",
     "pron": "Lojo",
-    "fon": "lo-jo"
+    "fon_es": "lo-jo",
+    "fon_fr": "lo-kho"
   },
   {
     "cat": "Salud y emergencias",
     "es": "Brazo",
     "wo": "loxo",
     "pron": "Lojo",
-    "fon": "lo-jo"
+    "fon_es": "lo-jo",
+    "fon_fr": "lo-kho"
   },
   {
     "cat": "Salud y emergencias",
     "es": "Pie / Pierna",
     "wo": "tànk",
     "pron": "Tank",
-    "fon": "tank"
+    "fon_es": "tank",
+    "fon_fr": "tank"
   },
   {
     "cat": "Salud y emergencias",
     "es": "Rodilla",
     "wo": "óom",
     "pron": "Om",
-    "fon": "om"
+    "fon_es": "om",
+    "fon_fr": "o-om"
   },
   {
     "cat": "Salud y emergencias",
     "es": "Boca",
     "wo": "gemmiñ",
     "pron": "Guemiñ",
-    "fon": "gue-miñ"
+    "fon_es": "gue-miñ",
+    "fon_fr": "gué-mign"
   },
   {
     "cat": "Salud y emergencias",
     "es": "Nariz",
     "wo": "bakkan",
     "pron": "Bakan",
-    "fon": "ba-kan"
+    "fon_es": "ba-kan",
+    "fon_fr": "ba-kan"
   },
   {
     "cat": "Salud y emergencias",
     "es": "Oreja",
     "wo": "nopp",
     "pron": "Nop",
-    "fon": "nop"
+    "fon_es": "nop",
+    "fon_fr": "nop"
   },
   {
     "cat": "Salud y emergencias",
     "es": "Diente",
     "wo": "bëñ",
     "pron": "Beñ",
-    "fon": "beñ"
+    "fon_es": "beñ",
+    "fon_fr": "begn"
   },
   {
     "cat": "Salud y emergencias",
     "es": "Garganta",
     "wo": "put",
     "pron": "Put",
-    "fon": "put"
+    "fon_es": "put",
+    "fon_fr": "pout"
   },
   {
     "cat": "Salud y emergencias",
     "es": "Cuello",
     "wo": "baat",
     "pron": "Bat",
-    "fon": "bat"
+    "fon_es": "bat",
+    "fon_fr": "bat"
   },
   {
     "cat": "Salud y emergencias",
     "es": "Espalda",
     "wo": "diggu ginaaw",
     "pron": "Digu guinaw",
-    "fon": "di-gu gui-naw"
+    "fon_es": "di-gu gui-naw",
+    "fon_fr": "di-gou gui-naw"
   },
   {
     "cat": "Salud y emergencias",
     "es": "Pecho",
     "wo": "dënn",
     "pron": "Den",
-    "fon": "den"
+    "fon_es": "den",
+    "fon_fr": "den"
   },
   {
     "cat": "Salud y emergencias",
     "es": "Vientre / Barriga",
     "wo": "biir",
     "pron": "Bir",
-    "fon": "bir"
+    "fon_es": "bir",
+    "fon_fr": "bir"
   },
   {
     "cat": "Salud y emergencias",
     "es": "Cara",
     "wo": "kanam",
     "pron": "Kanam",
-    "fon": "ka-nam"
+    "fon_es": "ka-nam",
+    "fon_fr": "ka-nam"
   },
   {
     "cat": "Salud y emergencias",
     "es": "Dedos",
     "wo": "baaraam",
     "pron": "Baram",
-    "fon": "ba-ram"
+    "fon_es": "ba-ram",
+    "fon_fr": "ba-ram"
   },
   {
     "cat": "Salud y emergencias",
     "es": "Pelo",
     "wo": "karaw",
     "pron": "Karaw",
-    "fon": "ka-raw"
+    "fon_es": "ka-raw",
+    "fon_fr": "ka-raw"
   },
   {
     "cat": "Trabajo y oficios",
     "es": "Trabajo",
     "wo": "liggéey",
     "pron": "Liguey",
-    "fon": "li-guey"
+    "fon_es": "li-guey",
+    "fon_fr": "li-gué-éy"
   },
   {
     "cat": "Trabajo y oficios",
     "es": "¿Dónde trabajas ahora?",
     "wo": "Fan ngay liggéeye leegi?",
     "pron": "Fan ngay ligueye legui?",
-    "fon": "fan ngay li-gue-ye le-gui?"
+    "fon_es": "fan ne-gay li-gue-ye le-gui?",
+    "fon_fr": "fan ne-gay li-gué-é-yé lé-gui?"
   },
   {
     "cat": "Trabajo y oficios",
     "es": "¿De qué trabajas?",
     "wo": "Lan ngay liggéey?",
     "pron": "Lan ngay liguey?",
-    "fon": "lan ngay li-guey?"
+    "fon_es": "lan ne-gay li-guey?",
+    "fon_fr": "lan ne-gay li-gué-éy?"
   },
   {
     "cat": "Trabajo y oficios",
     "es": "¿Tienes trabajo?",
     "wo": "Mbaa am nga liggéey?",
     "pron": "Mba am nga liguey?",
-    "fon": "mba am nga li-guey?"
+    "fon_es": "me-ba am ne-ga li-guey?",
+    "fon_fr": "me-ba am ne-ga li-gué-éy?"
   },
   {
     "cat": "Trabajo y oficios",
     "es": "No tengo, sigo buscando",
     "wo": "Maa ngi wut ba leegi",
     "pron": "Ma ngui wut ba legui",
-    "fon": "ma ngui wut ba le-gui"
+    "fon_es": "ma ne-gui wut ba le-gui",
+    "fon_fr": "ma ne-gui wout ba lé-gui"
   },
   {
     "cat": "Trabajo y oficios",
     "es": "¿Te gusta tu trabajo?",
     "wo": "Mbaa sa liggéey neex na la?",
     "pron": "Mba sa liguey nej na la?",
-    "fon": "mba sa li-guey nej na la?"
+    "fon_es": "me-ba sa li-guey nej na la?",
+    "fon_fr": "me-ba sa li-gué-éy nékh na la?"
   },
   {
     "cat": "Trabajo y oficios",
     "es": "¡Cuánto tiempo sin vernos!",
     "wo": "Gëj nañu gise!",
     "pron": "Guey nañu guise!",
-    "fon": "guey na-ñu gui-se!"
+    "fon_es": "guey na-ñu gui-se!",
+    "fon_fr": "guedj na-gnou gui-sé!"
   },
   {
     "cat": "Trabajo y oficios",
     "es": "Cocinero / Cocinera",
     "wo": "toggkat",
     "pron": "Togkat",
-    "fon": "tog-kat"
+    "fon_es": "tog-kat",
+    "fon_fr": "tog-kat"
   },
   {
     "cat": "Trabajo y oficios",
     "es": "Profesor / Profesora",
     "wo": "jàngalekat",
     "pron": "Yangalekat",
-    "fon": "yan-ga-le-kat"
+    "fon_es": "yan-ga-le-kat",
+    "fon_fr": "djan-ga-lé-kat"
   },
   {
     "cat": "Trabajo y oficios",
     "es": "Carpintero",
     "wo": "minise",
     "pron": "Minise",
-    "fon": "mi-ni-se"
+    "fon_es": "mi-ni-se",
+    "fon_fr": "mi-ni-sé"
   },
   {
     "cat": "Trabajo y oficios",
     "es": "Taxista",
     "wo": "dawalkatu taksi",
     "pron": "Dawalkatu taksi",
-    "fon": "da-wal-ka-tu tak-si"
+    "fon_es": "da-wal-ka-tu tak-si",
+    "fon_fr": "da-wal-ka-tou tak-si"
   },
   {
     "cat": "Trabajo y oficios",
     "es": "Policía",
     "wo": "pólise",
     "pron": "Polise",
-    "fon": "po-li-se"
+    "fon_es": "po-li-se",
+    "fon_fr": "po-li-sé"
   },
   {
     "cat": "Trabajo y oficios",
     "es": "Pescador",
     "wo": "nappkat",
     "pron": "Napkat",
-    "fon": "nap-kat"
+    "fon_es": "nap-kat",
+    "fon_fr": "nap-kat"
   },
   {
     "cat": "Trabajo y oficios",
     "es": "Vendedor / Vendedora",
     "wo": "jaaykat",
     "pron": "Yaykat",
-    "fon": "yay-kat"
+    "fon_es": "yay-kat",
+    "fon_fr": "djay-kat"
   },
   {
     "cat": "Trabajo y oficios",
     "es": "Panadero",
     "wo": "mbulaŋse",
     "pron": "Mbulangse",
-    "fon": "mbu-lang-se"
+    "fon_es": "me-bu-lang-se",
+    "fon_fr": "me-bou-lang-sé"
   },
   {
     "cat": "Trabajo y oficios",
     "es": "Mecánico",
     "wo": "mekaniseŋ",
     "pron": "Mekaniseng",
-    "fon": "me-ka-ni-seng"
+    "fon_es": "me-ka-ni-seng",
+    "fon_fr": "mé-ka-ni-séng"
   },
   {
     "cat": "Trabajo y oficios",
     "es": "Electricista",
     "wo": "elektirisiyeŋ",
     "pron": "Elektirisiyeng",
-    "fon": "e-lek-ti-ri-si-yeng"
+    "fon_es": "e-lek-ti-ri-si-yeng",
+    "fon_fr": "é-lék-ti-ri-si-yéng"
   },
   {
     "cat": "Verbos útiles",
     "es": "Querer",
     "wo": "bëgg",
     "pron": "Beg",
-    "fon": "beg"
+    "fon_es": "beg",
+    "fon_fr": "beg"
   },
   {
     "cat": "Verbos útiles",
     "es": "Saber",
     "wo": "xam",
     "pron": "Jam",
-    "fon": "jam"
+    "fon_es": "jam",
+    "fon_fr": "kham"
   },
   {
     "cat": "Verbos útiles",
     "es": "Poder",
     "wo": "mën",
     "pron": "Men",
-    "fon": "men"
+    "fon_es": "men",
+    "fon_fr": "men"
   },
   {
     "cat": "Verbos útiles",
     "es": "Ir",
     "wo": "dem",
     "pron": "Dem",
-    "fon": "dem"
+    "fon_es": "dem",
+    "fon_fr": "dém"
   },
   {
     "cat": "Verbos útiles",
     "es": "Venir",
     "wo": "ñëw",
     "pron": "Ñew",
-    "fon": "ñew"
+    "fon_es": "ñew",
+    "fon_fr": "gnew"
   },
   {
     "cat": "Verbos útiles",
     "es": "Hablar",
     "wo": "wax",
     "pron": "Waj",
-    "fon": "waj"
+    "fon_es": "waj",
+    "fon_fr": "wakh"
   },
   {
     "cat": "Verbos útiles",
     "es": "Ver / Mirar",
     "wo": "xool",
     "pron": "Jol",
-    "fon": "jol"
+    "fon_es": "jol",
+    "fon_fr": "khol"
   },
   {
     "cat": "Verbos útiles",
     "es": "Ir de compras",
     "wo": "jëndi",
     "pron": "Yendi",
-    "fon": "yen-di"
+    "fon_es": "yen-di",
+    "fon_fr": "djen-di"
   },
   {
     "cat": "Verbos útiles",
     "es": "Cocinar",
     "wo": "togg",
     "pron": "Tog",
-    "fon": "tog"
+    "fon_es": "tog",
+    "fon_fr": "tog"
   },
   {
     "cat": "Verbos útiles",
     "es": "Lavar la ropa",
     "wo": "fóot",
     "pron": "Fot",
-    "fon": "fot"
+    "fon_es": "fot",
+    "fon_fr": "fo-ot"
   },
   {
     "cat": "Verbos útiles",
     "es": "Levantarse",
     "wo": "jóg",
     "pron": "Yog",
-    "fon": "yog"
+    "fon_es": "yog",
+    "fon_fr": "djog"
   },
   {
     "cat": "Verbos útiles",
     "es": "Dormir",
     "wo": "nelaw",
     "pron": "Nelaw",
-    "fon": "ne-law"
+    "fon_es": "ne-law",
+    "fon_fr": "né-law"
   },
   {
     "cat": "Verbos útiles",
     "es": "Ducharse",
     "wo": "sangu",
     "pron": "Sangu",
-    "fon": "san-gu"
+    "fon_es": "san-gu",
+    "fon_fr": "san-gou"
   },
   {
     "cat": "Verbos útiles",
     "es": "Caminar",
     "wo": "dox",
     "pron": "Doj",
-    "fon": "doj"
+    "fon_es": "doj",
+    "fon_fr": "dokh"
   },
   {
     "cat": "Verbos útiles",
     "es": "Pasear",
     "wo": "doxantu",
     "pron": "Dojantu",
-    "fon": "do-jan-tu"
+    "fon_es": "do-jan-tu",
+    "fon_fr": "do-khan-tou"
   },
   {
     "cat": "Verbos útiles",
     "es": "Estudiar / Leer",
     "wo": "jàng",
     "pron": "Yang",
-    "fon": "yang"
+    "fon_es": "yang",
+    "fon_fr": "djang"
   },
   {
     "cat": "Verbos útiles",
     "es": "Trabajar",
     "wo": "liggéey",
     "pron": "Liguey",
-    "fon": "li-guey"
+    "fon_es": "li-guey",
+    "fon_fr": "li-gué-éy"
   }
 ]

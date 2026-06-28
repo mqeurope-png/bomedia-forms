@@ -153,17 +153,18 @@ function populateVoices(){
   if(!window.speechSynthesis) return;
   voices = speechSynthesis.getVoices();
   voiceSel.innerHTML="";
-  // Ordenar: español primero, luego italiano, francés y el resto.
-  const rank = v => v.lang.startsWith("es")?0 : v.lang.startsWith("it")?1 :
-                    v.lang.startsWith("fr")?2 : 3;
+  // Ordenar: francés primero, luego español, italiano y el resto.
+  const rank = v => v.lang.startsWith("fr")?0 : v.lang.startsWith("es")?1 :
+                    v.lang.startsWith("it")?2 : 3;
   voices.map((v,i)=>({v,i})).sort((a,b)=>rank(a.v)-rank(b.v))
     .forEach(({v,i})=>{
       const o=document.createElement("option");
       o.value=i; o.textContent=v.name+"  ("+v.lang+")";
       voiceSel.appendChild(o);
     });
-  // Selección por defecto: una voz española.
-  const def = voices.findIndex(v=>v.lang.startsWith("es"));
+  // Selección por defecto: voz francesa; si no hay, española.
+  let def = voices.findIndex(v=>v.lang.startsWith("fr"));
+  if(def<0) def = voices.findIndex(v=>v.lang.startsWith("es"));
   if(def>=0) voiceSel.value=def;
 }
 if(window.speechSynthesis){
@@ -172,11 +173,13 @@ if(window.speechSynthesis){
 }
 
 function speak(entry){
-  // Lee la transcripción silabeada (fon) para sonar más claro y despacio.
-  const text = entry.fon || entry.pron || entry.wo;
-  if(!text || !window.speechSynthesis) return;
-  const u=new SpeechSynthesisUtterance(text);
+  if(!window.speechSynthesis) return;
   const v = voices[parseInt(voiceSel.value,10)];
+  // Elige la transcripción según el idioma de la voz: francesa o española.
+  const fr = v && v.lang && v.lang.toLowerCase().startsWith("fr");
+  const text = (fr ? entry.fon_fr : entry.fon_es) || entry.fon_es || entry.pron || entry.wo;
+  if(!text) return;
+  const u=new SpeechSynthesisUtterance(text);
   if(v){ u.voice=v; u.lang=v.lang; } else { u.lang="es-ES"; }
   u.rate = parseFloat(rateEl.value)||0.78;
   speechSynthesis.cancel(); speechSynthesis.speak(u);
@@ -196,7 +199,7 @@ function render(items){
     g.querySelector(".es").textContent=e.es;
     g.querySelector(".wo").textContent=e.wo || "(traducción no disponible)";
     li.appendChild(g);
-    if(e.fon||e.pron||e.wo){
+    if(e.fon_es||e.pron||e.wo){
       const b=document.createElement("button"); b.className="spk"; b.textContent="🔊";
       b.title="Escuchar";
       b.onclick=ev=>{ev.stopPropagation(); speak(e);};

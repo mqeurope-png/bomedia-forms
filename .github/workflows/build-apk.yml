@@ -1,0 +1,73 @@
+name: Build APK Diccionario Wolof
+
+# Compila la app Android (carpeta DiccionarioWolof/) y publica el APK para
+# poder instalarlo en el teléfono. Se ejecuta al hacer push en la rama de
+# desarrollo (si cambia algo del proyecto Android) o manualmente desde la
+# pestaña "Actions" → "Run workflow".
+
+on:
+  push:
+    branches:
+      - claude/loving-euler-95ngr8
+    paths:
+      - "DiccionarioWolof/**"
+      - ".github/workflows/build-apk.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    name: Build debug APK
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: DiccionarioWolof
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "17"
+
+      - name: Set up Android SDK
+        uses: android-actions/setup-android@v3
+
+      - name: Install SDK packages
+        run: |
+          yes | sdkmanager --licenses >/dev/null || true
+          sdkmanager "platforms;android-34" "build-tools;34.0.0" "platform-tools"
+
+      - name: Make gradlew executable
+        run: chmod +x gradlew
+
+      - name: Build debug APK
+        run: ./gradlew assembleDebug --no-daemon --stacktrace
+
+      - name: Upload APK as artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: diccionario-wolof-debug
+          path: DiccionarioWolof/app/build/outputs/apk/debug/app-debug.apk
+          if-no-files-found: error
+
+      # Publica también una "release" con el APK para descargarlo fácilmente
+      # desde el móvil (enlace directo al .apk).
+      - name: Publish release with APK
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: apk-build-${{ github.run_number }}
+          name: Diccionario Wolof · APK (build ${{ github.run_number }})
+          body: |
+            APK de depuración de **Diccionario Wolof** generado automáticamente.
+
+            Para instalarlo en el móvil: descarga `app-debug.apk`, ábrelo y
+            permite la instalación de "orígenes desconocidos".
+          files: DiccionarioWolof/app/build/outputs/apk/debug/app-debug.apk
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

@@ -204,7 +204,7 @@ fun SearchScreen(
                         EntryRow(
                             entry = entry,
                             onClick = { onEntryClick(entry) },
-                            onSpeak = { speaker.speak(entry.speakable) },
+                            onSpeak = { speaker.speak(entry) },
                         )
                         Divider()
                     }
@@ -240,8 +240,10 @@ private fun VoicePicker(speaker: SpeakerState) {
                 text = { Text((if (isSel) "✓ " else "") + voice.label()) },
                 onClick = {
                     speaker.select(voice)
-                    // Pequeña muestra al elegir la voz.
-                    speaker.speak("Jë-rë-jëf")
+                    // Pequeña muestra al elegir la voz (según su idioma).
+                    val muestra = if (voice.locale.language.startsWith("fr"))
+                        "dje-re-djef" else "ye-re-yef"
+                    speaker.speakRaw(muestra)
                     expanded = false
                 },
             )
@@ -274,7 +276,7 @@ private fun EntryRow(entry: Entry, onClick: () -> Unit, onSpeak: () -> Unit) {
                 overflow = TextOverflow.Ellipsis,
             )
         }
-        if (entry.speakable.isNotEmpty()) {
+        if (entry.wo.isNotEmpty()) {
             IconButton(onClick = onSpeak) {
                 Icon(
                     painter = painterResource(R.drawable.ic_volume),
@@ -305,8 +307,8 @@ fun EntryDetailScreen(entry: Entry, speaker: SpeakerState, onBack: () -> Unit) {
                 },
                 actions = {
                     VoicePicker(speaker)
-                    if (entry.speakable.isNotEmpty()) {
-                        IconButton(onClick = { speaker.speak(entry.speakable) }) {
+                    if (entry.wo.isNotEmpty()) {
+                        IconButton(onClick = { speaker.speak(entry) }) {
                             Icon(
                                 painter = painterResource(R.drawable.ic_volume),
                                 contentDescription = stringResource(R.string.listen),

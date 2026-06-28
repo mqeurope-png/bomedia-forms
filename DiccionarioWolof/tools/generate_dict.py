@@ -85,20 +85,27 @@ _DEBIL_TONICA = "íú"
 _INSEPARABLES = {
     "bl", "cl", "fl", "gl", "pl", "br", "cr", "dr", "fr", "gr", "pr", "tr",
 }
-# Dígrafos/grupos que cuentan como UNA consonante (se "protegen" con marcadores).
-_MARCADORES = {"\x01": "gu", "\x02": "qu", "\x03": "ch", "\x04": "ll", "\x05": "rr"}
+# Dígrafos/grupos que cuentan como UNA "letra" (se "protegen" con marcadores).
+_MARCADORES = {
+    "\x01": "gu", "\x02": "qu", "\x03": "ch", "\x04": "ll", "\x05": "rr",
+    "\x06": "ou", "\x07": "tch", "\x08": "kh", "\x09": "dj", "\x0a": "gn",
+}
 
 
 def _silabear(palabra: str) -> list:
-    """Divide en sílabas una palabra (en grafía española de pronunciación)."""
+    """Divide en sílabas una palabra (grafía de pronunciación es/fr)."""
     s = palabra.lower()
-    # Proteger dígrafos como una sola consonante (longitud 1 cada marcador).
+    # Proteger dígrafos como una sola "letra" (longitud 1 cada marcador).
+    # Importante: los más largos primero (tch antes que ch).
     s = re.sub(r"gu(?=[eiéí])", "\x01", s)   # gu = /g/ (gui, gue)
     s = re.sub(r"qu", "\x02", s)             # qu = /k/
+    s = s.replace("tch", "\x07")             # tch = /tʃ/ (francés)
     s = s.replace("ch", "\x03").replace("ll", "\x04").replace("rr", "\x05")
+    s = s.replace("kh", "\x08").replace("dj", "\x09").replace("gn", "\x0a")
+    s = s.replace("ou", "\x06")              # ou = /u/ (francés), una vocal
 
     def es_vocal(c: str) -> bool:
-        return c in _VOCALES
+        return c in _VOCALES or c == "\x06"  # \x06 = "ou" cuenta como vocal
 
     letras = list(s)
 
@@ -156,6 +163,58 @@ def _silabear(palabra: str) -> list:
 _SIGNOS = "¿?¡!.,…:;«»\"'()"
 
 
+def _epentesis(core: str) -> str:
+    """Rompe los grupos prenasales iniciales (mb, nd, ng, nj…) con una "e".
+
+    Las voces en español/francés DELETREAN las palabras que empiezan por esos
+    grupos (no existen en esos idiomas): "nga" se oiría "ene-ge-a". Insertamos
+    una "e" de apoyo ENTRE la nasal y la consonante: "nga" -> "nega". Así se
+    vuelve pronunciable y, en francés, se evita además que "en/an" nasalice.
+    """
+    if len(core) >= 2 and core[0].lower() in "mn":
+        segunda = core[1].lower()
+        if segunda not in _VOCALES and segunda not in "mn":
+            return core[0] + "e" + core[1:]
+    return core
+
+
+def aproximar_pron_fr(wo: str) -> str:
+    """Pronunciación aproximada del wolof con grafía FRANCESA (para voz fr).
+
+    Pensada para que una voz francesa de TTS suene parecida al wolof, según la
+    tabla fonética (IPA): u->"ou" (/u/), e->"é" (/e/), ë->"e" (schwa francesa),
+    j->"dj" (/dʒ/), x->"kh" (/x/≈/k/), c->"tch" (/tʃ/), ñ->"gn" (/ɲ/),
+    ŋ->"ng" (/ŋ/), q->"k", g siempre dura ("gu" ante e/i, con u muda).
+    """
+    if not wo:
+        return ""
+
+    def conv(token: str) -> str:
+        s = token.lower()
+        # Letras dobles (sonidos largos) -> simples.
+        s = re.sub(r"(.)\1", r"\1", s)
+        s = re.sub(r"(.)\1", r"\1", s)
+        # Proteger é (=/e/) y ë (=schwa) antes de tocar las demás vocales.
+        s = s.replace("é", "\x11").replace("ë", "\x12")
+        s = s.replace("à", "a").replace("ó", "o")
+        # g dura ante vocal frontal -> g + u muda (gui/gue a la francesa).
+        s = re.sub(r"g(?=[ei\x11\x12])", "g\x13", s)
+        # Consonantes específicas.
+        s = s.replace("x", "kh").replace("c", "tch").replace("j", "dj")
+        s = s.replace("ñ", "gn").replace("ŋ", "ng").replace("q", "k")
+        # Vocales: e normal -> é (/e/, no muda); u -> ou (/u/).
+        s = s.replace("e", "é").replace("u", "ou")
+        # Restaurar marcadores.
+        s = s.replace("\x13", "u")    # u muda francesa (gu, gui)
+        s = s.replace("\x12", "e")    # ë -> e (schwa francesa)
+        s = s.replace("\x11", "é")    # é
+        return s
+
+    partes = re.split(r"([ \-/])", wo)
+    return "".join(conv(p) if p.strip() and p not in " -/" else p
+                   for p in partes)
+
+
 def fonetica_voz(pron: str) -> str:
     """Transcripción silabeada de la pronunciación, lista para el TTS."""
     if not pron:
@@ -168,7 +227,7 @@ def fonetica_voz(pron: str) -> str:
             continue
         pre = token[:len(token) - len(token.lstrip(_SIGNOS))]
         post = token[len(token.rstrip(_SIGNOS)):]
-        palabras.append(pre + "-".join(_silabear(nucleo)) + post)
+        palabras.append(pre + "-".join(_silabear(_epentesis(nucleo))) + post)
     return " ".join(palabras)
 
 
@@ -662,8 +721,9 @@ def construir_entradas():
             "cat": cat,
             "es": es,
             "wo": wo,
-            "pron": pron,
-            "fon": fonetica_voz(pron),  # silabeado para el TTS
+            "pron": pron,                            # para mostrar (grafía es)
+            "fon_es": fonetica_voz(pron),            # voz española (silabeado)
+            "fon_fr": fonetica_voz(aproximar_pron_fr(wo)),  # voz francesa
         })
     return entradas
 

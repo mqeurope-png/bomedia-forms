@@ -45,12 +45,13 @@ class SpeakerState {
         }.getOrDefault(emptyList())
         voices = available
 
-        // Por defecto: una voz española (la grafía de la pronunciación es
-        // española, así que se lee más fiel); si no hay, la de por defecto.
-        val preferida = available.firstOrNull { it.locale.language == "es" }
+        // Por defecto: voz FRANCESA (el francés es lengua cooficial en Senegal);
+        // si no hay, una española y, en último caso, la de por defecto.
+        val preferida = available.firstOrNull { it.locale.language == "fr" }
+            ?: available.firstOrNull { it.locale.language == "es" }
             ?: available.firstOrNull()
         preferida?.let { applyVoice(it) } ?: run {
-            engine.language = Locale("es", "ES")
+            engine.language = Locale.FRENCH
         }
         ready = true
     }
@@ -63,8 +64,16 @@ class SpeakerState {
         selected = voice
     }
 
-    /** Lee el texto en voz alta con la voz y velocidad actuales. */
-    fun speak(text: String) {
+    /** Idioma de la voz activa (p. ej. "fr", "es"), o null si no hay. */
+    private fun currentLanguage(): String? = selected?.locale?.language
+
+    /** Lee una entrada eligiendo la transcripción según la voz activa. */
+    fun speak(entry: com.bomedia.diccionariowolof.data.Entry) {
+        speakRaw(entry.speakable(currentLanguage()))
+    }
+
+    /** Lee un texto literal (para muestras puntuales). */
+    fun speakRaw(text: String) {
         if (ready && text.isNotBlank()) {
             tts?.setSpeechRate(SPEECH_RATE)
             tts?.speak(text, TextToSpeech.QUEUE_FLUSH, null, "wolof-pron")

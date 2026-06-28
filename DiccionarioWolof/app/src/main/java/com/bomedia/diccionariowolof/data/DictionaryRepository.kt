@@ -38,7 +38,8 @@ class DictionaryRepository(private val context: Context) {
                     es = obj.optString("es"),
                     wo = obj.optString("wo"),
                     pron = obj.optString("pron"),
-                    fon = obj.optString("fon"),
+                    fonEs = obj.optString("fon_es"),
+                    fonFr = obj.optString("fon_fr"),
                 )
             )
         }
